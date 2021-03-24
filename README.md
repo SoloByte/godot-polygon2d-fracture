@@ -3,7 +3,6 @@
 
 ------NOT FINISHED------
 For now it is just a test project without the final script to use in any project.
-------------------------
 
 
 A simple script for fracturing polygons. Also adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect)
