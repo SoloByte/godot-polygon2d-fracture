@@ -3,11 +3,20 @@ extends Node2D
 
 
 
+enum DELAUNY_TYPES {DEFAULT = 0, CONVEX = 1, RECTANGLE = 2}
+
+
+
+
 export(Color) var fracture_body_color
 export(PackedScene) var fracture_body_template
 
 
+
+
 export(bool) var delauny_fracture = false
+export(DELAUNY_TYPES) var delauny_type = DELAUNY_TYPES.DEFAULT
+
 export(bool) var simple_fracture = true
 export(int) var random_points : int = 10
 export(int) var cuts : int = 3
@@ -19,11 +28,11 @@ onready var _parent := $Parent
 onready var _rng := RandomNumberGenerator.new()
 onready var _visible_timer := $VisibleTimer
 onready var _slowdown_timer := $SlowdownTimer
-
+onready var _timer := $Timer
 
 
 var _cur_fracture_color : Color = fracture_body_color
-
+var _auto_active : bool = false
 
 
 func _ready() -> void:
@@ -140,6 +149,38 @@ func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, wor
 					if t.area >= min_discard_area:
 						var entry : Dictionary = {"poly" : r, "centroid" : getPolyCentroid(t.triangles, t.area), "world_pos" : world_pos}
 						fracture_info.append(entry)
+	
+	return fracture_info
+
+
+func fractureDelaunyConvex(concave_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
+	concave_polygon = rotatePolygon(concave_polygon, world_rot_rad)
+	var points = getRandomPointsInPolygon(concave_polygon, fracture_number)
+	var triangulation : Dictionary = triangulatePolygonDelauny(points + concave_polygon, true, true)
+	
+	var fracture_info : Array = []
+	for triangle in triangulation.triangles:
+		if triangle.area < min_discard_area:
+			continue
+		
+		var entry : Dictionary = {"poly" : triangle.points, "centroid" : getTriangleCentroid(triangle.points), "world_pos" : world_pos}
+		fracture_info.append(entry)
+	
+	return fracture_info
+
+
+func fractureDelaunyRectangle(rectangle_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
+	rectangle_polygon = rotatePolygon(rectangle_polygon, world_rot_rad)
+	var points = getRandomPointsInRectangle(getBoundingRect(rectangle_polygon), fracture_number)
+	var triangulation : Dictionary = triangulatePolygonDelauny(points + rectangle_polygon, true, true)
+	
+	var fracture_info : Array = []
+	for triangle in triangulation.triangles:
+		if triangle.area < min_discard_area:
+			continue
+		
+		var entry : Dictionary = {"poly" : triangle.points, "centroid" : getTriangleCentroid(triangle.points), "world_pos" : world_pos}
+		fracture_info.append(entry)
 	
 	return fracture_info
 
@@ -353,6 +394,17 @@ func getBoundingRect(poly : PoolVector2Array) -> Rect2:
 	return Rect2(start, end - start)
 
 
+func getRandomPointsInRectangle(rectangle : Rect2, number : int) -> PoolVector2Array:
+	var points : PoolVector2Array = []
+	
+	for i in range(number):
+		var x : float = _rng.randf_range(rectangle.position.x, rectangle.end.x)
+		var y : float = _rng.randf_range(rectangle.position.y, rectangle.end.y)
+		points.append(Vector2(x, y))
+	
+	return points
+
+
 func getRandomPointsInPolygon(poly : PoolVector2Array, number : int) -> PoolVector2Array:
 	var triangulation : Dictionary = triangulatePolygon(poly, true, false)
 	
@@ -397,31 +449,21 @@ func rotatePolygon(poly : PoolVector2Array, rot : float):
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("fullscreen"):
-		OS.window_fullscreen = not OS.window_fullscreen
-	if event.is_action_pressed("ui_accept"):
-		for source in _source_polygon_parent.get_children():
-			var fracture_info : Array
-			
-			if delauny_fracture:
-				fracture_info = fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
-			else:
-				if simple_fracture:
-					fracture_info = fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
-				else:
-					fracture_info = fracture(source.polygon, source.global_position, source.global_rotation, cuts, random_points, min_area)
-			for entry in fracture_info:
-					spawnFractureBody(entry.poly, entry.centroid, entry.world_pos)
+	if event.is_action_pressed("fracture") and _source_polygon_parent.visible:
+		fractureAll()
 	
-	if event.is_action_pressed("ui_cancel"):
-		get_tree().reload_current_scene()
+	if event.is_action_pressed("auto"):
+		if _auto_active:
+			_auto_active = false
+			_timer.stop()
+		else:
+			_auto_active = true
+			_timer.start(3.0)
 
 
 
 
-
-
-func _on_Timer_timeout() -> void:
+func fractureAll() -> void:
 	_visible_timer.start(2.0)
 	_slowdown_timer.start(0.25)
 	Engine.time_scale = 0.1
@@ -430,7 +472,13 @@ func _on_Timer_timeout() -> void:
 		var fracture_info : Array
 		
 		if delauny_fracture:
-			fracture_info = fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+			match delauny_type:
+				DELAUNY_TYPES.DEFAULT:
+					fracture_info = fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+				DELAUNY_TYPES.CONVEX:
+					fracture_info = fractureDelaunyConvex(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+				DELAUNY_TYPES.RECTANGLE:
+					fracture_info = fractureDelaunyRectangle(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 		else:
 			if simple_fracture:
 				fracture_info = fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
@@ -438,6 +486,11 @@ func _on_Timer_timeout() -> void:
 				fracture_info = fracture(source.polygon, source.global_position, source.global_rotation, cuts, random_points, min_area)
 		for entry in fracture_info:
 				spawnFractureBody(entry.poly, entry.centroid, entry.world_pos)
+
+
+
+func _on_Timer_timeout() -> void:
+	fractureAll()
 
 
 func _on_VisibleTimer_timeout() -> void:
