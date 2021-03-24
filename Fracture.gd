@@ -5,30 +5,42 @@ extends Node2D
 
 export(Color) var fracture_body_color
 export(PackedScene) var fracture_body_template
-export(bool) var delauny_fractrue = false
+
+
+export(bool) var delauny_fracture = false
 export(bool) var simple_fracture = true
 export(int) var random_points : int = 10
 export(int) var cuts : int = 3
 export(int) var min_area : int = 25
 
 
-
 onready var _source_polygon_parent := $SourcePolygons
 onready var _parent := $Parent
 onready var _rng := RandomNumberGenerator.new()
+onready var _visible_timer := $VisibleTimer
+onready var _slowdown_timer := $SlowdownTimer
 
+
+
+var _cur_fracture_color : Color = fracture_body_color
 
 
 
 func _ready() -> void:
 	_rng.randomize()
-	update()
+	
+	var color := Color.white
+	color.s = fracture_body_color.s
+	color.v = fracture_body_color.v
+	color.h = _rng.randf()
+	_cur_fracture_color = color
+	_source_polygon_parent.modulate = _cur_fracture_color
 
 
 
 
 
-func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, min_discard_area : float) -> void:
+func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, min_discard_area : float) -> Array:
 	source_polygon = rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = getBoundingRect(source_polygon)
 	var cut_lines : Array = getCutLines(bounding_rect, cut_number)
@@ -45,16 +57,20 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, worl
 		polygons.clear()
 		polygons += new_polies
 	
-	
+	var fracture_info : Array = []
 	for poly in polygons:
 		if not Geometry.is_polygon_clockwise(poly):
 			var triangulation : Dictionary = triangulatePolygon(poly, true, true)
 			
 			if triangulation.area > min_discard_area:
-				spawnFractureBody(poly, getPolyCentroid(triangulation.triangles, triangulation.area), world_pos)
+				var entry : Dictionary = {"poly" : poly, "centroid" : getPolyCentroid(triangulation.triangles, triangulation.area), "world_pos" : world_pos}
+				fracture_info.append(entry)
+#				spawnFractureBody(poly, getPolyCentroid(triangulation.triangles, triangulation.area), world_pos)
+	
+	return fracture_info
 
 
-func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, point_number : int, min_discard_area : float) -> void:
+func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, point_number : int, min_discard_area : float) -> Array:
 	source_polygon = rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = getBoundingRect(source_polygon)
 	var points : Array = getRandomPointsInPolygon(source_polygon, point_number)
@@ -72,44 +88,63 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 		polygons.clear()
 		polygons += new_polies
 	
-	
+	var fracture_info : Array = []
 	for poly in polygons:
 		if not Geometry.is_polygon_clockwise(poly):
 			var triangulation : Dictionary = triangulatePolygon(poly, true, true)
 			
 			if triangulation.area > min_discard_area:
-				spawnFractureBody(poly, getPolyCentroid(triangulation.triangles, triangulation.area), world_pos)
+				var entry : Dictionary = {"poly" : poly, "centroid" : getPolyCentroid(triangulation.triangles, triangulation.area), "world_pos" : world_pos}
+				fracture_info.append(entry)
+#				spawnFractureBody(poly, getPolyCentroid(triangulation.triangles, triangulation.area), world_pos)
+	
+	return fracture_info
 
 
-func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> void:
+func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
 	source_polygon = rotatePolygon(source_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(source_polygon, fracture_number)
 	var triangulation : Dictionary = triangulatePolygonDelauny(points + source_polygon, true, true)
 	
+	var fracture_info : Array = []
 	for triangle in triangulation.triangles:
 		if triangle.area < min_discard_area:
 			continue
 		
-		var is_inside_poly : bool = true
-		for p in triangle.points:
-			if not Geometry.is_point_in_polygon(p, source_polygon):
-				is_inside_poly = false
-				break
-		
-		if is_inside_poly:
-			spawnFractureBody(triangle.points, triangle.centroid, world_pos)
-		else:
-			var results : Array = Geometry.intersect_polygons_2d(triangle.points, source_polygon)
-			for r in results:
-				if r.size() > 0 and not Geometry.is_polygon_clockwise(r):
-					if r.size() == 3:
-						var area : float = getTriangleArea(r)
-						if area >= min_discard_area:
-							spawnFractureBody(r, getTriangleCentroid(r), world_pos)
-					else:
-						var t : Dictionary = triangulatePolygon(r, true, true)
-						if t.area >= min_discard_area:
-							spawnFractureBody(r, getPolyCentroid(t.triangles, t.area), world_pos)
+#		var is_inside_poly : bool = true
+#		for p in triangle.points:
+#			if not Geometry.is_point_in_polygon(p, source_polygon):
+#				is_inside_poly = false
+#				break
+#
+#		if is_inside_poly:
+#			if not Geometry.is_point_in_polygon(getTriangleCentroid(triangle.points), source_polygon):
+#				is_inside_poly = false
+#
+#
+#		if is_inside_poly:
+#			var entry : Dictionary = {"poly" : triangle.points, "centroid" : triangle.centroid, "world_pos" : world_pos}
+#			fracture_info.append(entry)
+##			spawnFractureBody(triangle.points, triangle.centroid, world_pos)
+#		else:
+		var results : Array = Geometry.intersect_polygons_2d(triangle.points, source_polygon)
+		for r in results:
+			if r.size() > 0 and not Geometry.is_polygon_clockwise(r):
+				if r.size() == 3:
+					var area : float = getTriangleArea(r)
+					if area >= min_discard_area:
+						var entry : Dictionary = {"poly" : r, "centroid" : getTriangleCentroid(r), "world_pos" : world_pos}
+						fracture_info.append(entry)
+				else:
+					var t : Dictionary = triangulatePolygon(r, true, true)
+					if t.area >= min_discard_area:
+						var entry : Dictionary = {"poly" : r, "centroid" : getPolyCentroid(t.triangles, t.area), "world_pos" : world_pos}
+						fracture_info.append(entry)
+	
+	return fracture_info
+
+
+
 
 
 func triangulatePolygon(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
@@ -214,16 +249,14 @@ func translatePolygon(poly : PoolVector2Array, offset : Vector2):
 func spawnFractureBody(poly : PoolVector2Array, center_point : Vector2, world_pos : Vector2) -> void:
 	var instance = fracture_body_template.instance()
 	_parent.add_child(instance)
-#	print("center point: ", center_point)
-#	var center_point : Vector2 = getPolyCenterPoint(poly)
 	instance.global_position = to_global(center_point) + world_pos
 	
 	poly = translatePolygon(poly, -center_point)
 	
 	instance.setPolygon(poly)
-	instance.setColor(fracture_body_color)
+	instance.setColor(_cur_fracture_color)
 	var dir : Vector2 = (to_global(center_point) - global_position).normalized()
-	instance.apply_central_impulse(dir * _rng.randf_range(125, 175))
+	instance.apply_central_impulse(dir * _rng.randf_range(300, 500))
 	instance.angular_velocity = _rng.randf_range(-1, 1)
 
 
@@ -344,12 +377,12 @@ func getRandomTriangle(triangulation : Dictionary) -> Array:
 	return []
 
 
-func getRandomPointInTriangle(triangle : Array) -> Vector2:
-	var rand_one : float = _rng.randf()
-	var rand_two : float = _rng.randf()
-	var square_root_rand_one : float = sqrt(rand_one)
+func getRandomPointInTriangle(points : PoolVector2Array) -> Vector2:
+	var rand_1 : float = _rng.randf()
+	var rand_2 : float = _rng.randf()
+	var sqrt_1 : float = sqrt(rand_1)
 	
-	return (1.0 - square_root_rand_one) * triangle[0] + square_root_rand_one * (1.0 - rand_two) * triangle[1] + square_root_rand_one * rand_two * triangle[2]
+	return (1.0 - sqrt_1) * points[0] + sqrt_1 * (1.0 - rand_2) * points[1] + sqrt_1 * rand_2 * points[2]
 
 
 func rotatePolygon(poly : PoolVector2Array, rot : float):
@@ -364,110 +397,95 @@ func rotatePolygon(poly : PoolVector2Array, rot : float):
 
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("fullscreen"):
+		OS.window_fullscreen = not OS.window_fullscreen
 	if event.is_action_pressed("ui_accept"):
 		for source in _source_polygon_parent.get_children():
-			if delauny_fractrue:
-				fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+			var fracture_info : Array
+			
+			if delauny_fracture:
+				fracture_info = fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 			else:
 				if simple_fracture:
-					fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+					fracture_info = fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 				else:
-					fracture(source.polygon, source.global_position, source.global_rotation, cuts, random_points, min_area)
+					fracture_info = fracture(source.polygon, source.global_position, source.global_rotation, cuts, random_points, min_area)
+			for entry in fracture_info:
+					spawnFractureBody(entry.poly, entry.centroid, entry.world_pos)
 	
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().reload_current_scene()
 
 
 
-#func _draw() -> void:
-#	var delauny : bool = true
-#	if not delauny:
-#		for source in _source_polygon_parent.get_children():
-#			var triangulation : Dictionary = triangulatePolygon(source.polygon, true, true)
-#			for triangle in triangulation.triangles:
-#				draw_polygon(triangle.points, [Color(_rng.randf(), _rng.randf(), _rng.randf(), 1.0)])
-#				draw_circle(triangle.centroid, 15.0, Color.white)
+
+
+
+func _on_Timer_timeout() -> void:
+	_visible_timer.start(2.0)
+	_slowdown_timer.start(0.25)
+	Engine.time_scale = 0.1
+	_source_polygon_parent.visible = false
+	for source in _source_polygon_parent.get_children():
+		var fracture_info : Array
+		
+		if delauny_fracture:
+			fracture_info = fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+		else:
+			if simple_fracture:
+				fracture_info = fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+			else:
+				fracture_info = fracture(source.polygon, source.global_position, source.global_rotation, cuts, random_points, min_area)
+		for entry in fracture_info:
+				spawnFractureBody(entry.poly, entry.centroid, entry.world_pos)
+
+
+func _on_VisibleTimer_timeout() -> void:
+	var color := Color.white
+	color.s = fracture_body_color.s
+	color.v = fracture_body_color.v
+	color.h = _rng.randf()
+	_cur_fracture_color = color
+	_source_polygon_parent.modulate = _cur_fracture_color
+	_source_polygon_parent.visible = true
+
+
+func _on_SlowdownTimer_timeout() -> void:
+	Engine.time_scale = 1.0
+
+
+#func getRandomPointsInPolygonBiased(poly : PoolVector2Array, local_bias_pos : Vector2, number : int) -> PoolVector2Array:
+#	var triangulation : Dictionary
+#	if poly.size() == 3:
+#		var extra_points : PoolVector2Array = getRandomPointsInPolygon(poly, 3)
+##		poly.append(getTriangleCentroid(poly))
+#		triangulation = triangulatePolygonDelauny(poly + extra_points, true, true)
 #	else:
-#		for source in _source_polygon_parent.get_children():
-#			var points = getRandomPointsInPolygon(source.polygon, 15)
-#			var triangulation : Dictionary = triangulatePolygonDelauny(points + source.polygon, true, true)
+#		triangulation = triangulatePolygon(poly, true, true)
 #
-#			var final_polygons : Array = []
-#			for triangle in triangulation.triangles:
-#				var result = Geometry.intersect_polygons_2d(triangle.points, source.polygon)
-#				for r in result:
-#					if r.size() > 0 and not Geometry.is_polygon_clockwise(r):
-#						final_polygons.append(r)
+#	var max_distance : float = 0.0
+#	for triangle in triangulation.triangles:
+#		var dis : float = (triangle.centroid - local_bias_pos).length()
+#		triangle["dis"] = dis
+#		if dis > max_distance:
+#			max_distance = dis
 #
-#			for f in final_polygons:
-#				draw_polygon(f, [Color(_rng.randf(), _rng.randf(), _rng.randf(), 1.0)])
+#	triangulation.area = 0.0
 #
-#			return
-#			for triangle in triangulation.triangles:
-#				draw_polygon(triangle.points, [Color(_rng.randf(), _rng.randf(), _rng.randf(), 1.0)])
-##				draw_circle(triangle.centroid, 15.0, Color.white)
-#
-#			for p in points + source.polygon:
-#				draw_circle(p, 10.0, Color.white)
-		
-		
-#	var points : Array = getRandomPointsInPolygon(getPolygon(), cuts)
-#	for point in points:
-#		draw_circle(point, 15.0, Color.orange)
+#	for triangle in triangulation.triangles:
+#		var factor : float = (1.0 - (triangle.dis / max_distance))
+#		if factor > 0.0:
+#			triangulation.area += factor
+#		triangle.area = factor
 #
 #
+#	var points : PoolVector2Array = []
+#	for i in range(number):
+#		var triangle : Array = getRandomTriangle(triangulation)
+#		if triangle.size() <= 0: continue
+#		var point : Vector2 = getRandomPointInTriangle(triangle)
+#		points.append(point)
 #
-#	for i in range(cuts):
-#		var point_pool : Array = points.duplicate(false)
-#		var index : int = _rng.randi_range(0, point_pool.size() - 1)
-#		var start : Vector2 = point_pool[index]
-#		point_pool.remove(index)
-#
-#		index = _rng.randi_range(0, point_pool.size() - 1)
-#		var end : Vector2 = point_pool[index]
-#
-#
-#		var new_scale : float = 10.0
-#		var offset : Vector2 = start
-#
-#		start -= offset
-#		end -= offset
-#
-#		end *= new_scale
-#
-#		start += offset
-#		end += offset
-#
-#		var new_v : Vector2 = start - end
-#		start += new_v
-#
-#		draw_line(start, end, Color.green, 3.0, true)
-	
-	
-	
-#	var bounding_rect : Rect2 = getBoundingRect()
-#
-#
-#	draw_rect(bounding_rect, Color.red, false, 5.0, true)
-#	draw_circle(bounding_rect.position, 30.0, Color.yellow)
-#	draw_circle(bounding_rect.end, 30.0, Color.orange)
-#
-#	var A : Vector2 = bounding_rect.position
-#	var C : Vector2 = bounding_rect.end
-#
-#	var B : Vector2 = Vector2(C.x, A.y)
-#	var D : Vector2 = Vector2(A.x, C.y)
-#
-#
-#	draw_circle(A, 15.0, Color.blue)
-#	draw_circle(B, 15.0, Color.blue)
-#	draw_circle(C, 15.0, Color.blue)
-#	draw_circle(D, 15.0, Color.blue)
-#
-#
-#	var lines : Array = getCutLines(bounding_rect, cuts)
-#
-#	for line in lines:
-#		draw_line(line.position, line.end, Color.green, 2.0, true)
-#		var poly = Geometry.offset_polyline_2d(makeLine(line), 10)
-#		draw_polygon(poly[0], [Color(1, 1, 1, 0.25)])
+#	return points
+
+
