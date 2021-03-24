@@ -1,0 +1,103 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Fracture.gd" type="Script" id=1]
+[ext_resource path="res://FractureBody.tscn" type="PackedScene" id=2]
+[ext_resource path="res://SourcePolygon.tscn" type="PackedScene" id=3]
+
+[node name="Main" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -100
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Fracture" type="Node2D" parent="."]
+script = ExtResource( 1 )
+fracture_body_color = Color( 0, 0.576471, 1, 0.509804 )
+fracture_body_template = ExtResource( 2 )
+random_points = 25
+cuts = 6
+min_area = 1500
+
+[node name="SourcePolygons" type="Node2D" parent="Fracture"]
+
+[node name="SourcePolygon" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+rotation = 2.29511
+
+[node name="SourcePolygon2" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -1589.58, -786.303 )
+
+[node name="SourcePolygon3" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -1114.4, -254.558 )
+
+[node name="SourcePolygon4" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -1623.52, -379.009 )
+rotation = 3.8659
+
+[node name="SourcePolygon5" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -1125.71, 367.695 )
+
+[node name="SourcePolygon6" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -1578.26, 758.018 )
+
+[node name="SourcePolygon7" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -599.626, 786.303 )
+
+[node name="SourcePolygon8" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -560.029, 141.421 )
+rotation = -1.20777
+
+[node name="SourcePolygon9" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -554.372, -582.656 )
+rotation = -0.483456
+
+[node name="SourcePolygon10" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 101.823, -509.117 )
+
+[node name="SourcePolygon11" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 633.568, -825.901 )
+
+[node name="SourcePolygon12" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 961.665, -362.039 )
+
+[node name="SourcePolygon13" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 1448.16, -791.96 )
+
+[node name="SourcePolygon14" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 1714.03, -186.676 )
+
+[node name="SourcePolygon15" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 1029.55, 418.607 )
+rotation = 3.26202
+
+[node name="SourcePolygon16" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 622.255, 84.8528 )
+rotation = 0.614356
+
+[node name="SourcePolygon17" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 1549.98, 226.274 )
+
+[node name="SourcePolygon18" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 1521.69, 797.616 )
+
+[node name="SourcePolygon19" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( 644.882, 780.646 )
+rotation = -3.02117
+
+[node name="SourcePolygon20" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -11.3127, 576.999 )
+
+[node name="SourcePolygon21" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
+position = Vector2( -11.3127, 576.999 )
+
+[node name="Parent" type="Node2D" parent="Fracture"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+zoom = Vector2( 2, 2 )

@@ -1,0 +1,5 @@
+[gd_scene format=2]
+
+[node name="SourcePolygon" type="Polygon2D"]
+antialiased = true
+polygon = PoolVector2Array( -201.839, -106.241, -116.313, -181.077, -23.6594, -114.259, 159.866, -168.604, 215.992, 49.6661, 11.9765, 163.701, -149.276, 77.284, -131.458, -23.3876 )
