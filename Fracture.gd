@@ -28,7 +28,8 @@ func _ready() -> void:
 
 
 
-func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, cut_number : int, min_discard_area : float) -> void:
+func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, min_discard_area : float) -> void:
+	source_polygon = rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = getBoundingRect(source_polygon)
 	var cut_lines : Array = getCutLines(bounding_rect, cut_number)
 	
@@ -53,7 +54,8 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, cut_
 				spawnFractureBody(poly, getPolyCentroid(triangulation.triangles, triangulation.area), world_pos)
 
 
-func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, cut_number : int, point_number : int, min_discard_area : float) -> void:
+func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, point_number : int, min_discard_area : float) -> void:
+	source_polygon = rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = getBoundingRect(source_polygon)
 	var points : Array = getRandomPointsInPolygon(source_polygon, point_number)
 	var cut_lines : Array = getCutLinesFromPoints(points, cut_number, getBoundingRectMaxSize(bounding_rect))
@@ -79,7 +81,8 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, cut_number
 				spawnFractureBody(poly, getPolyCentroid(triangulation.triangles, triangulation.area), world_pos)
 
 
-func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, fracture_number : int, min_discard_area : float) -> void:
+func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> void:
+	source_polygon = rotatePolygon(source_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(source_polygon, fracture_number)
 	var triangulation : Dictionary = triangulatePolygonDelauny(points + source_polygon, true, true)
 	
@@ -349,17 +352,27 @@ func getRandomPointInTriangle(triangle : Array) -> Vector2:
 	return (1.0 - square_root_rand_one) * triangle[0] + square_root_rand_one * (1.0 - rand_two) * triangle[1] + square_root_rand_one * rand_two * triangle[2]
 
 
+func rotatePolygon(poly : PoolVector2Array, rot : float):
+	var rotated_polygon : PoolVector2Array = []
+	
+	for p in poly:
+		rotated_polygon.append(p.rotated(rot))
+	
+	return rotated_polygon
+
+
+
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
 		for source in _source_polygon_parent.get_children():
 			if delauny_fractrue:
-				fractureDelauny(source.polygon, source.global_position, cuts, min_area)
+				fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 			else:
 				if simple_fracture:
-					fractureSimple(source.polygon, source.global_position, cuts, min_area)
+					fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 				else:
-					fracture(source.polygon, source.global_position, cuts, random_points, min_area)
+					fracture(source.polygon, source.global_position, source.global_rotation, cuts, random_points, min_area)
 	
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().reload_current_scene()

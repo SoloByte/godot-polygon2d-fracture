@@ -26,133 +26,174 @@ random_points = 5
 cuts = 4
 min_area = 500
 
-[node name="Polygon2D" type="Polygon2D" parent="Fracture"]
+[node name="SourcePolygon" parent="Fracture" instance=ExtResource( 3 )]
 visible = false
-show_behind_parent = true
-polygon = PoolVector2Array( -428.915, -347.674, 49.9626, -572.28, 488.58, -423.955, 539.435, 188.414, -217.022, 427.853, -503.077, 124.847, 13.9408, -159.09 )
+position = Vector2( -1661.24, -835.112 )
+
+[node name="SourcePolygon2" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1172.39, -835.112 )
+
+[node name="SourcePolygon3" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -693.625, -835.112 )
+
+[node name="SourcePolygon4" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -235.014, -835.112 )
+
+[node name="SourcePolygon5" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 213.518, -835.112 )
+
+[node name="SourcePolygon6" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 677.169, -835.112 )
+
+[node name="SourcePolygon7" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1115.62, -835.112 )
+
+[node name="SourcePolygon8" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1634.71, -835.112 )
+
+[node name="SourcePolygon9" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1661.24, -426.897 )
+
+[node name="SourcePolygon10" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1172.39, -426.897 )
+
+[node name="SourcePolygon11" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -693.625, -426.897 )
+
+[node name="SourcePolygon12" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -235.014, -426.897 )
+
+[node name="SourcePolygon13" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 213.518, -426.897 )
+
+[node name="SourcePolygon14" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 677.169, -426.897 )
+
+[node name="SourcePolygon15" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1115.62, -426.897 )
+
+[node name="SourcePolygon16" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1634.71, -426.897 )
+
+[node name="SourcePolygon17" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1661.24, -23.7229 )
+
+[node name="SourcePolygon18" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1172.4, -23.7229 )
+
+[node name="SourcePolygon19" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -693.625, -23.7229 )
+
+[node name="SourcePolygon20" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -235.014, -23.7229 )
+
+[node name="SourcePolygon21" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 213.518, -23.7229 )
+
+[node name="SourcePolygon22" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 677.169, -23.7229 )
+
+[node name="SourcePolygon23" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1115.62, -23.7229 )
+
+[node name="SourcePolygon24" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1634.71, -23.7229 )
+
+[node name="SourcePolygon25" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1661.24, 384.491 )
+
+[node name="SourcePolygon26" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1172.39, 384.491 )
+
+[node name="SourcePolygon27" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -693.625, 384.491 )
+
+[node name="SourcePolygon28" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -235.014, 384.491 )
+
+[node name="SourcePolygon29" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 213.518, 384.491 )
+
+[node name="SourcePolygon30" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 677.169, 384.491 )
+
+[node name="SourcePolygon31" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1115.62, 384.491 )
+
+[node name="SourcePolygon32" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1634.71, 384.491 )
+
+[node name="SourcePolygon33" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1661.24, 797.745 )
+
+[node name="SourcePolygon34" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -1172.4, 797.745 )
+
+[node name="SourcePolygon35" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -693.625, 797.745 )
+
+[node name="SourcePolygon36" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( -235.014, 797.745 )
+
+[node name="SourcePolygon37" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 213.518, 797.745 )
+
+[node name="SourcePolygon38" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 677.169, 797.745 )
+
+[node name="SourcePolygon39" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1115.62, 797.745 )
+
+[node name="SourcePolygon40" parent="Fracture" instance=ExtResource( 3 )]
+visible = false
+position = Vector2( 1634.71, 797.745 )
 
 [node name="SourcePolygons" type="Node2D" parent="Fracture"]
 show_behind_parent = true
 
-[node name="SourcePolygon" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1661.24, -835.112 )
-
-[node name="SourcePolygon2" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1172.39, -835.112 )
-
-[node name="SourcePolygon3" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -693.625, -835.112 )
-
-[node name="SourcePolygon4" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -235.014, -835.112 )
-
-[node name="SourcePolygon5" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 213.518, -835.112 )
-
-[node name="SourcePolygon6" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 677.169, -835.112 )
-
-[node name="SourcePolygon7" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1115.62, -835.112 )
-
-[node name="SourcePolygon8" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1634.71, -835.112 )
-
-[node name="SourcePolygon9" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1661.24, -426.897 )
-
-[node name="SourcePolygon10" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1172.39, -426.897 )
-
-[node name="SourcePolygon11" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -693.625, -426.897 )
-
-[node name="SourcePolygon12" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -235.014, -426.897 )
-
-[node name="SourcePolygon13" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 213.518, -426.897 )
-
-[node name="SourcePolygon14" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 677.169, -426.897 )
-
-[node name="SourcePolygon15" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1115.62, -426.897 )
-
-[node name="SourcePolygon16" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1634.71, -426.897 )
-
-[node name="SourcePolygon17" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1661.24, -23.7229 )
-
-[node name="SourcePolygon18" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1172.4, -23.7229 )
-
-[node name="SourcePolygon19" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -693.625, -23.7229 )
-
-[node name="SourcePolygon20" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -235.014, -23.7229 )
-
-[node name="SourcePolygon21" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 213.518, -23.7229 )
-
-[node name="SourcePolygon22" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 677.169, -23.7229 )
-
-[node name="SourcePolygon23" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1115.62, -23.7229 )
-
-[node name="SourcePolygon24" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1634.71, -23.7229 )
-
-[node name="SourcePolygon25" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1661.24, 384.491 )
-
-[node name="SourcePolygon26" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1172.39, 384.491 )
-
-[node name="SourcePolygon27" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -693.625, 384.491 )
-
-[node name="SourcePolygon28" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -235.014, 384.491 )
-
-[node name="SourcePolygon29" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 213.518, 384.491 )
-
-[node name="SourcePolygon30" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 677.169, 384.491 )
-
-[node name="SourcePolygon31" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1115.62, 384.491 )
-
-[node name="SourcePolygon32" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1634.71, 384.491 )
-
-[node name="SourcePolygon33" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1661.24, 797.745 )
-
-[node name="SourcePolygon34" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -1172.4, 797.745 )
-
-[node name="SourcePolygon35" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -693.625, 797.745 )
-
-[node name="SourcePolygon36" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( -235.014, 797.745 )
-
-[node name="SourcePolygon37" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 213.518, 797.745 )
-
-[node name="SourcePolygon38" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 677.169, 797.745 )
-
-[node name="SourcePolygon39" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1115.62, 797.745 )
-
-[node name="SourcePolygon40" parent="Fracture/SourcePolygons" instance=ExtResource( 3 )]
-position = Vector2( 1634.71, 797.745 )
+[node name="Polygon2D" type="Polygon2D" parent="Fracture/SourcePolygons"]
+show_behind_parent = true
+position = Vector2( -710.596, -297.342 )
+rotation = -0.949459
+polygon = PoolVector2Array( -428.915, -347.674, 49.9626, -572.28, 488.58, -423.955, 539.435, 188.414, -217.022, 427.853, -503.077, 124.847, 13.9408, -159.09 )
 
 [node name="Parent" type="Node2D" parent="Fracture"]
 
