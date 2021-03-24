@@ -1,0 +1,12 @@
+[gd_scene format=2]
+
+[node name="BackgroundLayer" type="CanvasLayer"]
+layer = -100
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.117647, 0.117647, 0.117647, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

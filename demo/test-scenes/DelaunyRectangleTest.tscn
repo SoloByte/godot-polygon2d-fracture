@@ -1,26 +1,16 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://FractureBody.tscn" type="PackedScene" id=2]
-[ext_resource path="res://Fracture.gd" type="Script" id=3]
-[ext_resource path="res://2d_environment.tres" type="Environment" id=4]
+[ext_resource path="res://demo/ui/Title.tscn" type="PackedScene" id=1]
+[ext_resource path="res://demo/src/FractureBody.tscn" type="PackedScene" id=2]
+[ext_resource path="res://demo/src/Fracture.gd" type="Script" id=3]
+[ext_resource path="res://demo/src/2d_environment.tres" type="Environment" id=4]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.25
 bounce = 1.0
 absorbent = true
 
-[node name="MainTest" type="Node2D"]
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-layer = -100
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color( 0, 0, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="DelaunyRectangleTest" type="Node2D"]
 
 [node name="Fracture" type="Node2D" parent="."]
 script = ExtResource( 3 )
@@ -156,6 +146,11 @@ zoom = Vector2( 2, 2 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource( 4 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Title" parent="CanvasLayer" instance=ExtResource( 1 )]
+text = "DELAUNY FRACTURE RECTANGLE"
 [connection signal="timeout" from="Fracture/Timer" to="Fracture" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Fracture/VisibleTimer" to="Fracture" method="_on_VisibleTimer_timeout"]
 [connection signal="timeout" from="Fracture/SlowdownTimer" to="Fracture" method="_on_SlowdownTimer_timeout"]

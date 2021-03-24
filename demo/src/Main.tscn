@@ -1,16 +1,21 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
-[ext_resource path="res://MainTest.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Main.gd" type="Script" id=2]
-[ext_resource path="res://DelaunyConvexTest.tscn" type="PackedScene" id=3]
-[ext_resource path="res://DelaunyRectangleTest.tscn" type="PackedScene" id=4]
+[ext_resource path="res://demo/src/Main.gd" type="Script" id=1]
+[ext_resource path="res://demo/test-scenes/DelaunyConvexTest.tscn" type="PackedScene" id=2]
+[ext_resource path="res://demo/ui/BackgroundLayer.tscn" type="PackedScene" id=3]
+[ext_resource path="res://demo/test-scenes/DelaunyDefaultTest.tscn" type="PackedScene" id=4]
+[ext_resource path="res://demo/test-scenes/DelaunyRectangleTest.tscn" type="PackedScene" id=5]
 
 [sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 0, 0, 0, 1 )
+bg_color = Color( 0.117647, 0.117647, 0.117647, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 1, 0.976471, 0.72549, 0.588235 )
 corner_radius_top_left = 20
 corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+expand_margin_bottom = 20.0
 
 [sub_resource type="ImageTexture" id=2]
 
@@ -39,8 +44,10 @@ border_width_right = 12
 border_color = Color( 0.815686, 1, 0.768627, 1 )
 
 [node name="Main" type="Node2D"]
-script = ExtResource( 2 )
-test_scenes = [ ExtResource( 1 ), ExtResource( 3 ), ExtResource( 4 ) ]
+script = ExtResource( 1 )
+test_scenes = [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 5 ) ]
+
+[node name="BackgroundLayer" parent="." instance=ExtResource( 3 )]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -49,15 +56,16 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -154.348
-margin_top = -183.634
-margin_right = 19.6523
-margin_bottom = -106.634
+margin_left = -154.0
+margin_top = -208.0
+margin_right = 20.0
+margin_bottom = -114.0
 rect_scale = Vector2( 2, 2 )
 custom_styles/normal = SubResource( 1 )
 text = "CHANGE TEST [W]
 FRACTURE [S/ SPACE]
 AUTO FRACTURE [Q]
+FULLSCREEN [F]
 QUIT [ESC]"
 align = 1
 valign = 1
@@ -114,7 +122,7 @@ custom_styles/grabber_area = SubResource( 8 )
 min_value = 100.0
 max_value = 10000.0
 step = 100.0
-value = 5000.0
+value = 800.0
 scrollable = false
 __meta__ = {
 "_edit_use_anchors_": false
