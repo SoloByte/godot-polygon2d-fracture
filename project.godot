@@ -10,12 +10,36 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Reference",
-"class": "FracturePolygonLib",
+"class": "FractureShard",
 "language": "GDScript",
-"path": "res://final/FracturePolygonLib.gd"
+"path": "res://final/FractureShard.gd"
+}, {
+"base": "Reference",
+"class": "Line",
+"language": "GDScript",
+"path": "res://final/Line.gd"
+}, {
+"base": "Reference",
+"class": "PolygonFracture",
+"language": "GDScript",
+"path": "res://final/PolygonFracture.gd"
+}, {
+"base": "Reference",
+"class": "PolygonLib",
+"language": "GDScript",
+"path": "res://final/PolygonLib.gd"
+}, {
+"base": "Reference",
+"class": "Triangle",
+"language": "GDScript",
+"path": "res://final/Triangle.gd"
 } ]
 _global_script_class_icons={
-"FracturePolygonLib": ""
+"FractureShard": "",
+"Line": "",
+"PolygonFracture": "",
+"PolygonLib": "",
+"Triangle": ""
 }
 
 [application]
