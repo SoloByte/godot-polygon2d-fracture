@@ -4,6 +4,8 @@
 
 ## Info
 
+Works with GodotEngine 3.2+
+
 Two simple scripts for fracturing polygons. PolygonFracture.gd is the actual script that fractures polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, etc.
 
 The final scripts are located in the polygon2d-fracture folder.
