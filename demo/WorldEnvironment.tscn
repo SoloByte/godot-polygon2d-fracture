@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://demo/src/2d_environment.tres" type="Environment" id=1]
+
+[node name="WorldEnvironment" type="WorldEnvironment"]
+environment = ExtResource( 1 )

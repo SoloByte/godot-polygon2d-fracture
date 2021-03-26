@@ -13,8 +13,6 @@ onready var _line := $Line2D
 
 
 
-
-
 func setPolygon(polygon) -> void:
 	_col_poly.set_polygon(polygon)
 	_poly.set_polygon(polygon)

@@ -1,10 +1,13 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://demo/src/Main.gd" type="Script" id=1]
 [ext_resource path="res://demo/test-scenes/DelaunyConvexTest.tscn" type="PackedScene" id=2]
 [ext_resource path="res://demo/ui/BackgroundLayer.tscn" type="PackedScene" id=3]
 [ext_resource path="res://demo/test-scenes/DelaunyDefaultTest.tscn" type="PackedScene" id=4]
 [ext_resource path="res://demo/test-scenes/DelaunyRectangleTest.tscn" type="PackedScene" id=5]
+[ext_resource path="res://demo/test-scenes/FractureTest.tscn" type="PackedScene" id=6]
+[ext_resource path="res://demo/test-scenes/FractureSimpleTest.tscn" type="PackedScene" id=7]
+[ext_resource path="res://demo/WorldEnvironment.tscn" type="PackedScene" id=8]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.117647, 0.117647, 0.117647, 1 )
@@ -45,7 +48,7 @@ border_color = Color( 0.815686, 1, 0.768627, 1 )
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 1 )
-test_scenes = [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 5 ) ]
+test_scenes = [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ]
 
 [node name="BackgroundLayer" parent="." instance=ExtResource( 3 )]
 
@@ -136,5 +139,7 @@ margin_bottom = 37.0
 rect_scale = Vector2( 2, 2 )
 text = "Min Area: 100"
 valign = 1
+
+[node name="WorldEnvironment" parent="." instance=ExtResource( 8 )]
 [connection signal="value_changed" from="CanvasLayer/FracturesSlider" to="." method="_on_VSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/MinAreaSlider" to="." method="_on_MinAreaSlider_value_changed"]
