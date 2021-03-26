@@ -6,7 +6,7 @@ class_name PolygonLib
 
 
 
-
+#returns a triangulation dictionary (is used in other funcs parameters)
 static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArray, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var triangles : Array = []
 	var total_area : float = 0.0
@@ -27,17 +27,17 @@ static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArra
 		triangles.append(makeTriangle(points, area, centroid))
 	return {"triangles" : triangles, "area" : total_area}
 
-
+#returns a dictionary for triangles
 static func makeTriangle(points : PoolVector2Array, area : float, centroid : Vector2) -> Dictionary:
 	return {"points" : points, "area" : area, "centroid" : centroid}
 
-
+#triangulates a polygon and additionally calculates the centroid and area of each triangle alongside the total area of the polygon
 static func triangulatePolygon(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var total_area : float = 0.0
 	var triangle_points = Geometry.triangulate_polygon(poly)
 	return makeTriangles(poly, triangle_points, with_area, with_centroid)
 
-
+#triangulates a polygon with the delaunay method and additionally calculates the centroid and area of each triangle alongside the total area of the polygon
 static func triangulatePolygonDelaunay(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var total_area : float = 0.0
 	var triangle_points = Geometry.triangulate_delaunay_2d(poly)
@@ -45,7 +45,7 @@ static func triangulatePolygonDelaunay(poly : PoolVector2Array, with_area : bool
 
 
 
-
+#triangulates a polygon and sums the areas of the triangles
 static func getPolygonArea(poly : PoolVector2Array) -> float:
 	var total_area : float = 0.0
 	var triangle_points = Geometry.triangulate_polygon(poly)
@@ -55,7 +55,7 @@ static func getPolygonArea(poly : PoolVector2Array) -> float:
 		total_area += getTriangleArea(points)
 	return total_area
 
-
+#triangulates a polygon and sums the weighted centroids of all triangles
 static func getPolygonCentroid(triangles : Array, total_area : float) -> Vector2:
 	var weighted_centroid := Vector2.ZERO
 	for triangle in triangles:
@@ -78,14 +78,14 @@ static func getPolygonVisualCenterPoint(poly : PoolVector2Array) -> Vector2:
 	
 	return total
 
-
+#moves all points of the polygon by offset
 static func translatePolygon(poly : PoolVector2Array, offset : Vector2):
 	var new_poly : PoolVector2Array = []
 	for p in poly:
 		new_poly.append(p + offset)
 	return new_poly
 
-
+#rotates all points of the polygon by rot (in radians)
 static func rotatePolygon(poly : PoolVector2Array, rot : float):
 	var rotated_polygon : PoolVector2Array = []
 	
@@ -96,7 +96,7 @@ static func rotatePolygon(poly : PoolVector2Array, rot : float):
 
 
 
-
+#calculates the bounding rect of a polygon and returns it in form of a Rect2
 static func getBoundingRect(poly : PoolVector2Array) -> Rect2:
 	var start := Vector2.ZERO
 	var end := Vector2.ZERO
@@ -114,7 +114,7 @@ static func getBoundingRect(poly : PoolVector2Array) -> Rect2:
 	
 	return Rect2(start, end - start)
 
-
+#calculates the furthest distance between to corners (AC) or (BD)
 static func getBoundingRectMaxSize(bounding_rect : Rect2) -> float:
 	var corners : Dictionary = getBoundingRectCorners(bounding_rect)
 	
@@ -126,7 +126,8 @@ static func getBoundingRectMaxSize(bounding_rect : Rect2) -> float:
 	else:
 		return BD.length() 
 
-
+#returns a dictionary with the 4 corners of the bounding Rect 
+#(TopLeft = A, TopRight = B, BottomRight = C, BottomLeft = D)
 static func getBoundingRectCorners(bounding_rect : Rect2) -> Dictionary:
 	var A : Vector2 = bounding_rect.position
 	var C : Vector2 = bounding_rect.end
@@ -155,7 +156,7 @@ static func getTriangleCentroid(points : PoolVector2Array) -> Vector2:
 
 
 
-
+#checks all polygons in the array and only returns clockwise polygons (holes)
 static func getClockwisePolygons(polygons : Array) -> Array:
 	var cw_polygons : Array = []
 	for poly in polygons:
@@ -163,7 +164,7 @@ static func getClockwisePolygons(polygons : Array) -> Array:
 			cw_polygons.append(poly)
 	return cw_polygons
 
-
+#checks all polygons in the array and only returns not clockwise (counter clockwise) polygons (filled polygons)
 static func getCounterClockwisePolygons(polygons : Array) -> Array:
 	var ccw_polygons : Array = []
 	for poly in polygons:
@@ -173,7 +174,7 @@ static func getCounterClockwisePolygons(polygons : Array) -> Array:
 
 
 
-
+#just a wrapper for the Geometry funcs to filter out holes if wanted----------------------------------------------
 static func clipPolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
 	var new_polygons : Array = Geometry.clip_polygons_2d(poly_a, poly_b)
 	if exclude_holes:
@@ -220,3 +221,4 @@ static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes 
 		return getCounterClockwisePolygons(new_polygons)
 	else:
 		return new_polygons
+#-----------------------------------------------------------------------------------------------------------------
