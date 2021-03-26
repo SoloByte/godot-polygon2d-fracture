@@ -9,12 +9,12 @@ Two simple scripts for fracturing polygons. PolygonFracture.gd is the actual scr
 The final scripts are located in the polygon2d-fracture folder.
 The demo project is located in the demo folder.
 
-PS: To test the actual perfomance of the cutting just maximize the min area because then no rigidbodies are spawned. You wont see any fracture shards either, though. (spawning and despawning that many rigidbodies at once causes the biggest performance hit - pooling would aleviate that for some part)
+PS: To test the cutting's actual perfomance just maximize the min area because then no rigid bodies are spawned. You wont see any fracture shards either, though. (spawning and despawning that many rigid bodies at once cause the biggest performance hit - pooling would alleviate that for some part)
 
 ## Fracturing Methods
 
 There are two different systems for fracturing polygons.
- - Delaunay Fracture -> uses the delaunay triangulation to calculate random triangles inside the polygon. DelaunyFractureConvex asumes the polygon is convex and     DelaunyFractureRectangle asumes the polygon is a rectangle (convex/rectangle makes the fracturing simpler). Produces triangle fractures.
+ - Delaunay Fracture -> uses the delaunay triangulation to calculate random triangles inside the polygon. DelaunyFractureConvex assumes the polygon is convex and     DelaunyFractureRectangle assumes the polygon is a rectangle (convex/rectangle makes the fracturing simpler). Produces triangle fractures.
  - Fracture -> uses randomly generated cut lines to actually cut the polygon. Fracture and Fracture simple have different methods of obtaining the random cut lines but are otherwise the same. Produces polygon fractures.
 
 ### Delaunay System
@@ -25,7 +25,7 @@ There are two different systems for fracturing polygons.
 
 
 
-I need the fracturing for my game but I thought I share it with anyone interestered. My method is not the best or most performant method out there, and also implemented via GDScript (for ease of use), so don´t expect any performance miracles. There are other solutions out there, but I did not find a simple solution for fracturing 2d polygons in the way I wanted. Maybe sometime in the future I will look into Voronoi fractures, to make the fractures look better. (Now the polygon is just randomly fractured)
+I need the fracturing for my game but I thought I share it with anyone interested. My method is not the best or most performant method out there, and also implemented via GDScript (for ease of use), so don´t expect any performance miracles. There are other solutions out there, but I did not find a simple solution for fracturing 2d polygons in the way I wanted. Maybe sometime in the future, I will look into Voronoi fractures, to make the fractures look better. (Now the polygon is just randomly fractured)
 
 
 
