@@ -75,13 +75,13 @@ func fractureAll() -> void:
 		if delauny_fracture:
 			match delauny_type:
 				DELAUNY_TYPES.DEFAULT:
-					fracture_info = polyFracture.fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+					fracture_info = polyFracture.fractureDelaunay(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 #					fracture_info = fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 				DELAUNY_TYPES.CONVEX:
-					fracture_info = polyFracture.fractureDelaunyConvex(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+					fracture_info = polyFracture.fractureDelaunayConvex(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 #					fracture_info = fractureDelaunyConvex(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 				DELAUNY_TYPES.RECTANGLE:
-					fracture_info = polyFracture.fractureDelaunyRectangle(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+					fracture_info = polyFracture.fractureDelaunayRectangle(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 #					fracture_info = fractureDelaunyRectangle(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 		else:
 			if simple_fracture:

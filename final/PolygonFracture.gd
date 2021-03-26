@@ -100,10 +100,10 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 	return fracture_info
 
 
-func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
+func fractureDelaunay(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
 	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(source_polygon, fracture_number)
-	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelauny(points + source_polygon, true, true)
+	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + source_polygon, true, true)
 	
 	var fracture_info : Array = []
 	for triangle in triangulation.triangles:
@@ -125,10 +125,10 @@ func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, wor
 	return fracture_info
 
 
-func fractureDelaunyConvex(concave_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
+func fractureDelaunayConvex(concave_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
 	concave_polygon = PolygonLib.rotatePolygon(concave_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(concave_polygon, fracture_number)
-	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelauny(points + concave_polygon, true, true)
+	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + concave_polygon, true, true)
 	
 	var fracture_info : Array = []
 	for triangle in triangulation.triangles:
@@ -140,10 +140,10 @@ func fractureDelaunyConvex(concave_polygon : PoolVector2Array, world_pos : Vecto
 	return fracture_info
 
 
-func fractureDelaunyRectangle(rectangle_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
+func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
 	rectangle_polygon = PolygonLib.rotatePolygon(rectangle_polygon, world_rot_rad)
 	var points = getRandomPointsInRectangle(PolygonLib.getBoundingRect(rectangle_polygon), fracture_number)
-	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelauny(points + rectangle_polygon, true, true)
+	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + rectangle_polygon, true, true)
 	
 	var fracture_info : Array = []
 	for triangle in triangulation.triangles:

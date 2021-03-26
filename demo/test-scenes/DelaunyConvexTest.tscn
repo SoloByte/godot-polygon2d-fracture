@@ -76,7 +76,7 @@ zoom = Vector2( 2, 2 )
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Title" parent="CanvasLayer" instance=ExtResource( 1 )]
-text = "DELAUNY FRACTURE CONVEX"
+text = "DELAUNAY FRACTURE CONVEX"
 [connection signal="timeout" from="Fracture/Timer" to="Fracture" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Fracture/VisibleTimer" to="Fracture" method="_on_VisibleTimer_timeout"]
 [connection signal="timeout" from="Fracture/SlowdownTimer" to="Fracture" method="_on_SlowdownTimer_timeout"]

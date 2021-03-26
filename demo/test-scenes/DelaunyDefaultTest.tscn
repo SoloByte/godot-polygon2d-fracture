@@ -228,6 +228,7 @@ zoom = Vector2( 2, 2 )
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="Title" parent="UI" instance=ExtResource( 5 )]
+text = "DELAUNAY FRACTURE"
 [connection signal="timeout" from="Fracture/Timer" to="Fracture" method="_on_Timer_timeout"]
 [connection signal="timeout" from="Fracture/VisibleTimer" to="Fracture" method="_on_VisibleTimer_timeout"]
 [connection signal="timeout" from="Fracture/SlowdownTimer" to="Fracture" method="_on_SlowdownTimer_timeout"]

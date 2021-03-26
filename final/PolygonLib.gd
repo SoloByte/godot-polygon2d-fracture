@@ -38,7 +38,7 @@ static func triangulatePolygon(poly : PoolVector2Array, with_area : bool = true,
 	return makeTriangles(poly, triangle_points, with_area, with_centroid)
 
 
-static func triangulatePolygonDelauny(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
+static func triangulatePolygonDelaunay(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var total_area : float = 0.0
 	var triangle_points = Geometry.triangulate_delaunay_2d(poly)
 	return makeTriangles(poly, triangle_points, with_area, with_centroid)
