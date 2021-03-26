@@ -12,12 +12,12 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "PolygonFracture",
 "language": "GDScript",
-"path": "res://final/PolygonFracture.gd"
+"path": "res://polygon2d-fracture/PolygonFracture.gd"
 }, {
 "base": "Reference",
 "class": "PolygonLib",
 "language": "GDScript",
-"path": "res://final/PolygonLib.gd"
+"path": "res://polygon2d-fracture/PolygonLib.gd"
 } ]
 _global_script_class_icons={
 "PolygonFracture": "",
