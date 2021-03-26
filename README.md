@@ -1,12 +1,15 @@
 # godot-polygon2d-fracture
 
 
-------NOT FINISHED------
-For now it is just a test project without the final script to use in any project.
+
+Two simple scripts for fracturing polygons. PolygonFracture.gd is the actual script that fractures polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, etc.
 
 
-A simple script for fracturing polygons. Also adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect)
+The scripts are located in the polygon-fracture folder.
+The demo project is located in the demo folder.
 
+
+Releases with the -demo ending contain the project + the polygon-fracture folder with the two final scripts, all other releases just have zip folder with the two final scripts.
 
 
 I need the fracturing for my game but I thought I share it with anyone interestered. My method is not the best or most performant method out there, and also implemented via GDScript (for ease of use), so don´t expect any performance miracles. There are other solutions out there, but I did not find a simple solution for fracturing 2d polygons in the way I wanted. Maybe sometime in the future I will look into Voronoi fractures, to make the fractures look better. (Now the polygon is just randomly fractured)
