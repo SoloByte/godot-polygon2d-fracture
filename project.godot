@@ -28,7 +28,7 @@ _global_script_class_icons={
 
 config/name="Polygon2d_Fracture"
 run/main_scene="res://demo/src/Main.tscn"
-config/icon="res://icon.png"
+config/icon="res://demo/icon.png"
 
 [display]
 

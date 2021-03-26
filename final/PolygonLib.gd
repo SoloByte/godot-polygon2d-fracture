@@ -156,10 +156,67 @@ static func getTriangleCentroid(points : PoolVector2Array) -> Vector2:
 
 
 
+static func getClockwisePolygons(polygons : Array) -> Array:
+	var cw_polygons : Array = []
+	for poly in polygons:
+		if Geometry.is_polygon_clockwise(poly):
+			cw_polygons.append(poly)
+	return cw_polygons
+
+
+static func getCounterClockwisePolygons(polygons : Array) -> Array:
+	var ccw_polygons : Array = []
+	for poly in polygons:
+		if not Geometry.is_polygon_clockwise(poly):
+			ccw_polygons.append(poly)
+	return ccw_polygons
 
 
 
 
+static func clipPolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry.clip_polygons_2d(poly_a, poly_b)
+	if exclude_holes:
+		return getCounterClockwisePolygons(new_polygons)
+	else:
+		return new_polygons
 
 
+static func excludePolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry.exclude_polygons_2d(poly_a, poly_b)
+	if exclude_holes:
+		return getCounterClockwisePolygons(new_polygons)
+	else:
+		return new_polygons
 
+
+static func intersectPolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry.intersect_polygons_2d(poly_a, poly_b)
+	if exclude_holes:
+		return getCounterClockwisePolygons(new_polygons)
+	else:
+		return new_polygons
+
+
+static func mergePolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry.merge_polygons_2d(poly_a, poly_b)
+	if exclude_holes:
+		return getCounterClockwisePolygons(new_polygons)
+	else:
+		return new_polygons
+
+
+static func offsetPolyline(line : PoolVector2Array, delta : float, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry.offset_polyline_2d(line, delta)
+	if exclude_holes:
+		return getCounterClockwisePolygons(new_polygons)
+	else:
+		return new_polygons
+
+
+static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry.offset_polygon_2d(poly, delta)
+	if exclude_holes:
+		return getCounterClockwisePolygons(new_polygons)
+	else:
+		return new_polygons

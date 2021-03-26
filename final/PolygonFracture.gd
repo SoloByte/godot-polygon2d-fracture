@@ -52,10 +52,10 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, worl
 	var polygons : Array = [source_polygon]
 	
 	for line in cut_lines:
-		var poly_line = Geometry.offset_polyline_2d(line, 0.1)[0]
+		var poly_line = PolygonLib.offsetPolyline(line, 0.1, true)[0]
 		var new_polies : Array = []
 		for poly in polygons:
-			var result : Array = Geometry.clip_polygons_2d(poly, poly_line)
+			var result : Array = PolygonLib.clipPolygons(poly, poly_line, true)
 			new_polies += result
 		
 		polygons.clear()
@@ -63,11 +63,10 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, worl
 	
 	var fracture_info : Array = []
 	for poly in polygons:
-		if not Geometry.is_polygon_clockwise(poly):
-			var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
-			
-			if triangulation.area > min_discard_area:
-				fracture_info.append(makeFractureShard(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
+		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
+		
+		if triangulation.area > min_discard_area:
+			fracture_info.append(makeFractureShard(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
 	
 	return fracture_info
 
@@ -82,10 +81,10 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 	var polygons : Array = [source_polygon]
 	
 	for line in cut_lines:
-		var poly_line = Geometry.offset_polyline_2d(line, 0.1)[0]
+		var poly_line = PolygonLib.offsetPolyline(line, 0.1, true)[0]
 		var new_polies : Array = []
 		for poly in polygons:
-			var result : Array = Geometry.clip_polygons_2d(poly, poly_line)
+			var result : Array = PolygonLib.clipPolygons(poly, poly_line, true)
 			new_polies += result
 		
 		polygons.clear()
@@ -93,11 +92,10 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 	
 	var fracture_info : Array = []
 	for poly in polygons:
-		if not Geometry.is_polygon_clockwise(poly):
-			var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
-			
-			if triangulation.area > min_discard_area:
-				fracture_info.append(makeFractureShard(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
+		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
+		
+		if triangulation.area > min_discard_area:
+			fracture_info.append(makeFractureShard(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
 	
 	return fracture_info
 
@@ -112,9 +110,9 @@ func fractureDelauny(source_polygon : PoolVector2Array, world_pos : Vector2, wor
 		if triangle.area < min_discard_area:
 			continue
 		
-		var results : Array = Geometry.intersect_polygons_2d(triangle.points, source_polygon)
+		var results : Array = PolygonLib.intersectPolygons(triangle.points, source_polygon, true)
 		for r in results:
-			if r.size() > 0 and not Geometry.is_polygon_clockwise(r):
+			if r.size() > 0:
 				if r.size() == 3:
 					var area : float = PolygonLib.getTriangleArea(r)
 					if area >= min_discard_area:
