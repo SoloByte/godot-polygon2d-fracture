@@ -6,10 +6,8 @@
 
 Two simple scripts for fracturing polygons. PolygonFracture.gd is the actual script that fractures polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, etc.
 
-The scripts are located in the polygon-fracture folder.
+The final scripts are located in the polygon2d-fracture folder.
 The demo project is located in the demo folder.
-
-Releases with the -demo ending contain the project + the polygon-fracture folder with the two final scripts, all other releases just have zip folder with the two final scripts.
 
 PS: To test the actual perfomance of the cutting just maximize the min area because then no rigidbodies are spawned. You wont see any fracture shards either, though. (spawning and despawning that many rigidbodies at once causes the biggest performance hit - pooling would aleviate that for some part)
 
