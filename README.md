@@ -11,7 +11,7 @@ Two simple scripts for fracturing polygons. PolygonFracture.gd is the actual scr
 The final scripts are located in the polygon2d-fracture folder.
 The demo project is located in the demo folder.
 
-PS: To test the cutting's actual perfomance just maximize the min area because then no rigid bodies are spawned. You wont see any fracture shards either, though. (spawning and despawning that many rigid bodies at once cause the biggest performance hit - pooling would alleviate that for some part)
+PS: To test the cutting's actual perfomance just increase the min area (around 5000) because then less rigid bodies are spawned. You wont see many fracture shards either, though. (spawning and despawning that many rigid bodies at once cause the biggest performance hit - pooling would alleviate that for some part)
 
 ## Fracturing Methods
 
