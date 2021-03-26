@@ -25,9 +25,6 @@ static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArra
 		total_area += area
 		
 		triangles.append(makeTriangle(points, area, centroid))
-#		var triangle := Triangle.new(points)
-#		if with_area:
-#			total_area += triangle.getArea()
 	return {"triangles" : triangles, "area" : total_area}
 
 
@@ -55,7 +52,7 @@ static func getPolygonArea(poly : PoolVector2Array) -> float:
 	for i in range(triangle_points.size() / 3):
 		var index : int = i * 3
 		var points : Array = [poly[triangle_points[index]], poly[triangle_points[index + 1]], poly[triangle_points[index + 2]]]
-		total_area += Triangle.getTriangleArea(points)
+		total_area += getTriangleArea(points)
 	return total_area
 
 
