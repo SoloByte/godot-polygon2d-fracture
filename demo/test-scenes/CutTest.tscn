@@ -1,0 +1,59 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://demo/ui/Title.tscn" type="PackedScene" id=1]
+[ext_resource path="res://demo/src/CutFracture.gd" type="Script" id=2]
+[ext_resource path="res://demo/src/FractureBody.tscn" type="PackedScene" id=3]
+[ext_resource path="res://demo/Camera2D.tscn" type="PackedScene" id=4]
+[ext_resource path="res://demo/src/RigidBody2D.tscn" type="PackedScene" id=5]
+
+[sub_resource type="PhysicsMaterial" id=2]
+friction = 0.0
+bounce = 1.0
+
+[node name="CutFractureTest" type="Node2D"]
+
+[node name="Fracture" type="Node2D" parent="."]
+script = ExtResource( 2 )
+fracture_body_color = Color( 0.917647, 0.313726, 0.313726, 1 )
+fracture_body_template = ExtResource( 3 )
+rigidbody_template = ExtResource( 5 )
+min_area = 150
+
+[node name="SourcePolygons" type="Node2D" parent="Fracture"]
+show_behind_parent = true
+
+[node name="RigidBody2D" parent="Fracture/SourcePolygons" instance=ExtResource( 5 )]
+rand_linear_velocity_range = Vector2( 500, 1000 )
+
+[node name="Parent" type="Node2D" parent="Fracture"]
+
+[node name="Edge" type="StaticBody2D" parent="Fracture"]
+modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
+position = Vector2( 0, 933.82 )
+physics_material_override = SubResource( 2 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Fracture/Edge"]
+polygon = PoolVector2Array( -1904.54, -355.911, -1652.27, -611.544, -1891.09, -1005.08, -1891.09, -1805.62, -1719.55, -1977.16, 1428.77, -1987.25, 1903.04, -1805.62, 1903.04, -70.0054, 1492.68, 114.992, 534.057, -160.822, 36.2462, 125.083, -1719.55, 114.992, -1907.91, -80.0963, -1904.68, -354.093, -2024.51, -319.195, -2069.36, 219.263, 2037.58, 313.443, 2081.48, -2057.26, -1996.06, -2091.24, -2025.33, -322.011 )
+__meta__ = {
+"_editor_description_": ""
+}
+
+[node name="Polygon2D" type="Polygon2D" parent="Fracture/Edge"]
+color = Color( 0.603922, 0.603922, 0.603922, 1 )
+polygon = PoolVector2Array( -1906.2, -77.6317, -1715.91, 115.684, 35.1292, 124.664, 533.502, -167.176, 1489.84, 111.195, 1902.91, -72.8892, 1907.4, -1805.97, 1413.51, -1985.56, -1715.91, -1967.61, -1891.02, -1801.48, -1891.02, -1006.78, -1644.07, -611.671, -2025.71, -225.544, -1998.77, -2097.81, 2082.5, -2052.91, 2037.6, 322.217, -2066.12, 223.441, -2084.08, -369.219, -1899.47, -427.84 )
+
+[node name="Line2D" type="Line2D" parent="Fracture/Edge/Polygon2D"]
+points = PoolVector2Array( -1649.77, -613.744, -1891.67, -1001.8, -1886.63, -1800.59, -1720.32, -1969.42, 1421.92, -1984.54, 1903.21, -1808.15, 1900.69, -74.4978, 1495, 109.451, 532.418, -165.212, 35.3653, 126.007, -1717.37, 115.107, -1908.29, -79.7803, -1901.32, -352.054, -1649.31, -613.507 )
+width = 15.0
+default_color = Color( 1, 1, 1, 1 )
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="Camera2D" parent="." instance=ExtResource( 4 )]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Title" parent="CanvasLayer" instance=ExtResource( 1 )]
+text = "Cut + Delauny Fracture"

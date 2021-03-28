@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://demo/src/Main.gd" type="Script" id=1]
 [ext_resource path="res://demo/test-scenes/DelaunyConvexTest.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://demo/test-scenes/FractureTest.tscn" type="PackedScene" id=6]
 [ext_resource path="res://demo/test-scenes/FractureSimpleTest.tscn" type="PackedScene" id=7]
 [ext_resource path="res://demo/WorldEnvironment.tscn" type="PackedScene" id=8]
+[ext_resource path="res://demo/test-scenes/CutTest.tscn" type="PackedScene" id=9]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.117647, 0.117647, 0.117647, 1 )
@@ -48,7 +49,7 @@ border_color = Color( 0.815686, 1, 0.768627, 1 )
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 1 )
-test_scenes = [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ]
+test_scenes = [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 9 ) ]
 
 [node name="BackgroundLayer" parent="." instance=ExtResource( 3 )]
 

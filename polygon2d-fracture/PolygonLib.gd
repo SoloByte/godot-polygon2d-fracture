@@ -62,6 +62,10 @@ static func getPolygonCentroid(triangles : Array, total_area : float) -> Vector2
 		weighted_centroid += (triangle.centroid * triangle.area)
 	return weighted_centroid / total_area
 
+static func calculatePolygonCentroid(poly : PoolVector2Array) -> Vector2:
+	var triangulation : Dictionary = triangulatePolygon(poly, true, true)
+	return getPolygonCentroid(triangulation.triangles, triangulation.area)
+
 
 static func getPolygonVisualCenterPoint(poly : PoolVector2Array) -> Vector2:
 	var center_points : Array = []
@@ -79,20 +83,32 @@ static func getPolygonVisualCenterPoint(poly : PoolVector2Array) -> Vector2:
 	return total
 
 #moves all points of the polygon by offset
-static func translatePolygon(poly : PoolVector2Array, offset : Vector2):
+static func translatePolygon(poly : PoolVector2Array, offset : Vector2) -> PoolVector2Array:
 	var new_poly : PoolVector2Array = []
 	for p in poly:
 		new_poly.append(p + offset)
 	return new_poly
 
 #rotates all points of the polygon by rot (in radians)
-static func rotatePolygon(poly : PoolVector2Array, rot : float):
+static func rotatePolygon(poly : PoolVector2Array, rot : float) -> PoolVector2Array:
 	var rotated_polygon : PoolVector2Array = []
 	
 	for p in poly:
 		rotated_polygon.append(p.rotated(rot))
 	
 	return rotated_polygon
+
+
+#calculates the centroid of the polygon and uses it to translate the polygon to Vector2.ZERO
+static func centerPolygon(poly : PoolVector2Array) -> PoolVector2Array:
+	var centered_polygon : PoolVector2Array = []
+	
+	var triangulation : Dictionary = triangulatePolygon(poly, true, true)
+	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
+	
+	centered_polygon = translatePolygon(poly, -centroid)
+	
+	return centered_polygon
 
 
 
@@ -230,6 +246,31 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 		beam.append(start_point_local - perpendicular * start_width * 0.5)
 	
 	return beam
+
+
+
+#s_poly = source polygon, c_poly = cut polygon (cut shape used to cut source polygon), the cut_local_pos should be in the local polygon2d node space, rotations are all in radians
+#get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
+#returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
+static func cutShape(cut_local_pos : Vector2, s_poly : PoolVector2Array, s_world_rot : float, c_poly : PoolVector2Array, c_world_rot : float, get_intersect : bool = true) -> Dictionary:
+	c_poly = translatePolygon(c_poly, cut_local_pos)
+	c_poly = rotatePolygon(c_poly, c_world_rot)
+#	c_poly = rotatePolygon(c_poly, s_world_rot)
+	s_poly = rotatePolygon(s_poly, s_world_rot)
+	
+	var intersected_polygons : Array = []
+	if get_intersect:
+		intersected_polygons = intersectPolygons(s_poly, c_poly, true)
+	var final_polygons : Array = clipPolygons(s_poly, c_poly, true)
+	
+	return {"final" : final_polygons, "intersected" : intersected_polygons}
+
+
+static func getShapeSpawnInfo(source_node, shape : PoolVector2Array) -> Dictionary:
+	var centroid : Vector2 = calculatePolygonCentroid(shape)
+	var spawn_pos : Vector2 = source_node.to_global(centroid) + source_node.global_position
+	var centered_shape : PoolVector2Array = translatePolygon(shape, -centroid)
+	return {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape}
 
 
 

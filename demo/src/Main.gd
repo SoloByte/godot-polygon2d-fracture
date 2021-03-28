@@ -50,6 +50,9 @@ func changeTest() -> void:
 	add_child(instance)
 	_cur_test_scene = instance
 	var fracture_node = instance.get_node("Fracture")
+	if not fracture_node:
+		return
+#		fracture_node = instance.get_node("CutFracture")
 	fracture_node.cuts = _fracture_slider.value
 	fracture_node.min_area = _min_area_slider.value
 
@@ -57,10 +60,16 @@ func changeTest() -> void:
 func _on_VSlider_value_changed(value):
 	_fractures_label.text = "Fractures: %d" % value
 	var fracture_node = _cur_test_scene.get_node("Fracture")
+	if not fracture_node:
+		return
+#		fracture_node = _cur_test_scene.get_node("CutFracture")
 	fracture_node.cuts = _fracture_slider.value
 
 
 func _on_MinAreaSlider_value_changed(value):
 	_min_area_label.text = "Min Area: %d" % value
 	var fracture_node = _cur_test_scene.get_node("Fracture")
+	if not fracture_node:
+		return
+#		fracture_node = _cur_test_scene.get_node("CutFracture")
 	fracture_node.min_area = _min_area_slider.value

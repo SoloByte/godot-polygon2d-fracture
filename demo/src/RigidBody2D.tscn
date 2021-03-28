@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://demo/src/RigidBody2D.gd" type="Script" id=1]
+
+[sub_resource type="PhysicsMaterial" id=1]
+friction = 0.0
+bounce = 1.0
+
+[node name="RigidBody2D" type="RigidBody2D"]
+collision_layer = 4
+collision_mask = 5
+mass = 100.0
+physics_material_override = SubResource( 1 )
+gravity_scale = 0.0
+script = ExtResource( 1 )
+rand_linear_velocity_range = Vector2( 1500, 3000 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+show_behind_parent = true
+color = Color( 0.545098, 0.545098, 0.545098, 1 )
+
+[node name="Line2D" type="Line2D" parent="Polygon2D"]
+default_color = Color( 1.5, 1.5, 1.5, 1 )
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="Center" type="Polygon2D" parent="."]
+color = Color( 0, 0, 0, 1 )
+polygon = PoolVector2Array( -10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272 )
