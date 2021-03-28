@@ -141,5 +141,7 @@ text = "Min Area: 100"
 valign = 1
 
 [node name="WorldEnvironment" parent="." instance=ExtResource( 8 )]
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
 [connection signal="value_changed" from="CanvasLayer/FracturesSlider" to="." method="_on_VSlider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/MinAreaSlider" to="." method="_on_MinAreaSlider_value_changed"]

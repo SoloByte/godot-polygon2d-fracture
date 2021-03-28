@@ -174,6 +174,65 @@ static func getCounterClockwisePolygons(polygons : Array) -> Array:
 
 
 
+
+static func createRectanglePolygon(size : Vector2, local_center := Vector2.ZERO) -> PoolVector2Array:
+	var rectangle : PoolVector2Array = []
+	var extend : Vector2 = size * 0.5
+	rectangle.append(local_center - extend)#A
+	rectangle.append(local_center + Vector2(extend.x, -extend.y))#B
+	rectangle.append(local_center + extend)#C
+	rectangle.append(local_center + Vector2(-extend.x, extend.y))#D
+	return rectangle
+
+#smooting affects point count -> 0 = 8 Points, 1 = 16, 2 = 32, 3 = 64, 4 = 128, 5 = 256
+static func createCirclePolygon(radius : float, smoothing : int = 0, local_center := Vector2.ZERO) -> PoolVector2Array:
+	var circle : PoolVector2Array = []
+	
+	smoothing = clamp(smoothing, 0, 5)
+	var point_number : int = pow(2, 3 + smoothing)
+	
+	var radius_line : Vector2 = Vector2.RIGHT * radius
+	var angle_step : float = (PI * 2.0) / point_number as float
+	
+	for i in range(point_number):
+		circle.append(local_center + radius_line.rotated(angle_step * i))
+	
+	return circle
+
+
+static func createBeamPolygon(dir : Vector2, distance : float, start_width : float, end_width : float, start_point_local := Vector2.ZERO) -> PoolVector2Array:
+	var beam : PoolVector2Array = []
+	if distance == 0: 
+		return beam
+	
+	if start_width <= 0.0 and end_width <= 0.0:
+		return beam
+	
+	if distance < 0:
+		dir = -dir
+		distance *= -1.0
+	
+	var end_point : Vector2 = start_point_local + (dir * distance)
+	var perpendicular : Vector2 = dir.rotated(PI * 0.5)
+	
+	if start_width <= 0.0:
+		beam.append(start_point_local)
+		beam.append(end_point + perpendicular * end_width * 0.5)
+		beam.append(end_point - perpendicular * end_width * 0.5)
+	elif end_width <= 0.0:
+		beam.append(start_point_local + perpendicular * start_width * 0.5)
+		beam.append(end_point)
+		beam.append(start_point_local - perpendicular * start_width * 0.5)
+	else:
+		beam.append(start_point_local + perpendicular * start_width * 0.5)
+		beam.append(end_point + perpendicular * end_width * 0.5)
+		beam.append(end_point - perpendicular * end_width * 0.5)
+		beam.append(start_point_local - perpendicular * start_width * 0.5)
+	
+	return beam
+
+
+
 #just a wrapper for the Geometry funcs to filter out holes if wanted----------------------------------------------
 static func clipPolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
 	var new_polygons : Array = Geometry.clip_polygons_2d(poly_a, poly_b)

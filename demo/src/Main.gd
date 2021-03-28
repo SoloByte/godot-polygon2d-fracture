@@ -19,6 +19,10 @@ onready var _min_area_label := $CanvasLayer/MinAreaSlider/Label
 
 
 func _ready():
+#	$Polygon2D.set_polygon(PolygonLib.createRectanglePolygon(Vector2(1000,1000)))
+#	$Polygon2D.set_polygon(PolygonLib.createCirclePolygon(1000.0, 5))
+#	$Polygon2D.set_polygon(PolygonLib.createBeamPolygon(Vector2.RIGHT.rotated(0.0), 1000.0, 100.0, 0.0))
+	
 	_fracture_slider.grab_focus()
 	_fractures_label.text = "Fractures: %d" % _fracture_slider.value
 	_min_area_label.text = "Min Area: %d" % _min_area_slider.value
