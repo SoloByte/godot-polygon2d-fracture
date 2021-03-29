@@ -26,7 +26,7 @@ rand_linear_velocity_range = Vector2( 500, 1000 )
 
 [node name="Polygon2D" type="Polygon2D" parent="Fracture/SourcePolygons"]
 position = Vector2( -668.954, 0 )
-polygon = PoolVector2Array( -138.949, -192.649, 5.74854, -54.6001, 128.992, -191.569, 219.935, -16.8025, 128.992, 136.652, 86.3835, 58.7927, -177.824, 117.624, -299.152, -11.7628 )
+polygon = PoolVector2Array( -601.829, 1.84607, -135.658, -552.519, 257.438, -358.491, 423.747, 130.358, 317.914, 478.096, -304.487, 425.18, -249.051, 183.275, -475.837, 105.16, -493.475, -33.4318 )
 
 [node name="Parent" type="Node2D" parent="Fracture"]
 

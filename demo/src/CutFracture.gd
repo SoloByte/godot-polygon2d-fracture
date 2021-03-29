@@ -16,6 +16,9 @@ onready var _cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(100.0
 onready var _slowmo_timer := $SlowMoTimer
 
 var _cur_fracture_color : Color = fracture_body_color
+var _cut_line_start := Vector2.ZERO
+
+
 
 
 func _ready() -> void:
@@ -65,67 +68,112 @@ func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot
 	center.modulate = Color.black
 
 
+
+
+
+
+
+
+
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("cut_line"):
+		_cut_line_start = get_global_mouse_position()
+	
+	if event.is_action_released("cut_line"):
+		var cut_line_end : Vector2 = get_global_mouse_position()
+		var vec : Vector2 = cut_line_end - _cut_line_start
+		var dis : float = vec.length()
+		var dir = vec.normalized()
+		var cut_shape = PolygonLib.createBeamPolygon(dir, dis, 10.0, 10.0, Vector2.ZERO)
+		cut(_cut_line_start, cut_shape)
+	
+	
+	
 	if event.is_action_pressed("cut"):
 		var cut_pos : Vector2 = get_global_mouse_position()
+		cut(cut_pos, _cut_shape)
+
+
+
+
+
+
+
+func cut(cut_pos : Vector2, cut_shape : PoolVector2Array) -> void:
+	var p = Polygon2D.new()
+	add_child(p)
+	p.set_polygon(cut_shape)
+	p.global_position = cut_pos
+	p.modulate = Color.red
+	p.z_index = 3
+	var c = Color.red
+	c.a = 0.1
+	p.color = c
+	
+	for source in _source_polygon_parent.get_children():
+		var source_polygon : PoolVector2Array = source.get_polygon()
+		var total_area : float = PolygonLib.getPolygonArea(source_polygon)
+		var local_cut_pos : Vector2 = source.to_local(cut_pos)
 		
-		var p = Polygon2D.new()
-		add_child(p)
-		p.set_polygon(_cut_shape)
-		p.global_position = cut_pos
-		p.modulate = Color.red
-		p.z_index = 3
-		var c = Color.red
-		c.a = 0.1
-		p.color = c
+		var source_pos : Vector2 = source.global_position
+		var source_rot : float = source.global_rotation
 		
-		for source in _source_polygon_parent.get_children():
-			var source_polygon : PoolVector2Array = source.get_polygon()
-			var total_area : float = PolygonLib.getPolygonArea(source_polygon)
-			var local_cut_pos : Vector2 = source.to_local(cut_pos)
-			var source_pos : Vector2 = source.global_position
-			var source_rot : float = source.global_rotation
-			var s_lin_vel := Vector2.ZERO
-			var s_ang_vel : float = 0.0
-			var s_mass : float = 0.0
-			if source is RigidBody2D:
-				s_lin_vel = source.linear_velocity
-				s_ang_vel = source.angular_velocity
-				s_mass = source.mass
-			
-			var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, source_rot, _cut_shape, local_cut_pos, 0.0, true)
-			
-			if cut_info.intersected and cut_info.intersected.size() > 0:
-				for shape in cut_info.intersected:
-					var area : float = PolygonLib.getPolygonArea(shape)
-					if area < 2000:
-						continue
-					
-					
-					var fracture_info : Array = polyFracture.fractureDelaunay(shape, source_pos, 0.0, 3, 250)
-					for fracture_shard in fracture_info:
-						spawnFractureBody(fracture_shard)
-			
-			
-			if cut_info.final and cut_info.final.size() > 0:
-				for shape in cut_info.final:
-					var shape_area : float = PolygonLib.getPolygonArea(shape)
-					if shape_area < 2000:
-						continue
-					
-					var centroid : Vector2 = PolygonLib.calculatePolygonCentroid(shape)
-					var spawn_pos : Vector2 = _source_polygon_parent.to_global(centroid) + source_pos
-					var centered_shape : PoolVector2Array = PolygonLib.translatePolygon(shape, -centroid)
-					
-					if source is Polygon2D:
-						call_deferred("spawnPoly", centered_shape, spawn_pos, 0.0, source.modulate)
-					else:
-						var mass : float = s_mass * (shape_area / total_area)
-						call_deferred("spawnRigibody2d", centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel, s_ang_vel, mass, cut_pos)
-			
-			source.queue_free()
-		Engine.time_scale = 0.1
-		_slowmo_timer.start(0.25)
+		var s_lin_vel := Vector2.ZERO
+		var s_ang_vel : float = 0.0
+		var s_mass : float = 0.0
+		
+		if source is RigidBody2D:
+			s_lin_vel = source.linear_velocity
+			s_ang_vel = source.angular_velocity
+			s_mass = source.mass
+		
+		
+#			var offset : Vector2 = PolygonLib.calculatePolygonCentroid(PolygonLib.rotatePolygon(source_polygon, source_rot))
+		
+		
+		var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, source_rot, cut_shape, local_cut_pos, 0.0, true)
+		
+		if cut_info.intersected and cut_info.intersected.size() > 0:
+			for shape in cut_info.intersected:
+				var area : float = PolygonLib.getPolygonArea(shape)
+				if area < 2000:
+					continue
+				
+				
+				var fracture_info : Array = polyFracture.fractureDelaunay(shape, source_pos, 0.0, 3, 250)
+				for fracture_shard in fracture_info:
+					spawnFractureBody(fracture_shard)
+		
+		
+		if cut_info.final and cut_info.final.size() > 0:
+			for shape in cut_info.final:
+				var shape_area : float = PolygonLib.getPolygonArea(shape)
+				if shape_area < 2000:
+					continue
+				
+				#variant 1 for polygons that should stay centered (rigidbodies for instance)
+				var centroid : Vector2 = PolygonLib.calculatePolygonCentroid(shape)
+				var spawn_pos : Vector2 = _source_polygon_parent.to_global(centroid) + source_pos
+				var centered_shape : PoolVector2Array = PolygonLib.translatePolygon(shape, -centroid)
+				
+				#variant 2 for polygons that are not centered
+#					spawn_pos = source_pos
+#					centered_shape = shape
+				
+				if source is Polygon2D:
+					call_deferred("spawnPoly", centered_shape, spawn_pos, 0.0, source.modulate)
+				else:
+					var mass : float = s_mass * (shape_area / total_area)
+					call_deferred("spawnRigibody2d", centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel, s_ang_vel, mass, cut_pos)
+		
+		source.queue_free()
+	Engine.time_scale = 0.1
+	_slowmo_timer.start(0.25)
+
+
+
+
+
 
 
 func spawnFractureBody(fracture_shard : Dictionary) -> void:
