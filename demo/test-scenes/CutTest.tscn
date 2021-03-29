@@ -6,7 +6,7 @@
 [ext_resource path="res://demo/Camera2D.tscn" type="PackedScene" id=4]
 [ext_resource path="res://demo/src/RigidBody2D.tscn" type="PackedScene" id=5]
 
-[sub_resource type="PhysicsMaterial" id=2]
+[sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
 bounce = 1.0
 
@@ -17,7 +17,6 @@ script = ExtResource( 2 )
 fracture_body_color = Color( 0.917647, 0.313726, 0.313726, 1 )
 fracture_body_template = ExtResource( 3 )
 rigidbody_template = ExtResource( 5 )
-min_area = 150
 
 [node name="SourcePolygons" type="Node2D" parent="Fracture"]
 show_behind_parent = true
@@ -25,12 +24,16 @@ show_behind_parent = true
 [node name="RigidBody2D" parent="Fracture/SourcePolygons" instance=ExtResource( 5 )]
 rand_linear_velocity_range = Vector2( 500, 1000 )
 
+[node name="Polygon2D" type="Polygon2D" parent="Fracture/SourcePolygons"]
+position = Vector2( -668.954, 0 )
+polygon = PoolVector2Array( -138.949, -192.649, 5.74854, -54.6001, 128.992, -191.569, 219.935, -16.8025, 128.992, 136.652, 86.3835, 58.7927, -177.824, 117.624, -299.152, -11.7628 )
+
 [node name="Parent" type="Node2D" parent="Fracture"]
 
 [node name="Edge" type="StaticBody2D" parent="Fracture"]
 modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
 position = Vector2( 0, 933.82 )
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Fracture/Edge"]
 polygon = PoolVector2Array( -1904.54, -355.911, -1652.27, -611.544, -1891.09, -1005.08, -1891.09, -1805.62, -1719.55, -1977.16, 1428.77, -1987.25, 1903.04, -1805.62, 1903.04, -70.0054, 1492.68, 114.992, 534.057, -160.822, 36.2462, 125.083, -1719.55, 114.992, -1907.91, -80.0963, -1904.68, -354.093, -2024.51, -319.195, -2069.36, 219.263, 2037.58, 313.443, 2081.48, -2057.26, -1996.06, -2091.24, -2025.33, -322.011 )
@@ -51,9 +54,13 @@ begin_cap_mode = 2
 end_cap_mode = 2
 antialiased = true
 
+[node name="SlowMoTimer" type="Timer" parent="Fracture"]
+one_shot = true
+
 [node name="Camera2D" parent="." instance=ExtResource( 4 )]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Title" parent="CanvasLayer" instance=ExtResource( 1 )]
 text = "Cut + Delauny Fracture"
+[connection signal="timeout" from="Fracture/SlowMoTimer" to="Fracture" method="_on_SlowMoTimer_timeout"]

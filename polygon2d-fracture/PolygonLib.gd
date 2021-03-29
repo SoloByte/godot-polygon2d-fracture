@@ -252,10 +252,9 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 #s_poly = source polygon, c_poly = cut polygon (cut shape used to cut source polygon), the cut_local_pos should be in the local polygon2d node space, rotations are all in radians
 #get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
-static func cutShape(cut_local_pos : Vector2, s_poly : PoolVector2Array, s_world_rot : float, c_poly : PoolVector2Array, c_world_rot : float, get_intersect : bool = true) -> Dictionary:
+static func cutShape(s_poly : PoolVector2Array, s_world_rot : float, c_poly : PoolVector2Array, cut_local_pos : Vector2, c_world_rot : float, get_intersect : bool = true) -> Dictionary:
 	c_poly = translatePolygon(c_poly, cut_local_pos)
-	c_poly = rotatePolygon(c_poly, c_world_rot)
-#	c_poly = rotatePolygon(c_poly, s_world_rot)
+	c_poly = rotatePolygon(c_poly, c_world_rot + s_world_rot)
 	s_poly = rotatePolygon(s_poly, s_world_rot)
 	
 	var intersected_polygons : Array = []

@@ -37,5 +37,11 @@ func getPolygon() -> PoolVector2Array:
 	return _polygon2d.get_polygon()
 
 
+func get_polygon() -> PoolVector2Array:
+	return getPolygon()
+
+func set_polygon(poly : PoolVector2Array) -> void:
+	setPolygon(poly)
+
 #func _process(delta: float) -> void:
 #	print("Rot RB: ", global_rotation, " Rot Poly: ", _polygon2d.global_rotation, " Rot Deg RB: ", rotation_degrees, " Rot Deg Poly: ", _polygon2d.rotation_degrees)
