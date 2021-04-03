@@ -57,10 +57,6 @@ func spawnPoly(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : flo
 	p.global_position = spawn_pos
 	p.set_polygon(new_poly)
 	p.modulate = color
-	var center = Polygon2D.new()
-	p.add_child(center)
-	center.set_polygon(PolygonLib.createCirclePolygon(25.0, 1))
-	center.modulate = Color.black
 
 func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color, lin_vel : Vector2, ang_vel : float, mass : float, cut_pos : Vector2) -> void:
 	var instance = rigidbody_template.instance()
@@ -71,12 +67,6 @@ func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot
 	instance.linear_velocity = lin_vel + (spawn_pos - cut_pos).normalized() * 50
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
-	
-	var center = Polygon2D.new()
-	instance.add_child(center)
-	center.set_polygon(PolygonLib.createCirclePolygon(25.0, 1))
-	center.modulate = Color.black
-
 
 
 
@@ -147,8 +137,9 @@ func cut(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float) -> vo
 				spawnFractureBody(fracture_shard)
 		
 		
+		
 		for shape in cut_fracture_info.shapes:
-			var spawn_pos : Vector2 = _source_polygon_parent.to_global(shape.centroid) + shape.source_pos
+			var spawn_pos : Vector2 = _source_polygon_parent.to_global(shape.centroid) + shape.world_pos
 			if source is Polygon2D:
 				call_deferred("spawnPoly", shape.centered_shape, spawn_pos, 0.0, source.modulate)
 			else:
@@ -167,7 +158,7 @@ func cut(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float) -> vo
 
 
 func spawnFractureBody(fracture_shard : Dictionary) -> void:
-	var instance = polyFracture.spawnFractureBody(_parent, fracture_body_template, fracture_shard).instance
+	var instance = polyFracture.spawnShape(_parent, fracture_body_template, fracture_shard).instance
 	
 	instance.setColor(_cur_fracture_color)
 	var dir : Vector2 = (to_global(fracture_shard.centroid) - global_position).normalized()

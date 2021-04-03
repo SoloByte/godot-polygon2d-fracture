@@ -18,32 +18,28 @@ func _init(new_seed : int = -1) -> void:
 
 
 
-#just makes a dictionary that can be used in different funcs
-func makeFractureShard(poly : PoolVector2Array, centroid : Vector2, world_pos : Vector2, area : float) -> Dictionary:
-	return {"poly" : poly, "centroid" : centroid, "world_pos" : world_pos, "area" : area}
 
 
 
-#calculates the correct position for the instance
-#translates the polygon to center it on the instance (centroid of the polygon)
+
+#calculates the correct spawn position for the instance
 #adds the instance as child of the parent
 #if the instance has the method "setPolygon" the method will be used
-#returns a dictionary with the instance and translated polygon
-func spawnFractureBody(_parent, template : PackedScene, fracture_shard : Dictionary) -> Dictionary:
+#returns a dictionary with the instance and centered polygon
+func spawnShape(_parent, template : PackedScene, shape_info : Dictionary) -> Dictionary:
 	var instance = template.instance()
 	_parent.add_child(instance)
-	instance.global_position = _parent.to_global(fracture_shard.centroid) + fracture_shard.world_pos
-	var poly : PoolVector2Array = PolygonLib.translatePolygon(fracture_shard.poly, -fracture_shard.centroid)
+	instance.global_position = PolygonLib.getShapeSpawnPos(_parent.get_global_transform(), shape_info.centroid, shape_info.world_pos)
 	
 	if instance.has_method("setPolygon"):
-		instance.setPolygon(poly)
+		instance.setPolygon(shape_info.centered_shape)
 	
-	return {"instance" : instance, "poly" : poly}
+	return {"instance" : instance, "poly" : shape_info.centered_shape}
 
 
 
 
-#all fracture functions return an array of dictionaries -> where the dictionary is 1 fracture shard (see func makeFractureShard) -------------------------------------
+#all fracture functions return an array of dictionaries -> where the dictionary is 1 fracture shard (see func makeShapeInfo) -------------------------------------
 
 #fracture simple generates random cut lines around the bounding box of the polygon -> cut_number is the amount of lines generated
 #cut_number is capped at 32 because cut_number is not equal to the amount of shards generated -> 32 cuts can produce a lot of fracture shards
@@ -70,7 +66,10 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, worl
 		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
 		
 		if triangulation.area > min_discard_area:
-			fracture_info.append(makeFractureShard(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
+			var shape_info : Dictionary = PolygonLib.getShapeInfo(Transform2D(world_rot_rad, world_pos), poly, false)
+			shape_info.area = triangulation.area
+			fracture_info.append(shape_info)
+#			fracture_info.append(PolygonLib.makeShapeInfo(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
 	
 	return fracture_info
 
@@ -101,7 +100,10 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
 		
 		if triangulation.area > min_discard_area:
-			fracture_info.append(makeFractureShard(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
+			var shape_info : Dictionary = PolygonLib.getShapeInfo(Transform2D(world_rot_rad, world_pos), poly, false)
+			shape_info.area = triangulation.area
+			fracture_info.append(shape_info)
+#			fracture_info.append(PolygonLib.makeShapeInfo(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
 	
 	return fracture_info
 
@@ -125,11 +127,16 @@ func fractureDelaunay(source_polygon : PoolVector2Array, world_pos : Vector2, wo
 				if r.size() == 3:
 					var area : float = PolygonLib.getTriangleArea(r)
 					if area >= min_discard_area:
-						fracture_info.append(makeFractureShard(r, PolygonLib.getTriangleCentroid(r), world_pos, area))
+						var centroid : Vector2 = PolygonLib.getTriangleCentroid(r)
+						fracture_info.append(PolygonLib.makeShapeInfo(PolygonLib.translatePolygon(r, -centroid), centroid, world_pos, triangle.area))
+#						fracture_info.append(PolygonLib.makeShapeInfo(r, PolygonLib.getTriangleCentroid(r), world_pos, area))
 				else:
 					var t : Dictionary = PolygonLib.triangulatePolygon(r, true, true)
 					if t.area >= min_discard_area:
-						fracture_info.append(makeFractureShard(r, PolygonLib.getPolygonCentroid(t.triangles, t.area), world_pos, t.area))
+						var shape_info : Dictionary = PolygonLib.getShapeInfo(Transform2D(world_rot_rad, world_pos), triangle.points, false)
+						shape_info.area = triangle.area
+						fracture_info.append(shape_info)
+#						fracture_info.append(PolygonLib.makeShapeInfo(r, PolygonLib.getPolygonCentroid(t.triangles, t.area), world_pos, t.area))
 	
 	return fracture_info
 
@@ -145,7 +152,8 @@ func fractureDelaunayConvex(concave_polygon : PoolVector2Array, world_pos : Vect
 		if triangle.area < min_discard_area:
 			continue
 		
-		fracture_info.append(makeFractureShard(triangle.points, PolygonLib.getTriangleCentroid(triangle.points), world_pos, triangle.area))
+		var centroid : Vector2 = PolygonLib.getTriangleCentroid(triangle.points)
+		fracture_info.append(PolygonLib.makeShapeInfo(PolygonLib.translatePolygon(triangle.points, -centroid), centroid, world_pos, triangle.area))
 	
 	return fracture_info
 
@@ -161,14 +169,20 @@ func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, world_pos :
 		if triangle.area < min_discard_area:
 			continue
 		
-		fracture_info.append(makeFractureShard(triangle.points, PolygonLib.getTriangleCentroid(triangle.points), world_pos, triangle.area))
+		
+		var centroid : Vector2 = PolygonLib.getTriangleCentroid(triangle.points)
+		fracture_info.append(PolygonLib.makeShapeInfo(PolygonLib.translatePolygon(triangle.points, -centroid), centroid, world_pos, triangle.area))
 	
 	return fracture_info
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
-
+#returns a dictionary containing shapes and fractures 
+#-> shapes is an array containing all shape infos generated -> the clipped shapes (the non overlapping areas of the source polygon and cut polygon) can be used for new source polygons
+#-> fractures is an array containing all fracture infos generated -> the intersected shapes (the overlapping areas of the source polygon and cut polygon) and the shapes smaller than cut_min_area are fractured
+#-> intersected shapes smaller than fracture_min_area are discarded
+#-> fracture pieces smaller than shard_min_area are discarded
 func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D, cut_min_area : float, fracture_min_area : float, shard_min_area : float, fractures : int = 3) -> Dictionary:
 	var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, cut_polygon, source_trans_global, cut_trans_global, true)
 		
@@ -191,12 +205,9 @@ func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Arr
 				fracture_infos.append(fracture_info)
 				continue
 			
-			var centroid : Vector2 = PolygonLib.calculatePolygonCentroid(shape)
-#			var spawn_pos : Vector2 = PolygonLib.toGlobal(source_trans_global, centroid) + source_trans_global.get_origin()
-			var source_pos : Vector2 = source_trans_global.get_origin()
-			var centered_shape : PoolVector2Array = PolygonLib.translatePolygon(shape, -centroid)
-			var final_shape : Dictionary = {"centered_shape" : centered_shape, "source_pos" : source_pos, "centroid" : centroid, "area" : shape_area}
-			shape_infos.append(final_shape)
+			var shape_info : Dictionary = PolygonLib.getShapeInfo(source_trans_global, shape, false)
+			shape_info.area = shape_area
+			shape_infos.append(shape_info)
 	
 	return {"shapes" : shape_infos, "fractures" : fracture_infos}
 

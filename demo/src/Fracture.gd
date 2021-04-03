@@ -96,7 +96,7 @@ func fractureAll() -> void:
 
 
 func spawnFractureBody(fracture_shard : Dictionary) -> void:
-	var instance = polyFracture.spawnFractureBody(_parent, fracture_body_template, fracture_shard).instance
+	var instance = polyFracture.spawnShape(_parent, fracture_body_template, fracture_shard).instance
 	
 	instance.setColor(_cur_fracture_color)
 	var dir : Vector2 = (to_global(fracture_shard.centroid) - global_position).normalized()

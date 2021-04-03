@@ -215,7 +215,7 @@ static func createCirclePolygon(radius : float, smoothing : int = 0, local_cente
 	
 	return circle
 
-
+#creates a beam with a seperate start and end width
 static func createBeamPolygon(dir : Vector2, distance : float, start_width : float, end_width : float, start_point_local := Vector2.ZERO) -> PoolVector2Array:
 	var beam : PoolVector2Array = []
 	if distance == 0: 
@@ -249,7 +249,7 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 
 
 
-#s_poly = source polygon, c_poly = cut polygon (cut shape used to cut source polygon), the cut_local_pos should be in the local polygon2d node space, rotations are all in radians
+#cut polygon = cut shape used to cut source polygon
 #get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
 static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D, get_intersected : bool = true) -> Dictionary:
@@ -266,13 +266,21 @@ static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector
 	return {"final" : final_polygons, "intersected" : intersected_polygons}
 
 
-#change to source_trans------------------------------------------------------------
-static func getShapeSpawnInfo(source_node, shape : PoolVector2Array) -> Dictionary:
-	var centroid : Vector2 = calculatePolygonCentroid(shape)
-	var spawn_pos : Vector2 = source_node.to_global(centroid) + source_node.global_position
-	var centered_shape : PoolVector2Array = translatePolygon(shape, -centroid)
-	return {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape}
-#----------------------------------------------------------------------------------
+#just makes a dictionary that can be used in different funcs
+static func makeShapeInfo(centered_shape : PoolVector2Array, centroid : Vector2, world_pos : Vector2, area : float) -> Dictionary:
+	return {"centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : world_pos, "area" : area}
+
+static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PoolVector2Array, calculate_area : bool = false) -> Dictionary:
+	var centroid : Vector2 = calculatePolygonCentroid(source_polygon)
+	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
+	var area : float = 0.0
+	if calculate_area:
+		area = getPolygonArea(centered_shape)
+	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), area)# {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : source_global_trans.get_origin()}
+
+static func getShapeSpawnPos(parent_global_trans : Transform2D, centroid : Vector2, source_global_pos : Vector2) -> Vector2:
+	var spawn_pos : Vector2 = toGlobal(parent_global_trans, centroid) + source_global_pos
+	return spawn_pos
 
 
 static func toGlobal(global_transform : Transform2D, local_pos : Vector2) -> Vector2:
