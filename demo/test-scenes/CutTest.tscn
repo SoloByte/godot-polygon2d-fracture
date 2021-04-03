@@ -18,6 +18,12 @@ fracture_body_color = Color( 0.917647, 0.313726, 0.313726, 1 )
 fracture_body_template = ExtResource( 3 )
 rigidbody_template = ExtResource( 5 )
 
+[node name="Polygon2D2" type="Polygon2D" parent="Fracture"]
+visible = false
+position = Vector2( -600, 0 )
+color = Color( 0.0156863, 0.631373, 0.0235294, 0.392157 )
+polygon = PoolVector2Array( -601.829, 1.84607, -135.658, -552.519, 257.438, -358.491, 423.747, 130.358, 317.914, 478.096, -304.487, 425.18, -249.051, 183.275, -475.837, 105.16, -493.475, -33.4318 )
+
 [node name="SourcePolygons" type="Node2D" parent="Fracture"]
 show_behind_parent = true
 
@@ -25,7 +31,7 @@ show_behind_parent = true
 rand_linear_velocity_range = Vector2( 500, 1000 )
 
 [node name="Polygon2D" type="Polygon2D" parent="Fracture/SourcePolygons"]
-position = Vector2( -668.954, 0 )
+position = Vector2( -600, 0 )
 polygon = PoolVector2Array( -601.829, 1.84607, -135.658, -552.519, 257.438, -358.491, 423.747, 130.358, 317.914, 478.096, -304.487, 425.18, -249.051, 183.275, -475.837, 105.16, -493.475, -33.4318 )
 
 [node name="Parent" type="Node2D" parent="Fracture"]

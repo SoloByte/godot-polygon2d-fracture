@@ -254,7 +254,7 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
 static func cutShape(s_poly : PoolVector2Array, s_world_rot : float, c_poly : PoolVector2Array, cut_local_pos : Vector2, c_world_rot : float, get_intersect : bool = true) -> Dictionary:
 	c_poly = translatePolygon(c_poly, cut_local_pos)
-	c_poly = rotatePolygon(c_poly, c_world_rot + s_world_rot)
+	c_poly = rotatePolygon(c_poly, c_world_rot)
 	s_poly = rotatePolygon(s_poly, s_world_rot)
 	
 	var intersected_polygons : Array = []
@@ -271,6 +271,11 @@ static func getShapeSpawnInfo(source_node, shape : PoolVector2Array) -> Dictiona
 	var centered_shape : PoolVector2Array = translatePolygon(shape, -centroid)
 	return {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape}
 
+
+
+static func toLocal(global_transform : Transform2D, global_pos : Vector2) -> Vector2:
+	var new_transform := Transform2D(0.0, global_transform.origin)
+	return new_transform.affine_inverse().xform(global_pos)
 
 
 #just a wrapper for the Geometry funcs to filter out holes if wanted----------------------------------------------

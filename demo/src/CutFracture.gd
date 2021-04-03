@@ -94,9 +94,9 @@ func _input(event: InputEvent) -> void:
 		var cut_line_end : Vector2 = get_global_mouse_position()
 		var vec : Vector2 = cut_line_end - _cut_line_start
 		var dis : float = vec.length()
-		var dir = vec.normalized()
-		var cut_shape = PolygonLib.createBeamPolygon(dir, dis, 2.0, 2.0, Vector2.ZERO)
-		cut(_cut_line_start, cut_shape)
+		var dir : Vector2 = vec.normalized()
+		var cut_shape = PolygonLib.createBeamPolygon(dir, dis, 15.0, 15.0, Vector2.ZERO)
+		cut(_cut_line_start, cut_shape, 0.0)
 		
 		_cut_line.clear_points()
 		_cut_line.visible = false
@@ -105,7 +105,7 @@ func _input(event: InputEvent) -> void:
 	
 	if event.is_action_pressed("cut"):
 		var cut_pos : Vector2 = get_global_mouse_position()
-		cut(cut_pos, _cut_shape)
+		cut(cut_pos, _cut_shape, 0.0)
 
 
 
@@ -113,24 +113,45 @@ func _input(event: InputEvent) -> void:
 
 
 
-func cut(cut_pos : Vector2, cut_shape : PoolVector2Array) -> void:
-	var p = Polygon2D.new()
-	add_child(p)
-	p.set_polygon(cut_shape)
-	p.global_position = cut_pos
-	p.modulate = Color.red
-	p.z_index = 3
-	var c = Color.red
-	c.a = 0.1
-	p.color = c
+func cut(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float) -> void:
+#	var p = Polygon2D.new()
+#	add_child(p)
+#	p.set_polygon(cut_shape)
+#	p.global_position = cut_pos
+#	p.z_index = 3
+#	var c = Color.red
+#	c.a = 0.3
+#	p.color = c
 	
 	for source in _source_polygon_parent.get_children():
 		var source_polygon : PoolVector2Array = source.get_polygon()
 		var total_area : float = PolygonLib.getPolygonArea(source_polygon)
-		var local_cut_pos : Vector2 = source.to_local(cut_pos)
-		
 		var source_pos : Vector2 = source.global_position
 		var source_rot : float = source.global_rotation
+
+		var local_cut_pos : Vector2 = PolygonLib.toLocal(source.get_global_transform(), cut_pos)
+		
+#		if source is Polygon2D:
+#			var p1 = Polygon2D.new()
+#			add_child(p1)
+#			p1.set_polygon(PolygonLib.createCirclePolygon(25.0, 1))
+#			p1.global_position = cut_pos
+#			p1.z_index = 3
+#			var c1 = Color.green
+#			c1.a = 1.0
+#			p1.color = c1
+#
+#			var p2 = Polygon2D.new()
+#			add_child(p2)
+#			p2.show_behind_parent = true
+#			p2.set_polygon(PolygonLib.createCirclePolygon(35.0, 1))
+#			p2.global_position = local_cut_pos
+#			p2.z_index = 3
+#			var c2 = Color.blue
+#			c2.a = 1.0
+#			p2.color = c2
+		
+		
 		
 		var s_lin_vel := Vector2.ZERO
 		var s_ang_vel : float = 0.0
@@ -145,7 +166,7 @@ func cut(cut_pos : Vector2, cut_shape : PoolVector2Array) -> void:
 #			var offset : Vector2 = PolygonLib.calculatePolygonCentroid(PolygonLib.rotatePolygon(source_polygon, source_rot))
 		
 		
-		var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, source_rot, cut_shape, local_cut_pos, 0.0, true)
+		var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, source_rot, cut_shape, local_cut_pos, cut_rot, true)
 		
 		if cut_info.intersected and cut_info.intersected.size() > 0:
 			for shape in cut_info.intersected:
@@ -172,7 +193,6 @@ func cut(cut_pos : Vector2, cut_shape : PoolVector2Array) -> void:
 				var centroid : Vector2 = PolygonLib.calculatePolygonCentroid(shape)
 				var spawn_pos : Vector2 = _source_polygon_parent.to_global(centroid) + source_pos
 				var centered_shape : PoolVector2Array = PolygonLib.translatePolygon(shape, -centroid)
-				
 				#variant 2 for polygons that are not centered
 #					spawn_pos = source_pos
 #					centered_shape = shape
