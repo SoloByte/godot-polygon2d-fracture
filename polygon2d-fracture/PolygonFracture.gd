@@ -168,6 +168,42 @@ func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, world_pos :
 
 
 
+
+func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D, cut_min_area : float, fracture_min_area : float, shard_min_area : float, fractures : int = 3) -> Dictionary:
+	var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, cut_polygon, source_trans_global, cut_trans_global, true)
+		
+	var fracture_infos : Array = []
+	if cut_info.intersected and cut_info.intersected.size() > 0:
+		for shape in cut_info.intersected:
+			var area : float = PolygonLib.getPolygonArea(shape)
+			if area < fracture_min_area:
+				continue
+			
+			var fracture_info : Array = fractureDelaunay(shape, source_trans_global.get_origin(), 0.0, fractures, shard_min_area)
+			fracture_infos.append(fracture_info)
+	
+	var shape_infos : Array = []
+	if cut_info.final and cut_info.final.size() > 0:
+		for shape in cut_info.final:
+			var shape_area : float = PolygonLib.getPolygonArea(shape)
+			if shape_area < cut_min_area:
+				var fracture_info : Array = fractureDelaunay(shape, source_trans_global.get_origin(), 0.0, fractures, shard_min_area)
+				fracture_infos.append(fracture_info)
+				continue
+			
+			var centroid : Vector2 = PolygonLib.calculatePolygonCentroid(shape)
+#			var spawn_pos : Vector2 = PolygonLib.toGlobal(source_trans_global, centroid) + source_trans_global.get_origin()
+			var source_pos : Vector2 = source_trans_global.get_origin()
+			var centered_shape : PoolVector2Array = PolygonLib.translatePolygon(shape, -centroid)
+			var final_shape : Dictionary = {"centered_shape" : centered_shape, "source_pos" : source_pos, "centroid" : centroid, "area" : shape_area}
+			shape_infos.append(final_shape)
+	
+	return {"shapes" : shape_infos, "fractures" : fracture_infos}
+
+
+
+
+
 #returns an array of PoolVector2Arrays -> each PoolVector2Array consists of two Vector2 [start, end]
 #is used in the func fracture 
 func getCutLinesFromPoints(points : Array, cuts : int, max_size : float) -> Array:

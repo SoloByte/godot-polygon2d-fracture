@@ -252,28 +252,36 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 #s_poly = source polygon, c_poly = cut polygon (cut shape used to cut source polygon), the cut_local_pos should be in the local polygon2d node space, rotations are all in radians
 #get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
-static func cutShape(s_poly : PoolVector2Array, s_world_rot : float, c_poly : PoolVector2Array, cut_local_pos : Vector2, c_world_rot : float, get_intersect : bool = true) -> Dictionary:
-	c_poly = translatePolygon(c_poly, cut_local_pos)
-	c_poly = rotatePolygon(c_poly, c_world_rot)
-	s_poly = rotatePolygon(s_poly, s_world_rot)
+static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D, get_intersected : bool = true) -> Dictionary:
+	cut_polygon = translatePolygon(cut_polygon, toLocalWithoutRot(source_trans_global, cut_trans_global.get_origin()))
+	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation())
+	source_polygon = rotatePolygon(source_polygon, source_trans_global.get_rotation())
 	
 	var intersected_polygons : Array = []
-	if get_intersect:
-		intersected_polygons = intersectPolygons(s_poly, c_poly, true)
-	var final_polygons : Array = clipPolygons(s_poly, c_poly, true)
+	if get_intersected:
+		intersected_polygons = intersectPolygons(source_polygon, cut_polygon, true)
+	var final_polygons : Array = clipPolygons(source_polygon, cut_polygon, true)
+	
 	
 	return {"final" : final_polygons, "intersected" : intersected_polygons}
 
 
+#change to source_trans------------------------------------------------------------
 static func getShapeSpawnInfo(source_node, shape : PoolVector2Array) -> Dictionary:
 	var centroid : Vector2 = calculatePolygonCentroid(shape)
 	var spawn_pos : Vector2 = source_node.to_global(centroid) + source_node.global_position
 	var centered_shape : PoolVector2Array = translatePolygon(shape, -centroid)
 	return {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape}
+#----------------------------------------------------------------------------------
 
 
+static func toGlobal(global_transform : Transform2D, local_pos : Vector2) -> Vector2:
+	return global_transform.xform(local_pos)
 
 static func toLocal(global_transform : Transform2D, global_pos : Vector2) -> Vector2:
+	return global_transform.affine_inverse().xform(global_pos)
+
+static func toLocalWithoutRot(global_transform : Transform2D, global_pos : Vector2) -> Vector2:
 	var new_transform := Transform2D(0.0, global_transform.origin)
 	return new_transform.affine_inverse().xform(global_pos)
 
