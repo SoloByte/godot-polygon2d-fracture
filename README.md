@@ -2,16 +2,30 @@
 
 
 
+## UPDATES
+- UPDATE v1.1.0 adds cutting of polygons.
+
+
+
 ## Info
 
 Works with GodotEngine 3.2+
 
-Two simple scripts for fracturing polygons. PolygonFracture.gd is the actual script that fractures polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, etc.
+Two simple scripts for fracturing and cutting polygons. PolygonFracture.gd is the actual script that fractures/cuts polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, etc.
 
 The final scripts are located in the polygon2d-fracture folder.
 The demo project is located in the demo folder.
 
 PS: To test the cutting's actual perfomance just increase the min area (around 5000) because then less rigid bodies are spawned. You wont see many fracture shards either, though. (spawning and despawning that many rigid bodies at once cause the biggest performance hit - pooling would alleviate that for some part)
+
+
+
+## Cut Method
+
+There is just one cut method. It uses 1 polygon as source and 1 polygon as cut shape. The intersected shape (the parts overlapping in both polygons) can be fractured if desired. I also added helper funcs to PolygonLib.gd to create simple polygon shapes (currently: rectangle, circle, beam).
+
+![](gifs/polygon2d-cutfracture-showcase-02.gif)
+
 
 ## Fracturing Methods
 
