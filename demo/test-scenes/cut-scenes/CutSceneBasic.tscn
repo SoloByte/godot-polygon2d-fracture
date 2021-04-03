@@ -5,7 +5,7 @@
 [node name="CutSceneBasic" instance=ExtResource( 1 )]
 
 [node name="Title" parent="CanvasLayer" index="0"]
-text = "CUT AND FRACTURE DELAUNY CONVEX"
+text = "CUT AND FRACTURE DELAUNAY CONVEX"
 
 [node name="InfoLabel" parent="CanvasLayer" index="1"]
 text = "CHANGE TEST [W]
