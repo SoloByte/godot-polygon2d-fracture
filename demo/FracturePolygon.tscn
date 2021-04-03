@@ -1,0 +1,15 @@
+[gd_scene format=2]
+
+[node name="FracturePolygon" type="Polygon2D"]
+show_behind_parent = true
+position = Vector2( 0, -330.18 )
+color = Color( 0.545098, 0.545098, 0.545098, 1 )
+polygon = PoolVector2Array( -387.17, -461.463, -88, -485.82, 312, -333.82, 592, -45.82, 520, 298.18, 0, 386.18, -552, 162.18 )
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PoolVector2Array( -552, 162.18, -384, -461.82, -88, -485.82, 312, -333.82, 592, -45.82, 520, 298.18, 0, 386.18, -552, 162.18 )
+default_color = Color( 1.5, 1.5, 1.5, 1 )
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true

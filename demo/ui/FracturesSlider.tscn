@@ -1,0 +1,60 @@
+[gd_scene load_steps=8 format=2]
+
+[sub_resource type="ImageTexture" id=1]
+
+[sub_resource type="ImageTexture" id=2]
+
+[sub_resource type="ImageTexture" id=3]
+
+[sub_resource type="ImageTexture" id=4]
+
+[sub_resource type="StyleBoxFlat" id=5]
+draw_center = false
+border_width_left = 12
+border_width_right = 12
+border_color = Color( 0.384314, 0.384314, 0.384314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.803922, 0.972549, 1, 1 )
+draw_center = false
+border_width_left = 12
+border_width_right = 12
+
+[sub_resource type="StyleBoxFlat" id=7]
+draw_center = false
+border_width_left = 12
+border_width_right = 12
+border_color = Color( 0.815686, 1, 0.768627, 1 )
+
+[node name="FracturesSlider" type="VSlider"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -65.0
+margin_top = 46.0
+margin_right = -31.0
+margin_bottom = -53.0
+custom_icons/tick = SubResource( 1 )
+custom_icons/grabber_disabled = SubResource( 2 )
+custom_icons/grabber_highlight = SubResource( 3 )
+custom_icons/grabber = SubResource( 4 )
+custom_styles/slider = SubResource( 5 )
+custom_styles/grabber_area_highlight = SubResource( 6 )
+custom_styles/grabber_area = SubResource( 7 )
+min_value = 1.0
+max_value = 512.0
+value = 32.0
+scrollable = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="."]
+margin_left = -306.0
+margin_top = 2.0
+margin_right = -155.0
+margin_bottom = 37.0
+rect_scale = Vector2( 2, 2 )
+text = "Fractures: 100"
+align = 2
+valign = 1

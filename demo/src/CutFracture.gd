@@ -99,13 +99,6 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("cut"):
 		var cut_pos : Vector2 = get_global_mouse_position()
 		cut(cut_pos, _cut_shape, 0.0)
-	
-	
-	if event.is_action_pressed("fullscreen"):
-		OS.window_fullscreen = not OS.window_fullscreen
-	
-	if event.is_action_pressed("ui_cancel"):
-		get_tree().quit()
 
 
 

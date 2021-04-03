@@ -10,22 +10,8 @@ var _cur_test_scene = null
 
 
 
-onready var _fracture_slider := $CanvasLayer/FracturesSlider
-onready var _min_area_slider := $CanvasLayer/MinAreaSlider 
-onready var _fractures_label := $CanvasLayer/FracturesSlider/Label
-onready var _min_area_label := $CanvasLayer/MinAreaSlider/Label
-
-
-
 
 func _ready():
-#	$Polygon2D.set_polygon(PolygonLib.createRectanglePolygon(Vector2(1000,1000)))
-#	$Polygon2D.set_polygon(PolygonLib.createCirclePolygon(1000.0, 5))
-#	$Polygon2D.set_polygon(PolygonLib.createBeamPolygon(Vector2.RIGHT.rotated(0.0), 1000.0, 100.0, 0.0))
-	
-	_fracture_slider.grab_focus()
-	_fractures_label.text = "Fractures: %d" % _fracture_slider.value
-	_min_area_label.text = "Min Area: %d" % _min_area_slider.value
 	_cur_test_scene_index = -1
 	changeTest()
 
@@ -49,27 +35,3 @@ func changeTest() -> void:
 	var instance = test_scenes[_cur_test_scene_index].instance()
 	add_child(instance)
 	_cur_test_scene = instance
-	var fracture_node = instance.get_node("Fracture")
-	if not fracture_node:
-		return
-#		fracture_node = instance.get_node("CutFracture")
-	fracture_node.cuts = _fracture_slider.value
-	fracture_node.min_area = _min_area_slider.value
-
-
-func _on_VSlider_value_changed(value):
-	_fractures_label.text = "Fractures: %d" % value
-	var fracture_node = _cur_test_scene.get_node("Fracture")
-	if not fracture_node:
-		return
-#		fracture_node = _cur_test_scene.get_node("CutFracture")
-	fracture_node.cuts = _fracture_slider.value
-
-
-func _on_MinAreaSlider_value_changed(value):
-	_min_area_label.text = "Min Area: %d" % value
-	var fracture_node = _cur_test_scene.get_node("Fracture")
-	if not fracture_node:
-		return
-#		fracture_node = _cur_test_scene.get_node("CutFracture")
-	fracture_node.min_area = _min_area_slider.value

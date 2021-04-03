@@ -18,8 +18,8 @@ export(bool) var delauny_fracture = false
 export(DELAUNY_TYPES) var delauny_type = DELAUNY_TYPES.DEFAULT
 
 export(bool) var simple_fracture = true
-export(int) var cuts : int = 3
-export(int) var min_area : int = 25
+
+
 
 onready var polyFracture := PolygonFracture.new()
 onready var _source_polygon_parent := $SourcePolygons
@@ -30,9 +30,18 @@ onready var _timer := $Timer
 
 onready var _rng := RandomNumberGenerator.new()
 
+onready var _fracture_slider := $CanvasLayer/FracturesSlider
+onready var _fractures_label := $CanvasLayer/FracturesSlider/Label
+onready var _min_area_slider := $CanvasLayer/MinAreaSlider
+onready var _min_area_label := $CanvasLayer/MinAreaSlider/Label
+
+
+
+
 var _cur_fracture_color : Color = fracture_body_color
 var _auto_active : bool = false
-
+var cuts : int = 3 
+var min_area : int = 25
 
 
 
@@ -45,6 +54,12 @@ func _ready() -> void:
 	color.h = _rng.randf()
 	_cur_fracture_color = color
 	_source_polygon_parent.modulate = _cur_fracture_color
+	_fracture_slider.grab_focus()
+	
+	_fracture_slider.value = 16
+	_min_area_slider.value = 2000
+	_on_FracturesSlider_value_changed(16)
+	_on_MinAreaSlider_value_changed(2000)
 
 
 
@@ -134,6 +149,16 @@ func _on_VisibleTimer_timeout() -> void:
 func _on_SlowdownTimer_timeout() -> void:
 	Engine.time_scale = 1.0
 
+
+
+func _on_FracturesSlider_value_changed(value: float) -> void:
+	_fractures_label.text = "Fractures: %d" % value
+	cuts = _fracture_slider.value
+
+
+func _on_MinAreaSlider_value_changed(value):
+	_min_area_label.text = "Min Area: %d" % value
+	min_area = _min_area_slider.value
 
 
 
@@ -532,3 +557,6 @@ func _on_SlowdownTimer_timeout() -> void:
 #		var p : float = bounding_rect.size.y / bounding_rect.size.x
 ##		print("BR Size: ", bounding_rect.size, " - P: ", p)
 #		return p < threshold
+
+
+
