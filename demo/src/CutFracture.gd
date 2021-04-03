@@ -14,10 +14,11 @@ onready var _parent := $Parent
 onready var _rng := RandomNumberGenerator.new()
 onready var _cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(100.0, 1)
 onready var _slowmo_timer := $SlowMoTimer
+onready var _cut_line := $CutLine
+
 
 var _cur_fracture_color : Color = fracture_body_color
 var _cut_line_start := Vector2.ZERO
-
 
 
 
@@ -30,6 +31,9 @@ func _ready() -> void:
 	color.h = _rng.randf()
 	_cur_fracture_color = color
 	_source_polygon_parent.modulate = _cur_fracture_color
+	
+	_cut_line.clear_points()
+	_cut_line.visible = false
 
 
 
@@ -37,6 +41,9 @@ func _process(delta: float) -> void:
 	for source in _source_polygon_parent.get_children():
 		if source is Polygon2D:
 			source.global_rotation += deg2rad(10) * delta
+	
+	if _cut_line.visible:
+		_cut_line.set_point_position(1, _cut_line.to_local(get_global_mouse_position()))
 
 
 
@@ -78,14 +85,21 @@ func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("cut_line"):
 		_cut_line_start = get_global_mouse_position()
+		var points : PoolVector2Array = [_cut_line_start, _cut_line_start]
+		_cut_line.visible = true
+		_cut_line.points = points
+	
 	
 	if event.is_action_released("cut_line"):
 		var cut_line_end : Vector2 = get_global_mouse_position()
 		var vec : Vector2 = cut_line_end - _cut_line_start
 		var dis : float = vec.length()
 		var dir = vec.normalized()
-		var cut_shape = PolygonLib.createBeamPolygon(dir, dis, 10.0, 10.0, Vector2.ZERO)
+		var cut_shape = PolygonLib.createBeamPolygon(dir, dis, 2.0, 2.0, Vector2.ZERO)
 		cut(_cut_line_start, cut_shape)
+		
+		_cut_line.clear_points()
+		_cut_line.visible = false
 	
 	
 	
@@ -136,7 +150,7 @@ func cut(cut_pos : Vector2, cut_shape : PoolVector2Array) -> void:
 		if cut_info.intersected and cut_info.intersected.size() > 0:
 			for shape in cut_info.intersected:
 				var area : float = PolygonLib.getPolygonArea(shape)
-				if area < 2000:
+				if area < 3000:
 					continue
 				
 				
@@ -148,7 +162,10 @@ func cut(cut_pos : Vector2, cut_shape : PoolVector2Array) -> void:
 		if cut_info.final and cut_info.final.size() > 0:
 			for shape in cut_info.final:
 				var shape_area : float = PolygonLib.getPolygonArea(shape)
-				if shape_area < 2000:
+				if shape_area < 5000:
+					var fracture_info : Array = polyFracture.fractureDelaunay(shape, source_pos, 0.0, 3, 250)
+					for fracture_shard in fracture_info:
+						spawnFractureBody(fracture_shard)
 					continue
 				
 				#variant 1 for polygons that should stay centered (rigidbodies for instance)
