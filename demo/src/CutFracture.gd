@@ -8,7 +8,7 @@ const CUT_LINE_STATIONARY_DELAY : float = 0.1
 const CUT_LINE_DIRECTION_THRESHOLD : float = -0.7 #smaller than treshold ends line (start_dir.dot(cur_dir) < threshold = endLine)
 
 const CUT_LINE_MIN_LENGTH : float = 100.0
-const CUT_LINE_SEGMENT_MIN_LENGTH : float = 50.0
+const CUT_LINE_SEGMENT_MIN_LENGTH : float = 250.0
 
 
 
@@ -141,6 +141,7 @@ func endCutLine() -> void:
 				total_dis += dis
 				if total_dis > CUT_LINE_SEGMENT_MIN_LENGTH or j >= _cut_line_points.size() - 1:
 					
+					#TODO check if cut shape merging produces correct shapes !?
 					var cut_shape : PoolVector2Array = PolygonLib.createBeamPolygon(dir, dis, 1.0, 1.0, construct_point)
 					final_shape = PolygonLib.mergePolygons(final_shape, cut_shape, true)[0]
 					construct_point += dir * dis
@@ -172,6 +173,7 @@ func simpleCut(pos : Vector2) -> void:
 
 
 func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float) -> void:
+#	print("SOURCE CUT STARTED----------------------------------------------------------")
 	for source in _source_polygon_parent.get_children():
 		var source_polygon : PoolVector2Array = source.get_polygon()
 		var total_area : float = PolygonLib.getPolygonArea(source_polygon)
@@ -190,8 +192,10 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		
 		
 		var cut_fracture_info : Dictionary = polyFracture.cutFracture(source_polygon, cut_shape, source_trans, cut_trans, 5000, 3000, 250, 3)
+#		print("Shapes: ", cut_fracture_info.shapes.size(), " Fractures: ", cut_fracture_info.fractures.size())
 		
 		if cut_fracture_info.shapes.size() <= 0 and cut_fracture_info.fractures.size() <= 0:
+#			print("no cut/fracture occured")
 			continue
 		
 		for fracture in cut_fracture_info.fractures:
@@ -202,24 +206,26 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		
 		for shape in cut_fracture_info.shapes:
 			var spawn_pos : Vector2 = _source_polygon_parent.to_global(shape.centroid) + shape.world_pos
-			if source is Polygon2D:
-				call_deferred("spawnPoly", shape.centered_shape, spawn_pos, 0.0, source.modulate)
-			else:
-				var mass : float = s_mass * (shape.area / total_area)
-				call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel, s_ang_vel, mass, cut_pos)
+#			if source is Polygon2D:
+#				call_deferred("spawnPoly", shape.centered_shape, spawn_pos, 0.0, source.modulate)
+#			else:
+			var mass : float = s_mass * (shape.area / total_area)
+			call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel, s_ang_vel, mass, cut_pos)
 		
 		source.queue_free()
+	
+#	print("SOURCE CUT ENDED----------------------------------------------------------")
 
 
 
 
 
-func spawnPoly(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color) -> void:
-	var p = Polygon2D.new()
-	_source_polygon_parent.add_child(p)
-	p.global_position = spawn_pos
-	p.set_polygon(new_poly)
-	p.modulate = color
+#func spawnPoly(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color) -> void:
+#	var p = Polygon2D.new()
+#	_source_polygon_parent.add_child(p)
+#	p.global_position = spawn_pos
+#	p.set_polygon(new_poly)
+#	p.modulate = color
 
 
 func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color, lin_vel : Vector2, ang_vel : float, mass : float, cut_pos : Vector2) -> void:
@@ -231,6 +237,8 @@ func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot
 	instance.linear_velocity = lin_vel# + (spawn_pos - cut_pos).normalized() * 50
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
+	
+#	print("SPAWN RIGIDBODY with poly: ", new_poly)
 
 
 func spawnFractureBody(fracture_shard : Dictionary) -> void:
