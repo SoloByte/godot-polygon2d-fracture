@@ -184,7 +184,7 @@ func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, world_pos :
 #-> intersected shapes smaller than fracture_min_area are discarded
 #-> fracture pieces smaller than shard_min_area are discarded
 func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D, cut_min_area : float, fracture_min_area : float, shard_min_area : float, fractures : int = 3) -> Dictionary:
-	var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, cut_polygon, source_trans_global, cut_trans_global, true)
+	var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, cut_polygon, source_trans_global, cut_trans_global)
 		
 	var fracture_infos : Array = []
 	if cut_info.intersected and cut_info.intersected.size() > 0:
