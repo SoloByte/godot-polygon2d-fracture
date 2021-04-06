@@ -16,7 +16,7 @@ const CUT_LINE_SEGMENT_MIN_LENGTH : float = 250.0
 export(Color) var fracture_body_color
 export(PackedScene) var fracture_body_template
 export(PackedScene) var rigidbody_template
-
+export(PackedScene) var cut_shape_visualizer_template
 
 
 
@@ -43,7 +43,7 @@ var _cut_line_t : float = 0.0
 
 
 
-
+#var _debug_cut_shape_polygon2d := Polygon2D.new()
 
 
 
@@ -59,6 +59,10 @@ func _ready() -> void:
 	
 	_cut_line.clear_points()
 	_cut_line.visible = false
+	
+#	add_child(_debug_cut_shape_polygon2d)
+#	_debug_cut_shape_polygon2d.color = Color.red
+#	_debug_cut_shape_polygon2d.antialiased = true
 
 
 func _process(delta: float) -> void:
@@ -127,9 +131,10 @@ func startCutLine() -> void:
 
 func endCutLine() -> void:
 	if _cut_line_points.size() > 1 and _cut_line_total_length > CUT_LINE_MIN_LENGTH:
+		var final_line : PoolVector2Array = [_cut_line_points[0]]
 		var final_shape : PoolVector2Array = []
 		var i : int = 0
-		var construct_point := Vector2.ZERO
+#		var construct_point := Vector2.ZERO
 		while i < _cut_line_points.size() - 1:
 			var start : Vector2 = _cut_line_points[i]
 			var total_dis : float = 0.0
@@ -142,13 +147,18 @@ func endCutLine() -> void:
 				if total_dis > CUT_LINE_SEGMENT_MIN_LENGTH or j >= _cut_line_points.size() - 1:
 					
 					#TODO check if cut shape merging produces correct shapes !?
-					var cut_shape : PoolVector2Array = PolygonLib.createBeamPolygon(dir, dis, 1.0, 1.0, construct_point)
-					final_shape = PolygonLib.mergePolygons(final_shape, cut_shape, true)[0]
-					construct_point += dir * dis
+#					var cut_shape : PoolVector2Array = PolygonLib.createBeamPolygon(dir, dis, 2.0, 2.0, construct_point)
+#					final_shape = PolygonLib.mergePolygons(final_shape, cut_shape, true)[0]
+#					construct_point += dir * dis
+					final_line.append(end)
 					
 					i = j
 					break
 		
+		final_shape = PolygonLib.offsetPolyline(final_line, 2.0, true)[0]
+		final_shape = PolygonLib.translatePolygon(final_shape, -_cut_line_points[0])
+#		_debug_cut_shape_polygon2d.global_position = _cut_line_points[0]
+#		_debug_cut_shape_polygon2d.set_polygon(final_shape)
 		cutSourcePolygons(_cut_line_points[0], final_shape, 0.0)
 	
 	
@@ -173,6 +183,11 @@ func simpleCut(pos : Vector2) -> void:
 
 
 func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float) -> void:
+	var instance = cut_shape_visualizer_template.instance()
+	add_child(instance)
+	instance.global_position = cut_pos
+	instance.setPolygon(cut_shape)
+	
 #	print("SOURCE CUT STARTED----------------------------------------------------------")
 	for source in _source_polygon_parent.get_children():
 		var source_polygon : PoolVector2Array = source.get_polygon()

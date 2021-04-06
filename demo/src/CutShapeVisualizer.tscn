@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://demo/src/CutShapeVisualizer.gd" type="Script" id=1]
+
+[node name="CutShapeVisualizer" type="Polygon2D"]
+modulate = Color( 1, 0.415686, 0.415686, 1 )
+script = ExtResource( 1 )
+start_color = Color( 3, 3, 3, 1 )
+fade_speed = 2.0

@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://demo/test-scenes/cut-scenes/CutSceneBasic.tscn" type="PackedScene" id=1]
 [ext_resource path="res://demo/src/RigidBody2D.tscn" type="PackedScene" id=2]
 [ext_resource path="res://demo/src/FractureBody.tscn" type="PackedScene" id=3]
 [ext_resource path="res://demo/src/CutFracture.gd" type="Script" id=4]
+[ext_resource path="res://demo/src/CutShapeVisualizer.tscn" type="PackedScene" id=5]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
@@ -20,6 +21,7 @@ script = ExtResource( 4 )
 fracture_body_color = Color( 0.917647, 0.313726, 0.313726, 1 )
 fracture_body_template = ExtResource( 3 )
 rigidbody_template = ExtResource( 2 )
+cut_shape_visualizer_template = ExtResource( 5 )
 
 [node name="SourcePolygons" type="Node2D" parent="CutFracture" index="0"]
 show_behind_parent = true
