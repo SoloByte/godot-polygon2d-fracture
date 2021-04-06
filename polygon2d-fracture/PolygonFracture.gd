@@ -66,10 +66,8 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, worl
 		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
 		
 		if triangulation.area > min_discard_area:
-			var shape_info : Dictionary = PolygonLib.getShapeInfo(Transform2D(world_rot_rad, world_pos), poly, false)
-			shape_info.area = triangulation.area
+			var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), poly, triangulation)
 			fracture_info.append(shape_info)
-#			fracture_info.append(PolygonLib.makeShapeInfo(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
 	
 	return fracture_info
 
@@ -100,10 +98,8 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
 		
 		if triangulation.area > min_discard_area:
-			var shape_info : Dictionary = PolygonLib.getShapeInfo(Transform2D(world_rot_rad, world_pos), poly, false)
-			shape_info.area = triangulation.area
+			var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), poly, triangulation)
 			fracture_info.append(shape_info)
-#			fracture_info.append(PolygonLib.makeShapeInfo(poly, PolygonLib.getPolygonCentroid(triangulation.triangles, triangulation.area), world_pos, triangulation.area))
 	
 	return fracture_info
 
@@ -129,14 +125,11 @@ func fractureDelaunay(source_polygon : PoolVector2Array, world_pos : Vector2, wo
 					if area >= min_discard_area:
 						var centroid : Vector2 = PolygonLib.getTriangleCentroid(r)
 						fracture_info.append(PolygonLib.makeShapeInfo(PolygonLib.translatePolygon(r, -centroid), centroid, world_pos, triangle.area))
-#						fracture_info.append(PolygonLib.makeShapeInfo(r, PolygonLib.getTriangleCentroid(r), world_pos, area))
 				else:
 					var t : Dictionary = PolygonLib.triangulatePolygon(r, true, true)
 					if t.area >= min_discard_area:
-						var shape_info : Dictionary = PolygonLib.getShapeInfo(Transform2D(world_rot_rad, world_pos), triangle.points, false)
-						shape_info.area = triangle.area
+						var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), triangle.points, t)
 						fracture_info.append(shape_info)
-#						fracture_info.append(PolygonLib.makeShapeInfo(r, PolygonLib.getPolygonCentroid(t.triangles, t.area), world_pos, t.area))
 	
 	return fracture_info
 
@@ -199,14 +192,14 @@ func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Arr
 	var shape_infos : Array = []
 	if cut_info.final and cut_info.final.size() > 0:
 		for shape in cut_info.final:
-			var shape_area : float = PolygonLib.getPolygonArea(shape)
+			var triangulation : Dictionary = PolygonLib.triangulatePolygon(shape)
+			var shape_area : float = triangulation.area#PolygonLib.getPolygonArea(shape)
 			if shape_area < cut_min_area:
 				var fracture_info : Array = fractureDelaunay(shape, source_trans_global.get_origin(), 0.0, fractures, shard_min_area)
 				fracture_infos.append(fracture_info)
 				continue
 			
-			var shape_info : Dictionary = PolygonLib.getShapeInfo(source_trans_global, shape, false)
-			shape_info.area = shape_area
+			var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(source_trans_global, shape, triangulation)
 			shape_infos.append(shape_info)
 	
 	return {"shapes" : shape_infos, "fractures" : fracture_infos}

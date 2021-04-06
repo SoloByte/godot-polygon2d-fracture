@@ -12,7 +12,7 @@ static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArra
 	var total_area : float = 0.0
 	for i in range(triangle_points.size() / 3):
 		var index : int = i * 3
-		var points : Array = [poly[triangle_points[index]], poly[triangle_points[index + 1]], poly[triangle_points[index + 2]]]
+		var points : PoolVector2Array = [poly[triangle_points[index]], poly[triangle_points[index + 1]], poly[triangle_points[index + 2]]]
 		
 		var area : float = 0.0
 		if with_area:
@@ -34,7 +34,7 @@ static func makeTriangle(points : PoolVector2Array, area : float, centroid : Vec
 #triangulates a polygon and additionally calculates the centroid and area of each triangle alongside the total area of the polygon
 static func triangulatePolygon(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var total_area : float = 0.0
-	var triangle_points = Geometry.triangulate_polygon(poly)
+	var triangle_points : PoolIntArray = Geometry.triangulate_polygon(poly)
 	return makeTriangles(poly, triangle_points, with_area, with_centroid)
 
 #triangulates a polygon with the delaunay method and additionally calculates the centroid and area of each triangle alongside the total area of the polygon
@@ -161,7 +161,11 @@ static func getTriangleArea(points : PoolVector2Array) -> float:
 	var c : float = (points[0] - points[1]).length()
 	var s : float = (a + b + c) * 0.5
 	
-	return sqrt(s * (s - a) * (s - b) * (s - c))
+	var value : float = s * (s - a) * (s - b) * (s - c)
+	if value < 0.0:
+		return 1.0
+	var area : float = sqrt(value)
+	return area
 
 
 static func getTriangleCentroid(points : PoolVector2Array) -> Vector2:
@@ -260,8 +264,8 @@ static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector
 	var intersected_polygons : Array = intersectPolygons(source_polygon, cut_polygon, true)
 	if intersected_polygons.size() <= 0:
 		return {"final" : [], "intersected" : []}
-	var final_polygons : Array = clipPolygons(source_polygon, cut_polygon, true)
 	
+	var final_polygons : Array = clipPolygons(source_polygon, cut_polygon, true)
 	
 	return {"final" : final_polygons, "intersected" : intersected_polygons}
 
@@ -270,13 +274,18 @@ static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector
 static func makeShapeInfo(centered_shape : PoolVector2Array, centroid : Vector2, world_pos : Vector2, area : float) -> Dictionary:
 	return {"centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : world_pos, "area" : area}
 
-static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PoolVector2Array, calculate_area : bool = false) -> Dictionary:
-	var centroid : Vector2 = calculatePolygonCentroid(source_polygon)
+static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PoolVector2Array) -> Dictionary:
+	var triangulation : Dictionary = triangulatePolygon(source_polygon, true, true)
+	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
 	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
-	var area : float = 0.0
-	if calculate_area:
-		area = getPolygonArea(centered_shape)
-	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), area)# {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : source_global_trans.get_origin()}
+	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), triangulation.area)# {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : source_global_trans.get_origin()}
+
+static func getShapeInfoSimple(source_global_trans : Transform2D, source_polygon : PoolVector2Array, triangulation : Dictionary) -> Dictionary:
+	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
+	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
+#	print("Get shape info simple Poly: ", source_polygon, " centroid: ", centroid, "triangulation area: ", triangulation.area, " Centered Shape: ", centered_shape)
+#	print("Triangulation: ", triangulation, " Centered Shape: ", centered_shape)
+	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), triangulation.area)
 
 static func getShapeSpawnPos(parent_global_trans : Transform2D, centroid : Vector2, source_global_pos : Vector2) -> Vector2:
 	var spawn_pos : Vector2 = toGlobal(parent_global_trans, centroid) + source_global_pos
