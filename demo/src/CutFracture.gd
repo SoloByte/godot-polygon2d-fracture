@@ -168,12 +168,12 @@ func endCutLine() -> void:
 
 func simpleCut(pos : Vector2) -> void:
 	var cut_pos : Vector2 = pos
-	cutSourcePolygons(cut_pos, _cut_shape, 0.0)
+	cutSourcePolygons(cut_pos, _cut_shape, 0.0, _rng.randf_range(250.0, 400.0))
 	_input_disabled = true
 	set_deferred("_input_disabled", false)
 
 
-func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float) -> void:
+func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0) -> void:
 	var instance = _pool_cut_visualizer.getInstance()
 	instance.spawn(cut_pos)
 	instance.setPolygon(cut_shape)
@@ -209,7 +209,9 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		for shape in cut_fracture_info.shapes:
 			var spawn_pos : Vector2 = _source_polygon_parent.to_global(shape.centroid) + shape.world_pos
 			var mass : float = s_mass * (shape.area / total_area)
-			call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel, s_ang_vel, mass, cut_pos)
+			var dir : Vector2 = (spawn_pos - cut_pos).normalized()
+			
+			call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel + dir * cut_force, s_ang_vel, mass, cut_pos)
 		
 		source.queue_free()
 
