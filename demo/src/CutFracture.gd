@@ -202,7 +202,7 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		
 		for fracture in cut_fracture_info.fractures:
 			for fracture_shard in fracture:
-				spawnFractureBody(fracture_shard)
+				spawnFractureBody(fracture_shard, source)
 		
 		
 		
@@ -228,7 +228,7 @@ func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot
 	instance.mass = mass
 
 
-func spawnFractureBody(fracture_shard : Dictionary) -> void:
+func spawnFractureBody(fracture_shard : Dictionary, source_node) -> void:
 	var instance = _pool_fracture_shards.getInstance()
 	if not instance:
 		return
@@ -241,8 +241,8 @@ func spawnFractureBody(fracture_shard : Dictionary) -> void:
 		instance.setPolygon(fracture_shard.centered_shape)
 	
 	instance.setColor(_cur_fracture_color)
-	var dir : Vector2 = (to_global(fracture_shard.centroid) - global_position).normalized()
-	instance.apply_central_impulse(dir * _rng.randf_range(300, 500))
+	var dir : Vector2 = (source_node.to_global(fracture_shard.centroid) - source_node.global_position).normalized()
+	instance.linear_velocity = dir * _rng.randf_range(300, 500)
 	instance.angular_velocity = _rng.randf_range(-1, 1)
 
 

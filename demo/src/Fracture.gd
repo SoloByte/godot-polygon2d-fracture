@@ -34,7 +34,7 @@ onready var _fracture_slider := $CanvasLayer/FracturesSlider
 onready var _fractures_label := $CanvasLayer/FracturesSlider/Label
 onready var _min_area_slider := $CanvasLayer/MinAreaSlider
 onready var _min_area_label := $CanvasLayer/MinAreaSlider/Label
-
+onready var _pool_fracture_bodies := $Pool_FractureBodies
 
 
 
@@ -105,29 +105,30 @@ func fractureAll() -> void:
 			else:
 				fracture_info = polyFracture.fracture(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 #				fracture_info = fracture(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+		
 		for entry in fracture_info:
-				spawnFractureBody(entry)
+				spawnFractureBody(entry, source)
 
 
 
-func spawnFractureBody(fracture_shard : Dictionary) -> void:
-	var instance = polyFracture.spawnShape(_parent, fracture_body_template, fracture_shard).instance
+func spawnFractureBody(fracture_shard : Dictionary, source_node) -> void:
+#	var instance = polyFracture.spawnShape(_parent, facture_body_template, fracture_shard).instance
+	var instance = _pool_fracture_bodies.getInstance()
+	if not instance: 
+		return
+	
+	var parent = _pool_fracture_bodies.getParent()
+	var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(parent.get_global_transform(), fracture_shard.centroid, fracture_shard.world_pos)
+	instance.spawn(spawn_pos)
+	
+	if instance.has_method("setPolygon"):
+		instance.setPolygon(fracture_shard.centered_shape)
+	
 	
 	instance.setColor(_cur_fracture_color)
-	var dir : Vector2 = (to_global(fracture_shard.centroid) - global_position).normalized()
-	instance.apply_central_impulse(dir * _rng.randf_range(300, 500))
+	var dir : Vector2 = (source_node.to_global(fracture_shard.centroid) - source_node.global_position).normalized()
+	instance.linear_velocity = dir * _rng.randf_range(200, 400)
 	instance.angular_velocity = _rng.randf_range(-1, 1)
-	
-#	var instance = fracture_body_template.instance()
-#	_parent.add_child(instance)
-#	instance.global_position = to_global(center_point) + world_pos
-#	poly = PolygonLib.translatePolygon(poly, -center_point)
-#
-#	instance.setPolygon(poly)
-#	instance.setColor(_cur_fracture_color)
-#	var dir : Vector2 = (to_global(center_point) - global_position).normalized()
-#	instance.apply_central_impulse(dir * _rng.randf_range(300, 500))
-#	instance.angular_velocity = _rng.randf_range(-1, 1)
 
 
 

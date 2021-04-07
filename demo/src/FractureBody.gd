@@ -29,6 +29,7 @@ func spawn(pos : Vector2) -> void:
 func despawn() -> void:
 #	_col_poly.set_deferred("disabled", true)
 #	visible = false
+	global_rotation = 0.0
 	linear_velocity = Vector2.ZERO
 	angular_velocity = 0.0
 	set_applied_force(Vector2.ZERO)
