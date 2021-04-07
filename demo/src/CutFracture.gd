@@ -14,20 +14,19 @@ const CUT_LINE_SEGMENT_MIN_LENGTH : float = 250.0
 
 
 export(Color) var fracture_body_color
-export(PackedScene) var fracture_body_template
 export(PackedScene) var rigidbody_template
-export(PackedScene) var cut_shape_visualizer_template
 
 
 
 onready var polyFracture := PolygonFracture.new()
 onready var _source_polygon_parent := $SourcePolygons
-onready var _parent := $Parent
+#onready var _parent := $Parent
 onready var _rng := RandomNumberGenerator.new()
 onready var _cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(100.0, 1)
 onready var _slowmo_timer := $SlowMoTimer
 onready var _cut_line := $CutLine
-
+onready var _pool_cut_visualizer := $Pool_CutVisualizer
+onready var _pool_fracture_shards := $Pool_FractureShards
 
 
 
@@ -43,10 +42,6 @@ var _cut_line_t : float = 0.0
 
 
 
-#var _debug_cut_shape_polygon2d := Polygon2D.new()
-
-
-
 func _ready() -> void:
 	_rng.randomize()
 	
@@ -59,10 +54,6 @@ func _ready() -> void:
 	
 	_cut_line.clear_points()
 	_cut_line.visible = false
-	
-#	add_child(_debug_cut_shape_polygon2d)
-#	_debug_cut_shape_polygon2d.color = Color.red
-#	_debug_cut_shape_polygon2d.antialiased = true
 
 
 func _process(delta: float) -> void:
@@ -183,17 +174,15 @@ func simpleCut(pos : Vector2) -> void:
 
 
 func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float) -> void:
-	var instance = cut_shape_visualizer_template.instance()
-	add_child(instance)
-	instance.global_position = cut_pos
+	var instance = _pool_cut_visualizer.getInstance()
+	instance.spawn(cut_pos)
 	instance.setPolygon(cut_shape)
 	
-#	print("SOURCE CUT STARTED----------------------------------------------------------")
 	for source in _source_polygon_parent.get_children():
 		var source_polygon : PoolVector2Array = source.get_polygon()
 		var total_area : float = PolygonLib.getPolygonArea(source_polygon)
 		
-		var source_trans : Transform2D = source.get_global_transform()#Transform2D(source.global_rotation, source.global_position)
+		var source_trans : Transform2D = source.get_global_transform()
 		var cut_trans := Transform2D(cut_rot, cut_pos)
 		
 		var s_lin_vel := Vector2.ZERO
@@ -207,10 +196,8 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		
 		
 		var cut_fracture_info : Dictionary = polyFracture.cutFracture(source_polygon, cut_shape, source_trans, cut_trans, 5000, 3000, 250, 3)
-#		print("Shapes: ", cut_fracture_info.shapes.size(), " Fractures: ", cut_fracture_info.fractures.size())
 		
 		if cut_fracture_info.shapes.size() <= 0 and cut_fracture_info.fractures.size() <= 0:
-#			print("no cut/fracture occured")
 			continue
 		
 		for fracture in cut_fracture_info.fractures:
@@ -221,26 +208,13 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		
 		for shape in cut_fracture_info.shapes:
 			var spawn_pos : Vector2 = _source_polygon_parent.to_global(shape.centroid) + shape.world_pos
-#			if source is Polygon2D:
-#				call_deferred("spawnPoly", shape.centered_shape, spawn_pos, 0.0, source.modulate)
-#			else:
 			var mass : float = s_mass * (shape.area / total_area)
 			call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel, s_ang_vel, mass, cut_pos)
 		
 		source.queue_free()
-	
-#	print("SOURCE CUT ENDED----------------------------------------------------------")
 
 
 
-
-
-#func spawnPoly(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color) -> void:
-#	var p = Polygon2D.new()
-#	_source_polygon_parent.add_child(p)
-#	p.global_position = spawn_pos
-#	p.set_polygon(new_poly)
-#	p.modulate = color
 
 
 func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color, lin_vel : Vector2, ang_vel : float, mass : float, cut_pos : Vector2) -> void:
@@ -252,12 +226,19 @@ func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot
 	instance.linear_velocity = lin_vel# + (spawn_pos - cut_pos).normalized() * 50
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
-	
-#	print("SPAWN RIGIDBODY with poly: ", new_poly)
 
 
 func spawnFractureBody(fracture_shard : Dictionary) -> void:
-	var instance = polyFracture.spawnShape(_parent, fracture_body_template, fracture_shard).instance
+	var instance = _pool_fracture_shards.getInstance()
+	if not instance:
+		return
+	
+	var parent = _pool_fracture_shards.getParent()
+	var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(parent.get_global_transform(), fracture_shard.centroid, fracture_shard.world_pos)
+	instance.spawn(spawn_pos)
+	
+	if instance.has_method("setPolygon"):
+		instance.setPolygon(fracture_shard.centered_shape)
 	
 	instance.setColor(_cur_fracture_color)
 	var dir : Vector2 = (to_global(fracture_shard.centroid) - global_position).normalized()
