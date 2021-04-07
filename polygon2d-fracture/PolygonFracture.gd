@@ -128,7 +128,7 @@ func fractureDelaunay(source_polygon : PoolVector2Array, world_pos : Vector2, wo
 				else:
 					var t : Dictionary = PolygonLib.triangulatePolygon(r, true, true)
 					if t.area >= min_discard_area:
-						var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), triangle.points, t)
+						var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), r, t)
 						fracture_info.append(shape_info)
 	
 	return fracture_info
