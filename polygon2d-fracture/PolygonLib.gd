@@ -351,3 +351,84 @@ static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes 
 	else:
 		return new_polygons
 #-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+#my own simplify line code ^^
+static func simplifyLine(line : PoolVector2Array, segment_min_length : float = 100.0) -> PoolVector2Array:
+	var final_line : PoolVector2Array = [line[0]]
+
+	var i : int = 0
+	while i < line.size() - 1:
+		var start : Vector2 = line[i]
+		var total_dis : float = 0.0
+		for j in range(i + 1, line.size()):
+			var end : Vector2 = line[j]
+			var vec : Vector2 = end - start 
+			var dis : float = vec.length()
+			var dir : Vector2 = vec.normalized()
+			total_dis += dis
+			if total_dis > segment_min_length or j >= line.size() - 1:
+				final_line.append(end)
+				i = j
+				break
+	
+	return final_line
+
+
+static func simplifyLineRDP(line : PoolVector2Array, epsilon : float = 10.0) -> PoolVector2Array:
+	var total : int = line.size()
+	var start : Vector2 = line[0]
+	var end : Vector2 = line[total - 1]
+	
+	var rdp_points : Array = [start]
+	RDP.calculate(0, total - 1, Array(line), rdp_points, epsilon)
+	rdp_points.append(end)
+	
+	return PoolVector2Array(rdp_points)
+
+
+#used to simplify a line (less points)
+#Ramer-Douglas-Peucker Algorithm (iterative end-point fit algorithm)
+class RDP:
+	static func calculate(startIndex : int, endIndex : int, line : Array, final_line : Array, epsilon : float) -> void:
+		var nextIndex : int = findFurthest(line, startIndex, endIndex, epsilon)
+		if nextIndex > 0:
+			if startIndex != nextIndex:
+				calculate(startIndex, nextIndex, line, final_line, epsilon)
+			
+			final_line.append(line[nextIndex])
+			
+			if (endIndex != nextIndex):
+				calculate(nextIndex, endIndex, line, final_line, epsilon)
+
+	static func findFurthest(points : Array, a : int, b : int, epsilon : float) -> int:
+		var recordDistance : float = -1.0
+		var start : Vector2 = points[a]
+		var end : Vector2 = points[b]
+		var furthestIndex : int = -1
+		for i in range(a+1,b):
+			var currentPoint : Vector2 = points[i]
+			var d : float = lineDist(currentPoint, start, end);
+			if d > recordDistance:
+				recordDistance = d; 
+				furthestIndex = i;
+	  
+		if recordDistance > epsilon:
+			return furthestIndex
+		else:
+			return -1
+
+
+	static func lineDist(point : Vector2, line_start : Vector2, line_end : Vector2) -> float:
+		var norm = scalarProjection(point, line_start, line_end)
+		return (point - norm).length()
+
+
+	static func scalarProjection(p : Vector2, a : Vector2, b : Vector2) -> Vector2:
+		var ap : Vector2 = p - a
+		var ab : Vector2 = b - a
+		ab = ab.normalized()
+		ab *= ap.dot(ab)
+		return a + ab

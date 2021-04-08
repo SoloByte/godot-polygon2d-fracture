@@ -13,11 +13,10 @@ signal Despawn(ref)
 
 export(Color) var start_color = Color(1.5, 1.5, 1.5, 1.0)
 export(Color) var end_color = Color(1.0, 1.0, 1.0, 0.1)
-export(float) var fade_speed = 1.0
 
 
 
-
+var fade_speed = 1.0
 var t : float = 0.0
 
 
@@ -27,10 +26,13 @@ func _ready() -> void:
 	visible = false
 
 
-func spawn(pos : Vector2) -> void:
+func spawn(pos : Vector2, fade_speed : float = 1.0) -> void:
 	global_position = pos
 	visible = true
-	set_process(true)
+	if fade_speed > 0.0:
+		self.fade_speed = fade_speed
+		set_process(true)
+
 
 func despawn() -> void:
 	t = 0.0

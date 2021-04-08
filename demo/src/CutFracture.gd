@@ -3,12 +3,13 @@ extends Node2D
 
 
 
-const CUT_LINE_POINT_MIN_DISTANCE : float = 25.0
-const CUT_LINE_STATIONARY_DELAY : float = 0.1
-const CUT_LINE_DIRECTION_THRESHOLD : float = -0.7 #smaller than treshold ends line (start_dir.dot(cur_dir) < threshold = endLine)
+const CUT_LINE_POINT_MIN_DISTANCE : float = 40.0 #distance before new point is added (the smaller the more detailed is the visual line (not the cut line)
+const CUT_LINE_STATIONARY_DELAY : float = 0.1 #after that amount of seconds remaining stationary will end the cut line process and cut the sources
+const CUT_LINE_DIRECTION_THRESHOLD : float = -0.7 #smaller than treshold will end the cut line process and cut the sources (start_dir.dot(cur_dir) < threshold = endLine)
 
-const CUT_LINE_MIN_LENGTH : float = 100.0
-const CUT_LINE_SEGMENT_MIN_LENGTH : float = 250.0
+const CUT_LINE_MIN_LENGTH : float = 50.0 #the min length the cut line must have to be used for cutting (otherwise it will be discarded and no cutting occurs)
+const CUT_LINE_EPSILON : float = 10.0 # used in func simplifyLineRDP // how detailed the actual cut line is (opposed to CUT_LINE_POINT_MIN_DISTANCE which determines how detailed the visual cut line is)
+#const CUT_LINE_SEGMENT_MIN_LENGTH : float = 250.0 #used in my own simplifyLine func //how detailed the actual cut line is (opposed to CUT_LINE_POINT_MIN_DISTANCE which determines how detailed the visual cut line is)
 
 
 
@@ -18,15 +19,16 @@ export(PackedScene) var rigidbody_template
 
 
 
+
 onready var polyFracture := PolygonFracture.new()
 onready var _source_polygon_parent := $SourcePolygons
-#onready var _parent := $Parent
 onready var _rng := RandomNumberGenerator.new()
 onready var _cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(100.0, 1)
 onready var _slowmo_timer := $SlowMoTimer
 onready var _cut_line := $CutLine
 onready var _pool_cut_visualizer := $Pool_CutVisualizer
 onready var _pool_fracture_shards := $Pool_FractureShards
+
 
 
 
@@ -40,6 +42,8 @@ var _cut_line_points : PoolVector2Array = []
 var _cut_line_start_direction := Vector2.ZERO
 var _cut_line_t : float = 0.0
 var _cut_line_last_end_point := Vector3.ZERO #z is used as bool -> 0 = not a valid point/ 1 = valid point
+
+
 
 
 func _ready() -> void:
@@ -89,12 +93,6 @@ func _input(event: InputEvent) -> void:
 			else:
 				if event.pressed:
 					_cut_line_enabled = true
-#					_cut_line.visible = true
-		
-#		elif event.button_index == 2 and not _cut_line_enabled:
-#			if event.pressed:
-#				simpleCut(get_global_mouse_position())
-
 
 
 
@@ -144,27 +142,14 @@ func startCutLine() -> void:
 
 func endCutLine() -> void:
 	if _cut_line_points.size() > 1 and _cut_line_total_length > CUT_LINE_MIN_LENGTH and not _input_disabled:
-		var final_line : PoolVector2Array = [_cut_line_points[0]]
 		
-		var i : int = 0
-		while i < _cut_line_points.size() - 1:
-			var start : Vector2 = _cut_line_points[i]
-			var total_dis : float = 0.0
-			for j in range(i + 1, _cut_line_points.size()):
-				var end : Vector2 = _cut_line_points[j]
-				var vec : Vector2 = end - start 
-				var dis : float = vec.length()
-				var dir : Vector2 = vec.normalized()
-				total_dis += dis
-				if total_dis > CUT_LINE_SEGMENT_MIN_LENGTH or j >= _cut_line_points.size() - 1:
-					final_line.append(end)
-					i = j
-					break
-		
+#		var final_line : PoolVector2Array = PolygonLib.simplifyLine(_cut_line_points, CUT_LINE_SEGMENT_MIN_LENGTH)
+		var final_line : PoolVector2Array = PolygonLib.simplifyLineRDP(_cut_line_points, CUT_LINE_EPSILON)
 		var final_shape : PoolVector2Array = []
+		
 		final_shape = PolygonLib.offsetPolyline(final_line, 2.0, true)[0]
 		final_shape = PolygonLib.translatePolygon(final_shape, -_cut_line_points[0])
-		cutSourcePolygons(_cut_line_points[0], final_shape, 0.0)
+		cutSourcePolygons(_cut_line_points[0], final_shape, 0.0, 0.0, 0.25)
 	
 	
 	if _cut_line_points.size() > 1:
@@ -183,19 +168,20 @@ func endCutLine() -> void:
 	set_deferred("_input_disabled", false)
 
 
-
 func simpleCut(pos : Vector2) -> void:
 	if _input_disabled: return
 	
 	var cut_pos : Vector2 = pos
-	cutSourcePolygons(cut_pos, _cut_shape, 0.0, _rng.randf_range(250.0, 400.0))
+	cutSourcePolygons(cut_pos, _cut_shape, 0.0, _rng.randf_range(250.0, 400.0), 2.0)
 	_input_disabled = true
 	set_deferred("_input_disabled", false)
 
 
-func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0) -> void:
+
+
+func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
 	var instance = _pool_cut_visualizer.getInstance()
-	instance.spawn(cut_pos)
+	instance.spawn(cut_pos, fade_speed)
 	instance.setPolygon(cut_shape)
 	
 	for source in _source_polygon_parent.get_children():
@@ -234,7 +220,6 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 			call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel + dir * cut_force, s_ang_vel, mass, cut_pos)
 		
 		source.queue_free()
-
 
 
 

@@ -4,6 +4,6 @@
 
 [node name="CutShapeVisualizer" type="Polygon2D"]
 modulate = Color( 1, 0.415686, 0.415686, 1 )
+z_index = -10
 script = ExtResource( 1 )
 start_color = Color( 3, 3, 3, 1 )
-fade_speed = 2.0
