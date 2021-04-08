@@ -3,6 +3,7 @@
 
 
 ## UPDATES
+- UPDATE v1.2.0 overhaul of mouse cut system + important bug fixes + pool manager script (bonus) + "juice".
 - UPDATE v1.1.0 adds cutting of polygons.
 
 
@@ -18,6 +19,9 @@ Two simple scripts for fracturing and cutting polygons. PolygonFracture.gd is th
 The final scripts are located in the polygon2d-fracture folder.
 The demo project is located in the demo folder.
 
+The pool manager script added in [Update v1.2.0] is just a bonus. You can use it as is or use it as inspiration for your own pooling system :)
+
+
 PS: To test the actual fracture code performance just increase the min area (around 5000) because then less rigid bodies are spawned. You wont see many fracture shards either, though. (spawning and despawning that many rigid bodies at once cause the biggest performance hit - pooling would alleviate that for some part)
 
 
@@ -26,7 +30,14 @@ PS: To test the actual fracture code performance just increase the min area (aro
 
 There is just one cut method. It uses 1 polygon as the source and 1 polygon as a cut shape. The intersected shape (the parts overlapping in both polygons) can be fractured if desired. I also added helper funcs to PolygonLib.gd to create simple polygon shapes (currently: rectangle, circle, beam).
 
+[Update v1.2.0] overhauled the mouse cut system for the demo project. The input system was unified to 1 button so it works on touch screens too. (HOLD LMB for cut lines, Tap LMB for simple circle cut)
+
+### NEW CUT METHOD
+![](gifs/godot-polygon2d-fracture(v1.2.0)-readme02.gif)
+
+### OLD CUT METHOD
 ![](gifs/polygon2d-cutfracture-showcase-02.gif)
+
 
 
 ## Fracturing Methods
