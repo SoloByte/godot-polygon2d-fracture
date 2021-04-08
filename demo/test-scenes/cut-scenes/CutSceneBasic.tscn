@@ -9,7 +9,7 @@ text = "CUT AND FRACTURE DELAUNAY CONVEX"
 
 [node name="InfoLabel" parent="CanvasLayer" index="1"]
 text = "CHANGE TEST [W]
-FRACTURE SIMPLE [RMB]
+FRACTURE SIMPLE [TAP LMB]
 FRACTURE LINE [HOLD LMB]
 FULLSCREEN [F]
 QUIT [ESC]"

@@ -18,7 +18,7 @@ __meta__ = {
 
 [node name="Line2D" type="Line2D" parent="FractureParent/SourcePolygons/FracturePolygon" index="0"]
 points = PoolVector2Array( -647.49, -67.6194, -390.331, -462.882, -136.346, -420.022, -71.2631, -220.01, 147.798, -91.4304, 403.37, -297.792, 595.445, 497.495, -137.934, 435.587, -260.164, 300.658, -150.633, 157.792, -647.49, -67.6194 )
-default_color = Color( 1.5, 1.5, 1.5, 1 )
+default_color = Color( 1.2, 1.2, 1.2, 1 )
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
@@ -38,7 +38,7 @@ __meta__ = {
 
 [node name="Line2D" type="Line2D" parent="FractureParent/SourcePolygons/FracturePolygon2" index="0"]
 points = PoolVector2Array( -291.652, -256.658, 532.336, -178.543, -62.3463, 597.568, -311.906, 182.812, -292.084, -257.034 )
-default_color = Color( 1.5, 1.5, 1.5, 1 )
+default_color = Color( 1.2, 1.2, 1.2, 1 )
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2

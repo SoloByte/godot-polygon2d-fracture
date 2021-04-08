@@ -39,7 +39,7 @@ var _cut_line_total_length : float = 0.0
 var _cut_line_points : PoolVector2Array = []
 var _cut_line_start_direction := Vector2.ZERO
 var _cut_line_t : float = 0.0
-
+var _cut_line_last_end_point := Vector3.ZERO #z is used as bool -> 0 = not a valid point/ 1 = valid point
 
 
 func _ready() -> void:
@@ -67,20 +67,33 @@ func _process(delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if _input_disabled: return
 	
+	#this system works with 1 button (instead of 2 with right mouse button) -> makes it work on touch screens
 	if event is InputEventMouseButton:
 		if event.button_index == 1:
 			if _cut_line_enabled:
 				if not event.pressed:
-					endCutLine()
-					_cut_line_enabled = false
-					_cut_line.visible = false
+					if _cut_line.visible:
+						endCutLine()
+						_cut_line_enabled = false
+						_cut_line.visible = false
+						_cut_line_last_end_point = Vector3.ZERO
+					else:
+						simpleCut(get_global_mouse_position())
+						_cut_line_total_length = 0.0
+						_cut_line_points = []
+						_cut_line.clear_points()
+						_cut_line_start_direction = Vector2.ZERO
+						_cut_line_t = 0.0
+						_cut_line_enabled = false
+						_cut_line.visible = false
 			else:
 				if event.pressed:
 					_cut_line_enabled = true
-					_cut_line.visible = true
-		elif event.button_index == 2 and not _cut_line_enabled:
-			if event.pressed:
-				simpleCut(get_global_mouse_position())
+#					_cut_line.visible = true
+		
+#		elif event.button_index == 2 and not _cut_line_enabled:
+#			if event.pressed:
+#				simpleCut(get_global_mouse_position())
 
 
 
@@ -88,7 +101,16 @@ func _input(event: InputEvent) -> void:
 
 func calculateCutLine(cur_pos : Vector2, t : float) -> void:
 	if _cut_line_points.size() <= 0:
-		_cut_line_points.append(cur_pos)
+		if _cut_line_last_end_point.z > 0.0:# last cut lines end point is new cut lines start point
+			_cut_line_points.append(Vector2(_cut_line_last_end_point.x, _cut_line_last_end_point.y))
+			_cut_line_last_end_point = Vector3.ZERO
+		else:#there was no cut line before
+			_cut_line_points.append(cur_pos)
+	
+	elif _cut_line_points.size() == 1 and not _cut_line.visible:
+		var dis : float = (cur_pos - _cut_line_points[_cut_line_points.size() - 1]).length()
+		if dis > CUT_LINE_MIN_LENGTH:
+			_cut_line.visible = true
 	else:
 		var last_pos : Vector2 = lerp(_cut_line_points[_cut_line_points.size() - 1], cur_pos, t)
 		var vec : Vector2 = cur_pos - last_pos
@@ -121,11 +143,10 @@ func startCutLine() -> void:
 
 
 func endCutLine() -> void:
-	if _cut_line_points.size() > 1 and _cut_line_total_length > CUT_LINE_MIN_LENGTH:
+	if _cut_line_points.size() > 1 and _cut_line_total_length > CUT_LINE_MIN_LENGTH and not _input_disabled:
 		var final_line : PoolVector2Array = [_cut_line_points[0]]
-		var final_shape : PoolVector2Array = []
+		
 		var i : int = 0
-#		var construct_point := Vector2.ZERO
 		while i < _cut_line_points.size() - 1:
 			var start : Vector2 = _cut_line_points[i]
 			var total_dis : float = 0.0
@@ -136,25 +157,22 @@ func endCutLine() -> void:
 				var dir : Vector2 = vec.normalized()
 				total_dis += dis
 				if total_dis > CUT_LINE_SEGMENT_MIN_LENGTH or j >= _cut_line_points.size() - 1:
-					
-					#TODO check if cut shape merging produces correct shapes !?
-#					var cut_shape : PoolVector2Array = PolygonLib.createBeamPolygon(dir, dis, 2.0, 2.0, construct_point)
-#					final_shape = PolygonLib.mergePolygons(final_shape, cut_shape, true)[0]
-#					construct_point += dir * dis
 					final_line.append(end)
-					
 					i = j
 					break
 		
+		var final_shape : PoolVector2Array = []
 		final_shape = PolygonLib.offsetPolyline(final_line, 2.0, true)[0]
 		final_shape = PolygonLib.translatePolygon(final_shape, -_cut_line_points[0])
-#		_debug_cut_shape_polygon2d.global_position = _cut_line_points[0]
-#		_debug_cut_shape_polygon2d.set_polygon(final_shape)
 		cutSourcePolygons(_cut_line_points[0], final_shape, 0.0)
 	
 	
+	if _cut_line_points.size() > 1:
+		var end_point : Vector2 = _cut_line_points[_cut_line_points.size() - 1]
+		_cut_line_last_end_point = Vector3(end_point.x, end_point.y, 1.0)
+	else:
+		_cut_line_last_end_point = Vector3.ZERO
 	
-#	_cut_line.visible = false
 	_cut_line_total_length = 0.0
 	_cut_line_points = []
 	_cut_line.clear_points()
@@ -167,6 +185,8 @@ func endCutLine() -> void:
 
 
 func simpleCut(pos : Vector2) -> void:
+	if _input_disabled: return
+	
 	var cut_pos : Vector2 = pos
 	cutSourcePolygons(cut_pos, _cut_shape, 0.0, _rng.randf_range(250.0, 400.0))
 	_input_disabled = true
@@ -195,7 +215,7 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 			s_mass = source.mass
 		
 		
-		var cut_fracture_info : Dictionary = polyFracture.cutFracture(source_polygon, cut_shape, source_trans, cut_trans, 5000, 3000, 250, 3)
+		var cut_fracture_info : Dictionary = polyFracture.cutFracture(source_polygon, cut_shape, source_trans, cut_trans, 5000, 3000, 250, 1)
 		
 		if cut_fracture_info.shapes.size() <= 0 and cut_fracture_info.fractures.size() <= 0:
 			continue

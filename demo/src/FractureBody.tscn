@@ -20,7 +20,8 @@ script = ExtResource( 1 )
 color = Color( 0.545098, 0.545098, 0.545098, 1 )
 
 [node name="Line2D" type="Line2D" parent="."]
-default_color = Color( 1.5, 1.5, 1.5, 1 )
+modulate = Color( 1.35, 1.35, 1.35, 1 )
+default_color = Color( 1, 1, 1, 1 )
 
 [node name="Center" type="Polygon2D" parent="."]
 visible = false
