@@ -33,15 +33,15 @@ func setPolygon(poly : PoolVector2Array) -> void:
 	_line2d.points = poly
 
 
-#func setTexture(texture_info : Dictionary) -> void:
-#	_polygon2d.texture = texture_info.texture
-#	_polygon2d.texture_scale = texture_info.scale
-#	_polygon2d.texture_offset = texture_info.offset
-#	_polygon2d.texture_rotation = texture_info.rot
-#
-#
-#func getTextureDetails() -> Dictionary:
-#	return {"texture" : _polygon2d.texture, "rot" : _polygon2d.texture_rotation, "offset" : _polygon2d.texture_offset, "scale" : _polygon2d.texture_scale}
+func setTexture(texture_info : Dictionary) -> void:
+	_polygon2d.texture = texture_info.texture
+	_polygon2d.texture_scale = texture_info.scale
+	_polygon2d.texture_offset = texture_info.offset
+	_polygon2d.texture_rotation = texture_info.rot
+
+
+func getTextureDetails() -> Dictionary:
+	return {"texture" : _polygon2d.texture, "rot" : _polygon2d.texture_rotation, "offset" : _polygon2d.texture_offset, "scale" : _polygon2d.texture_scale}
 
 
 func getPolygon() -> PoolVector2Array:

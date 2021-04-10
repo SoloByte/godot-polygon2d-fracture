@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://demo/src/RigidBody2D.gd" type="Script" id=1]
+[ext_resource path="res://demo/tile-test-01.png" type="Texture" id=2]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
@@ -20,6 +21,7 @@ rand_linear_velocity_range = Vector2( 1500, 3000 )
 [node name="Polygon2D" type="Polygon2D" parent="."]
 show_behind_parent = true
 color = Color( 0.545098, 0.545098, 0.545098, 1 )
+texture = ExtResource( 2 )
 
 [node name="Line2D" type="Line2D" parent="Polygon2D"]
 default_color = Color( 1.25, 1.25, 1.25, 1 )

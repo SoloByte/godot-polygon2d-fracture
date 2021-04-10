@@ -220,22 +220,22 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		
 		for shape in cut_fracture_info.shapes:
 			var area_p : float = shape.area / total_area
-			var spawn_pos : Vector2 = _source_polygon_parent.to_global(shape.centroid) + shape.world_pos
+			var spawn_pos : Vector2 = source.to_global(shape.centroid)
 			var mass : float = s_mass * area_p
 			var dir : Vector2 = (spawn_pos - cut_pos).normalized()
 			
-#			var texture_info : Dictionary = source.getTextureDetails()
-#			var texture_offset : Vector2 = source.to_global(shape.centroid) - source.global_position
-#
-#			texture_info.offset += texture_offset
-#			texture_info.rot += source.global_rotation
-			call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, 0.0, source.modulate, s_lin_vel + dir * cut_force, s_ang_vel, mass, cut_pos)#,texture_info)
+			
+			var texture_info : Dictionary = source.getTextureDetails()
+			var texture_offset : Vector2 = spawn_pos - source.global_position
+
+			texture_info.offset += texture_offset.rotated(-source.global_rotation)
+			call_deferred("spawnRigibody2d", shape.centered_shape, spawn_pos, source.global_rotation, source.modulate, s_lin_vel + dir * cut_force, s_ang_vel, mass, cut_pos,texture_info)
 		
 		source.queue_free()
 
 
 
-func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color, lin_vel : Vector2, ang_vel : float, mass : float, cut_pos : Vector2) -> void:#, texture_info : Dictionary) -> void:
+func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot : float, color : Color, lin_vel : Vector2, ang_vel : float, mass : float, cut_pos : Vector2, texture_info : Dictionary) -> void:
 	var instance = rigidbody_template.instance()
 	_source_polygon_parent.add_child(instance)
 	instance.global_position = spawn_pos
@@ -245,7 +245,7 @@ func spawnRigibody2d(new_poly : PoolVector2Array, spawn_pos : Vector2, spawn_rot
 	instance.linear_velocity = lin_vel# + (spawn_pos - cut_pos).normalized() * 50
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
-#	instance.setTexture(texture_info)
+	instance.setTexture(texture_info)
 
 
 func spawnFractureBody(fracture_shard : Dictionary, source_node) -> void:

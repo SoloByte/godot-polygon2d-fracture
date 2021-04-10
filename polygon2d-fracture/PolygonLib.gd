@@ -257,9 +257,18 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 #get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
 static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D) -> Dictionary:
-	cut_polygon = translatePolygon(cut_polygon, toLocalWithoutRot(source_trans_global, cut_trans_global.get_origin()))
-	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation())
-	source_polygon = rotatePolygon(source_polygon, source_trans_global.get_rotation())
+	var cut_pos : Vector2 = toLocal(source_trans_global, cut_trans_global.get_origin())
+#	cut_pos = cut_pos.rotated(source_trans_global.get_rotation())
+	
+	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation() - source_trans_global.get_rotation())
+	cut_polygon = translatePolygon(cut_polygon, cut_pos)
+	
+#	source_polygon = rotatePolygon(source_polygon, source_trans_global.get_rotation())
+	
+#	cut_polygon = translatePolygon(cut_polygon, toLocalWithoutRot(source_trans_global, cut_trans_global.get_origin()))
+#	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation())
+#	source_polygon = rotatePolygon(source_polygon, source_trans_global.get_rotation())
+	
 	
 	var intersected_polygons : Array = intersectPolygons(source_polygon, cut_polygon, true)
 	if intersected_polygons.size() <= 0:
