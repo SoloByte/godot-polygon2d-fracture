@@ -13,11 +13,11 @@ onready var _col_polygon2d := $CollisionPolygon2D
 onready var _rng := RandomNumberGenerator.new()
 
 
+
 func _ready() -> void:
 	_rng.randomize()
 	var poly = PolygonLib.createCirclePolygon(radius, smoothing)
 	setPolygon(poly)
-	
 	linear_velocity = Vector2.RIGHT.rotated(PI * 2.0 * _rng.randf()) * _rng.randf_range(rand_linear_velocity_range.x, rand_linear_velocity_range.y)
 #	angular_velocity = _rng.randf_range(rand_angular_velocity_range.x, rand_angular_velocity_range.y)
 
@@ -31,6 +31,17 @@ func setPolygon(poly : PoolVector2Array) -> void:
 	_col_polygon2d.set_polygon(poly)
 	poly.append(poly[0])
 	_line2d.points = poly
+
+
+#func setTexture(texture_info : Dictionary) -> void:
+#	_polygon2d.texture = texture_info.texture
+#	_polygon2d.texture_scale = texture_info.scale
+#	_polygon2d.texture_offset = texture_info.offset
+#	_polygon2d.texture_rotation = texture_info.rot
+#
+#
+#func getTextureDetails() -> Dictionary:
+#	return {"texture" : _polygon2d.texture, "rot" : _polygon2d.texture_rotation, "offset" : _polygon2d.texture_offset, "scale" : _polygon2d.texture_scale}
 
 
 func getPolygon() -> PoolVector2Array:

@@ -76,6 +76,8 @@ func _input(event: InputEvent) -> void:
 			_timer.start(3.0)
 
 
+func _exit_tree() -> void:
+	_pool_fracture_bodies.clearPoolInstant()
 
 
 func fractureAll() -> void:
