@@ -60,6 +60,13 @@ func setPolygon(polygon) -> void:
 	_line.points = polygon
 
 
+func setTexture(texture_info : Dictionary) -> void:
+	_poly.texture = texture_info.texture
+	_poly.texture_scale = texture_info.scale
+	_poly.texture_offset = texture_info.offset
+	_poly.texture_rotation = texture_info.rot
+
+
 func setColor(color : Color) -> void:
 	_poly.modulate = color
 

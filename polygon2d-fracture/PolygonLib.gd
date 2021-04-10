@@ -99,6 +99,15 @@ static func rotatePolygon(poly : PoolVector2Array, rot : float) -> PoolVector2Ar
 	return rotated_polygon
 
 
+static func scalePolygon(poly : PoolVector2Array, scale : Vector2) -> PoolVector2Array:
+	var scaled_polygon : PoolVector2Array = []
+	
+	for p in poly:
+		scaled_polygon.append(p * scale)
+	
+	return scaled_polygon 
+
+
 #calculates the centroid of the polygon and uses it to translate the polygon to Vector2.ZERO
 static func centerPolygon(poly : PoolVector2Array) -> PoolVector2Array:
 	var centered_polygon : PoolVector2Array = []
@@ -360,7 +369,9 @@ static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes 
 #-----------------------------------------------------------------------------------------------------------------
 
 
-
+static func setTextureOffset(texture_info : Dictionary, centroid : Vector2) -> Dictionary:
+	texture_info.offset += centroid.rotated(texture_info.rot)
+	return texture_info
 
 #my own simplify line code ^^
 static func simplifyLine(line : PoolVector2Array, segment_min_length : float = 100.0) -> PoolVector2Array:

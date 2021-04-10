@@ -214,7 +214,7 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 		
 		for fracture in cut_fracture_info.fractures:
 			for fracture_shard in fracture:
-				spawnFractureBody(fracture_shard)
+				spawnFractureBody(fracture_shard, source.getTextureInfo())
 		
 		
 		for shape in cut_fracture_info.shapes:
@@ -222,10 +222,7 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 			var mass : float = s_mass * area_p
 			var dir : Vector2 = (shape.spawn_pos - cut_pos).normalized()
 			
-			var texture_info : Dictionary = source.getTextureInfo()
-			texture_info.offset += shape.centroid.rotated(texture_info.rot)
-			
-			call_deferred("spawnRigibody2d", shape, source.modulate, s_lin_vel + dir * cut_force, s_ang_vel, mass, cut_pos,texture_info)
+			call_deferred("spawnRigibody2d", shape, source.modulate, s_lin_vel + dir * cut_force, s_ang_vel, mass, cut_pos, source.getTextureInfo())
 		
 		source.queue_free()
 
@@ -241,10 +238,10 @@ func spawnRigibody2d(shape_info : Dictionary, color : Color, lin_vel : Vector2, 
 	instance.linear_velocity = lin_vel# + (spawn_pos - cut_pos).normalized() * 50
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
-	instance.setTexture(texture_info)
+	instance.setTexture(PolygonLib.setTextureOffset(texture_info, shape_info.centroid))
 
 
-func spawnFractureBody(fracture_shard : Dictionary) -> void:
+func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary) -> void:
 	var instance = _pool_fracture_shards.getInstance()
 	if not instance:
 		return
@@ -259,6 +256,8 @@ func spawnFractureBody(fracture_shard : Dictionary) -> void:
 	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
 	instance.linear_velocity = dir * _rng.randf_range(300, 500)
 	instance.angular_velocity = _rng.randf_range(-1, 1)
+	
+	instance.setTexture(PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
 
 
 
