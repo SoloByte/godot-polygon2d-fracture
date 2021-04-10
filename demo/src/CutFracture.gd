@@ -250,9 +250,11 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary) -
 	instance.global_rotation = fracture_shard.spawn_rot
 	
 	if instance.has_method("setPolygon"):
-		instance.setPolygon(fracture_shard.centered_shape)
+		var s : Vector2 = fracture_shard.source_global_trans.get_scale()
+		instance.setPolygon(fracture_shard.centered_shape, s)
 	
 	instance.setColor(_cur_fracture_color)
+	
 	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
 	instance.linear_velocity = dir * _rng.randf_range(300, 500)
 	instance.angular_velocity = _rng.randf_range(-1, 1)

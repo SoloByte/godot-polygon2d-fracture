@@ -52,12 +52,26 @@ func despawn() -> void:
 	_t = 1.0
 
 
+#func setScale(s : Vector2) -> void:
+#	var t := Transform2D(0.0, Vector2.ZERO).scaled(s)
+#	shape_owner_set_transform(get_shape_owners()[0],t)
+#	_poly.scale = s
+#	_line.scale = s
 
-func setPolygon(polygon) -> void:
-	_col_poly.set_polygon(polygon)
+
+func setPolygon(polygon : PoolVector2Array, new_scale : Vector2) -> void:
 	_poly.set_polygon(polygon)
 	polygon.append(polygon[0])
 	_line.points = polygon
+	if new_scale != Vector2(1.0, 1.0):
+		#physics objects (like the rigidbody2d) can not be scaled
+		#thats why the polygon2d/line2d nodes are scale seperate
+		#collision polygons can be scaled with "shape_owner_set_transform(owner_id,transform)
+		#but here I just scale the polygon for the collision polygon
+		polygon = PolygonLib.scalePolygon(polygon, new_scale)
+		_poly.scale = new_scale
+		_line.scale = new_scale
+	_col_poly.set_polygon(polygon)
 
 
 func setTexture(texture_info : Dictionary) -> void:

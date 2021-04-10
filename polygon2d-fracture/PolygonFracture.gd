@@ -20,25 +20,6 @@ func _init(new_seed : int = -1) -> void:
 
 
 
-
-
-#calculates the correct spawn position for the instance
-#adds the instance as child of the parent
-#if the instance has the method "setPolygon" the method will be used
-#returns a dictionary with the instance and centered polygon
-func spawnShape(_parent, instance, shape_info : Dictionary) -> void:
-	if not instance: return
-	
-	_parent.add_child(instance)
-	instance.global_position = shape_info.spawn_pos
-	instance.global_rotation = shape_info.spawn_rot
-	
-	if instance.has_method("setPolygon"):
-		instance.setPolygon(shape_info.centered_shape)
-
-
-
-
 #all fracture functions return an array of dictionaries -> where the dictionary is 1 fracture shard (see func makeShapeInfo) -------------------------------------
 
 #fracture simple generates random cut lines around the bounding box of the polygon -> cut_number is the amount of lines generated

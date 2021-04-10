@@ -5,7 +5,6 @@ class_name PolygonLib
 
 
 
-
 #returns a triangulation dictionary (is used in other funcs parameters)
 static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArray, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var triangles : Array = []
@@ -369,9 +368,12 @@ static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes 
 #-----------------------------------------------------------------------------------------------------------------
 
 
+#used to set the texture offset in an texture_info dictionary
 static func setTextureOffset(texture_info : Dictionary, centroid : Vector2) -> Dictionary:
 	texture_info.offset += centroid.rotated(texture_info.rot)
 	return texture_info
+
+
 
 #my own simplify line code ^^
 static func simplifyLine(line : PoolVector2Array, segment_min_length : float = 100.0) -> PoolVector2Array:

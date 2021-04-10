@@ -115,26 +115,26 @@ func fractureAll() -> void:
 
 
 func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary) -> void:
-#	var instance = polyFracture.spawnShape(_parent, facture_body_template, fracture_shard).instance
 	var instance = _pool_fracture_bodies.getInstance()
 	if not instance: 
 		return
 	
-#	var parent = _pool_fracture_bodies.getParent()
-#	var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(parent.get_global_transform(), fracture_shard.centroid, fracture_shard.world_pos)
+	
+	
+#	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), fracture_shard.centered_shape, _cur_fracture_color, texture_info, _rng.randf_range(3, 5))
+	
 	instance.spawn(fracture_shard.spawn_pos)
 	instance.global_rotation = fracture_shard.spawn_rot
 	if instance.has_method("setPolygon"):
-		var poly : PoolVector2Array = PolygonLib.scalePolygon(fracture_shard.centered_shape, fracture_shard.source_global_trans.get_scale())
-		instance.setPolygon(poly)
-	
-	
+		var s : Vector2 = fracture_shard.source_global_trans.get_scale()
+		instance.setPolygon(fracture_shard.centered_shape, s)
+
+
 	instance.setColor(_cur_fracture_color)
-	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()# - source_node.global_position).normalized()
-#	var dir : Vector2 = (fracture_shard.spawn_pos - source_node.global_position).normalized()
+	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
 	instance.linear_velocity = dir * _rng.randf_range(200, 400)
 	instance.angular_velocity = _rng.randf_range(-1, 1)
-	
+
 	instance.setTexture(PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
 
 
