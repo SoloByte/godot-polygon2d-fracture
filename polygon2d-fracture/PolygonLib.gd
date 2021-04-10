@@ -280,24 +280,22 @@ static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector
 
 
 #just makes a dictionary that can be used in different funcs
-static func makeShapeInfo(centered_shape : PoolVector2Array, centroid : Vector2, world_pos : Vector2, area : float) -> Dictionary:
-	return {"centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : world_pos, "area" : area}
+static func makeShapeInfo(centered_shape : PoolVector2Array, centroid : Vector2, spawn_pos : Vector2, area : float, source_global_trans : Transform2D) -> Dictionary:
+	return {"centered_shape" : centered_shape, "centroid" : centroid, "spawn_pos" : spawn_pos, "spawn_rot" : source_global_trans.get_rotation(), "area" : area, "source_global_trans" : source_global_trans}
 
 static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PoolVector2Array) -> Dictionary:
 	var triangulation : Dictionary = triangulatePolygon(source_polygon, true, true)
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
 	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
-	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), triangulation.area)# {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : source_global_trans.get_origin()}
+	return makeShapeInfo(centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
 static func getShapeInfoSimple(source_global_trans : Transform2D, source_polygon : PoolVector2Array, triangulation : Dictionary) -> Dictionary:
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
 	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
-#	print("Get shape info simple Poly: ", source_polygon, " centroid: ", centroid, "triangulation area: ", triangulation.area, " Centered Shape: ", centered_shape)
-#	print("Triangulation: ", triangulation, " Centered Shape: ", centered_shape)
-	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), triangulation.area)
+	return makeShapeInfo(centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
-static func getShapeSpawnPos(parent_global_trans : Transform2D, centroid : Vector2, source_global_pos : Vector2) -> Vector2:
-	var spawn_pos : Vector2 = toGlobal(parent_global_trans, centroid) + source_global_pos
+static func getShapeSpawnPos(source_global_trans : Transform2D, centroid : Vector2) -> Vector2:
+	var spawn_pos : Vector2 = toGlobal(source_global_trans, centroid)
 	return spawn_pos
 
 

@@ -44,6 +44,8 @@ func _ready() -> void:
 		setup(instance_template, max_amount, true, instantiate_new_on_empty, keep_instances_in_tree)
 
 
+func _exit_tree() -> void:
+	clearPoolInstant()
 
 
 func setup(template : PackedScene, max_size : int, ready_on_start : bool, instantiate_new : bool = false, keep_in_tree : bool = false) -> void:
