@@ -222,9 +222,8 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 			var mass : float = s_mass * area_p
 			var dir : Vector2 = (shape.spawn_pos - cut_pos).normalized()
 			
-			var texture_info : Dictionary = source.getTextureDetails()
-			var texture_offset : Vector2 = shape.spawn_pos - source.global_position
-			texture_info.offset += texture_offset.rotated(-source.global_rotation)
+			var texture_info : Dictionary = source.getTextureInfo()
+			texture_info.offset += shape.centroid.rotated(texture_info.rot)
 			
 			call_deferred("spawnRigibody2d", shape, source.modulate, s_lin_vel + dir * cut_force, s_ang_vel, mass, cut_pos,texture_info)
 		
