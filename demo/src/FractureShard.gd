@@ -1,6 +1,8 @@
 extends Polygon2D
 
 
+
+
 const LINE_FADE_SPEED : float  = 0.8
 
 
@@ -8,6 +10,13 @@ const LINE_FADE_SPEED : float  = 0.8
 
 signal Despawn(ref)
 
+
+
+
+export(float, 0.0, 1.0) var lin_drag : float = 1.0
+export(float, 0.0, 1.0) var ang_drag : float = 0.0
+export(Vector2) var gravity_direction = Vector2(0, 1)
+export(float) var gravity_scale : float = 10.0
 
 
 
@@ -21,10 +30,17 @@ onready var _line_lerp_start_color : Color = _line.modulate
 
 var _t : float = 1.0
 
-#var _lin_vel := Vector2.ZERO
-#var _ang_vel : float = 0.0
+var _lin_accel := Vector2.ZERO
+var _ang_accel : float = 0.0
+var _lin_vel := Vector2.ZERO
+var _ang_vel : float = 0.0
 #var _dead : bool = false
 
+
+
+func _ready() -> void:
+	set_process(false)
+	visible = false
 
 
 func _process(delta: float) -> void:
@@ -32,13 +48,36 @@ func _process(delta: float) -> void:
 		_t += delta * LINE_FADE_SPEED
 		_line.modulate = lerp(_line_lerp_start_color, self_modulate, min(_t, 1.0))
 	
-#	global_position += _lin_vel * delta
-#	global_rotation += _ang_vel * delta
+	_lin_vel += _lin_accel
+	_ang_vel += _ang_accel
+	
+	_lin_vel += gravity_direction.normalized() * gravity_scale
+	
+#	var friction : Vector2 = (-1.0 * _lin_vel).normalized() * lin_drag
+#	_lin_vel += friction
+
+#	var lin_drag_magnitude : float = _lin_vel.length_squared() * lin_drag
+#	var lin_drag_force : Vector2 = -1.0 * _lin_vel.normalized() * lin_drag_magnitude
+#	_lin_vel += lin_drag_force
+
+	_lin_vel *= lin_drag
+	
+	var ang_drag_magnitude : float = _ang_vel * _ang_vel * ang_drag
+	var ang_drag_force : float = sign(_ang_vel) * -1.0 * ang_drag_magnitude
+	_ang_vel += ang_drag_force
+	
+	global_position += _lin_vel * delta
+	global_rotation += _ang_vel * delta
+	
+	_lin_accel = Vector2.ZERO
+	_ang_accel = 0.0
+	
+#	print("Lin vel: ", _lin_vel, " Ang Vel: ", _ang_vel)
 #	if _dead:
 #		scale = lerp(scale, Vector2.ZERO, delta)
 
 
-func spawn(pos : Vector2, rot : float, s : Vector2, poly : PoolVector2Array, c : Color, texture_info : Dictionary, lifetime : float = 3.0) -> void:
+func spawn(pos : Vector2, rot : float, s : Vector2, lifetime : float = 3.0) -> void:
 	visible = true
 	
 	global_position = pos
@@ -48,9 +87,10 @@ func spawn(pos : Vector2, rot : float, s : Vector2, poly : PoolVector2Array, c :
 	_timer.start(lifetime)
 	_t = 0.0
 	
-	setPolygon(poly)
-	setTexture(texture_info)
-	setColor(c)
+	_lin_vel = Vector2.ZERO
+	_ang_vel = 0.0
+	_lin_accel = Vector2.ZERO
+	_ang_accel = 0.0
 	
 	set_process(true)
 
@@ -62,17 +102,19 @@ func despawn() -> void:
 	_t = 1.0
 
 
-#func addForce(force : Vector2) -> void:
-#	_lin_vel += force
-#
-#func setAngularRot(rot : float) -> void:
-#	_ang_vel = rot
+func addForce(force : Vector2) -> void:
+	_lin_accel += force
+
+func addTorque(torque : float) -> void:
+	_ang_accel += torque
 
 
-func setPolygon(polygon : PoolVector2Array) -> void:
-	set_polygon(polygon)
-	polygon.append(polygon[0])
-	_line.points = polygon
+func setPolygon(poly : PoolVector2Array, c : Color, texture_info : Dictionary) -> void:
+	set_polygon(poly)
+	poly.append(poly[0])
+	_line.points = poly
+	setColor(c)
+	setTexture(texture_info)
 
 
 func setTexture(texture_info : Dictionary) -> void:
