@@ -5,7 +5,6 @@ class_name PolygonLib
 
 
 
-
 #returns a triangulation dictionary (is used in other funcs parameters)
 static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArray, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var triangles : Array = []
@@ -97,6 +96,15 @@ static func rotatePolygon(poly : PoolVector2Array, rot : float) -> PoolVector2Ar
 		rotated_polygon.append(p.rotated(rot))
 	
 	return rotated_polygon
+
+
+static func scalePolygon(poly : PoolVector2Array, scale : Vector2) -> PoolVector2Array:
+	var scaled_polygon : PoolVector2Array = []
+	
+	for p in poly:
+		scaled_polygon.append(p * scale)
+	
+	return scaled_polygon 
 
 
 #calculates the centroid of the polygon and uses it to translate the polygon to Vector2.ZERO
@@ -257,9 +265,18 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 #get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
 static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D) -> Dictionary:
-	cut_polygon = translatePolygon(cut_polygon, toLocalWithoutRot(source_trans_global, cut_trans_global.get_origin()))
-	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation())
-	source_polygon = rotatePolygon(source_polygon, source_trans_global.get_rotation())
+	var cut_pos : Vector2 = toLocal(source_trans_global, cut_trans_global.get_origin())
+#	cut_pos = cut_pos.rotated(source_trans_global.get_rotation())
+	
+	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation() - source_trans_global.get_rotation())
+	cut_polygon = translatePolygon(cut_polygon, cut_pos)
+	
+#	source_polygon = rotatePolygon(source_polygon, source_trans_global.get_rotation())
+	
+#	cut_polygon = translatePolygon(cut_polygon, toLocalWithoutRot(source_trans_global, cut_trans_global.get_origin()))
+#	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation())
+#	source_polygon = rotatePolygon(source_polygon, source_trans_global.get_rotation())
+	
 	
 	var intersected_polygons : Array = intersectPolygons(source_polygon, cut_polygon, true)
 	if intersected_polygons.size() <= 0:
@@ -271,24 +288,22 @@ static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector
 
 
 #just makes a dictionary that can be used in different funcs
-static func makeShapeInfo(centered_shape : PoolVector2Array, centroid : Vector2, world_pos : Vector2, area : float) -> Dictionary:
-	return {"centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : world_pos, "area" : area}
+static func makeShapeInfo(centered_shape : PoolVector2Array, centroid : Vector2, spawn_pos : Vector2, area : float, source_global_trans : Transform2D) -> Dictionary:
+	return {"centered_shape" : centered_shape, "centroid" : centroid, "spawn_pos" : spawn_pos, "spawn_rot" : source_global_trans.get_rotation(), "area" : area, "source_global_trans" : source_global_trans}
 
 static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PoolVector2Array) -> Dictionary:
 	var triangulation : Dictionary = triangulatePolygon(source_polygon, true, true)
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
 	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
-	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), triangulation.area)# {"spawn_pos" : spawn_pos, "centered_shape" : centered_shape, "centroid" : centroid, "world_pos" : source_global_trans.get_origin()}
+	return makeShapeInfo(centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
 static func getShapeInfoSimple(source_global_trans : Transform2D, source_polygon : PoolVector2Array, triangulation : Dictionary) -> Dictionary:
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
 	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
-#	print("Get shape info simple Poly: ", source_polygon, " centroid: ", centroid, "triangulation area: ", triangulation.area, " Centered Shape: ", centered_shape)
-#	print("Triangulation: ", triangulation, " Centered Shape: ", centered_shape)
-	return makeShapeInfo(centered_shape, centroid, source_global_trans.get_origin(), triangulation.area)
+	return makeShapeInfo(centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
-static func getShapeSpawnPos(parent_global_trans : Transform2D, centroid : Vector2, source_global_pos : Vector2) -> Vector2:
-	var spawn_pos : Vector2 = toGlobal(parent_global_trans, centroid) + source_global_pos
+static func getShapeSpawnPos(source_global_trans : Transform2D, centroid : Vector2) -> Vector2:
+	var spawn_pos : Vector2 = toGlobal(source_global_trans, centroid)
 	return spawn_pos
 
 
@@ -352,6 +367,11 @@ static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes 
 		return new_polygons
 #-----------------------------------------------------------------------------------------------------------------
 
+
+#used to set the texture offset in an texture_info dictionary
+static func setTextureOffset(texture_info : Dictionary, centroid : Vector2) -> Dictionary:
+	texture_info.offset += centroid.rotated(texture_info.rot)
+	return texture_info
 
 
 

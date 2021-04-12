@@ -76,8 +76,8 @@ func _input(event: InputEvent) -> void:
 			_timer.start(3.0)
 
 
-func _exit_tree() -> void:
-	_pool_fracture_bodies.clearPoolInstant()
+#func _exit_tree() -> void:
+#	_pool_fracture_bodies.clearPoolInstant()
 
 
 func fractureAll() -> void:
@@ -92,45 +92,54 @@ func fractureAll() -> void:
 		if delauny_fracture:
 			match delauny_type:
 				DELAUNY_TYPES.DEFAULT:
-					fracture_info = polyFracture.fractureDelaunay(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+					fracture_info = polyFracture.fractureDelaunay(source.polygon, source.get_global_transform(), cuts, min_area)
 #					fracture_info = fractureDelauny(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 				DELAUNY_TYPES.CONVEX:
-					fracture_info = polyFracture.fractureDelaunayConvex(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+					fracture_info = polyFracture.fractureDelaunayConvex(source.polygon, source.get_global_transform(), cuts, min_area)
 #					fracture_info = fractureDelaunyConvex(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 				DELAUNY_TYPES.RECTANGLE:
-					fracture_info = polyFracture.fractureDelaunayRectangle(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+					fracture_info = polyFracture.fractureDelaunayRectangle(source.polygon, source.get_global_transform(), cuts, min_area)
 #					fracture_info = fractureDelaunyRectangle(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 		else:
 			if simple_fracture:
-				fracture_info = polyFracture.fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+				fracture_info = polyFracture.fractureSimple(source.polygon, source.get_global_transform(), cuts, min_area)
 #				fracture_info = fractureSimple(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 			else:
-				fracture_info = polyFracture.fracture(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
+				fracture_info = polyFracture.fracture(source.polygon, source.get_global_transform(), cuts, min_area)
 #				fracture_info = fracture(source.polygon, source.global_position, source.global_rotation, cuts, min_area)
 		
 		for entry in fracture_info:
-				spawnFractureBody(entry, source)
+			var texture_info : Dictionary = {"texture" : source.texture, "rot" : source.texture_rotation, "offset" : source.texture_offset, "scale" : source.texture_scale}
+			spawnFractureBody(entry, texture_info)
 
 
 
-func spawnFractureBody(fracture_shard : Dictionary, source_node) -> void:
-#	var instance = polyFracture.spawnShape(_parent, facture_body_template, fracture_shard).instance
+func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary) -> void:
 	var instance = _pool_fracture_bodies.getInstance()
 	if not instance: 
 		return
 	
-	var parent = _pool_fracture_bodies.getParent()
-	var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(parent.get_global_transform(), fracture_shard.centroid, fracture_shard.world_pos)
-	instance.spawn(spawn_pos)
 	
+#	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
+#	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), _rng.randf_range(0.5, 2.0))
+#	instance.setPolygon(fracture_shard.centered_shape, _cur_fracture_color, texture_info)
+#	instance.addForce(dir * _rng.randf_range(250, 600))
+#	instance.addTorque(_rng.randf_range(-2, 2))
+	
+	
+	instance.spawn(fracture_shard.spawn_pos)
+	instance.global_rotation = fracture_shard.spawn_rot
 	if instance.has_method("setPolygon"):
-		instance.setPolygon(fracture_shard.centered_shape)
-	
-	
+		var s : Vector2 = fracture_shard.source_global_trans.get_scale()
+		instance.setPolygon(fracture_shard.centered_shape, s)
+
+
 	instance.setColor(_cur_fracture_color)
-	var dir : Vector2 = (source_node.to_global(fracture_shard.centroid) - source_node.global_position).normalized()
+	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
 	instance.linear_velocity = dir * _rng.randf_range(200, 400)
 	instance.angular_velocity = _rng.randf_range(-1, 1)
+
+	instance.setTexture(PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
 
 
 

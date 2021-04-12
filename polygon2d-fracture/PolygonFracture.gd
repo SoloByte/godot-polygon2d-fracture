@@ -20,32 +20,13 @@ func _init(new_seed : int = -1) -> void:
 
 
 
-
-
-#calculates the correct spawn position for the instance
-#adds the instance as child of the parent
-#if the instance has the method "setPolygon" the method will be used
-#returns a dictionary with the instance and centered polygon
-func spawnShape(_parent, template : PackedScene, shape_info : Dictionary) -> Dictionary:
-	var instance = template.instance()
-	_parent.add_child(instance)
-	instance.global_position = PolygonLib.getShapeSpawnPos(_parent.get_global_transform(), shape_info.centroid, shape_info.world_pos)
-	
-	if instance.has_method("setPolygon"):
-		instance.setPolygon(shape_info.centered_shape)
-	
-	return {"instance" : instance, "poly" : shape_info.centered_shape}
-
-
-
-
 #all fracture functions return an array of dictionaries -> where the dictionary is 1 fracture shard (see func makeShapeInfo) -------------------------------------
 
 #fracture simple generates random cut lines around the bounding box of the polygon -> cut_number is the amount of lines generated
 #cut_number is capped at 32 because cut_number is not equal to the amount of shards generated -> 32 cuts can produce a lot of fracture shards
-func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, min_discard_area : float) -> Array:
+func fractureSimple(source_polygon : PoolVector2Array, source_global_trans : Transform2D, cut_number : int, min_discard_area : float) -> Array:
 	cut_number = clamp(cut_number, 0, 32)
-	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
+#	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = PolygonLib.getBoundingRect(source_polygon)
 	var cut_lines : Array = getCutLines(bounding_rect, cut_number)
 	
@@ -66,7 +47,7 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, worl
 		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
 		
 		if triangulation.area > min_discard_area:
-			var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), poly, triangulation)
+			var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(source_global_trans, poly, triangulation)
 			fracture_info.append(shape_info)
 	
 	return fracture_info
@@ -74,9 +55,9 @@ func fractureSimple(source_polygon : PoolVector2Array, world_pos : Vector2, worl
 #fracture generates random points (cut_number * 2) and then connects 2 random points to form a cut line (each point is only used once) 
 #lines are extended to make sure the whole polygon is cut
 #cut_number is capped at 32 because cut_number is not equal to the amount of shards generated -> 32 cuts can produce a lot of fracture shards
-func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, cut_number : int, min_discard_area : float) -> Array:
+func fracture(source_polygon : PoolVector2Array, source_global_trans : Transform2D, cut_number : int, min_discard_area : float) -> Array:
 	cut_number = clamp(cut_number, 0, 32)
-	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
+#	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = PolygonLib.getBoundingRect(source_polygon)
 	var points : Array = getRandomPointsInPolygon(source_polygon, cut_number * 2)
 	var cut_lines : Array = getCutLinesFromPoints(points, cut_number, PolygonLib.getBoundingRectMaxSize(bounding_rect))
@@ -98,7 +79,7 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 		var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, true)
 		
 		if triangulation.area > min_discard_area:
-			var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), poly, triangulation)
+			var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(source_global_trans, poly, triangulation)
 			fracture_info.append(shape_info)
 	
 	return fracture_info
@@ -107,8 +88,8 @@ func fracture(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_
 #to produce more triangles 
 #is this func all produced triangles are clipped with the source polygon, to make sure there are no triangles outside 
 #if you only use convex polygons use fractureDelaunyConvex
-func fractureDelaunay(source_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
-	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
+func fractureDelaunay(source_polygon : PoolVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
+#	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(source_polygon, fracture_number)
 	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + source_polygon, true, true)
 	
@@ -124,19 +105,22 @@ func fractureDelaunay(source_polygon : PoolVector2Array, world_pos : Vector2, wo
 					var area : float = PolygonLib.getTriangleArea(r)
 					if area >= min_discard_area:
 						var centroid : Vector2 = PolygonLib.getTriangleCentroid(r)
-						fracture_info.append(PolygonLib.makeShapeInfo(PolygonLib.translatePolygon(r, -centroid), centroid, world_pos, triangle.area))
+#						var source_global_trans := Transform2D(world_rot_rad, world_pos)
+						var centered_shape = PolygonLib.translatePolygon(r, -centroid)
+						var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(source_global_trans, centroid)
+						fracture_info.append(PolygonLib.makeShapeInfo(centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
 				else:
 					var t : Dictionary = PolygonLib.triangulatePolygon(r, true, true)
 					if t.area >= min_discard_area:
-						var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(Transform2D(world_rot_rad, world_pos), r, t)
+						var shape_info : Dictionary = PolygonLib.getShapeInfoSimple(source_global_trans, r, t)
 						fracture_info.append(shape_info)
 	
 	return fracture_info
 
 #fractureDelaunayConvex works the same as the default fractureDelaunay but it asumes the source polygon is convex 
 #makes the fracturing simpler and faster because the final triangles dont have to be clipped with the source polygon
-func fractureDelaunayConvex(concave_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
-	concave_polygon = PolygonLib.rotatePolygon(concave_polygon, world_rot_rad)
+func fractureDelaunayConvex(concave_polygon : PoolVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
+#	concave_polygon = PolygonLib.rotatePolygon(concave_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(concave_polygon, fracture_number)
 	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + concave_polygon, true, true)
 	
@@ -146,14 +130,17 @@ func fractureDelaunayConvex(concave_polygon : PoolVector2Array, world_pos : Vect
 			continue
 		
 		var centroid : Vector2 = PolygonLib.getTriangleCentroid(triangle.points)
-		fracture_info.append(PolygonLib.makeShapeInfo(PolygonLib.translatePolygon(triangle.points, -centroid), centroid, world_pos, triangle.area))
+#		var source_global_trans := Transform2D(world_rot_rad, world_pos)
+		var centered_shape = PolygonLib.translatePolygon(triangle.points, -centroid)
+		var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(source_global_trans, centroid)
+		fracture_info.append(PolygonLib.makeShapeInfo(centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
 	
 	return fracture_info
 
 #fractureDelaunayRectangle is the same as fractureDelaunayConvex but it asumes the source polygon is a rectangle
 #the rectangle makes the random point generation easier on top of the simplification of fractureDelaunayConvex
-func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, world_pos : Vector2, world_rot_rad : float, fracture_number : int, min_discard_area : float) -> Array:
-	rectangle_polygon = PolygonLib.rotatePolygon(rectangle_polygon, world_rot_rad)
+func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
+#	rectangle_polygon = PolygonLib.rotatePolygon(rectangle_polygon, world_rot_rad)
 	var points = getRandomPointsInRectangle(PolygonLib.getBoundingRect(rectangle_polygon), fracture_number)
 	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + rectangle_polygon, true, true)
 	
@@ -162,9 +149,11 @@ func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, world_pos :
 		if triangle.area < min_discard_area:
 			continue
 		
-		
 		var centroid : Vector2 = PolygonLib.getTriangleCentroid(triangle.points)
-		fracture_info.append(PolygonLib.makeShapeInfo(PolygonLib.translatePolygon(triangle.points, -centroid), centroid, world_pos, triangle.area))
+#		var source_global_trans := Transform2D(world_rot_rad, world_pos)
+		var centered_shape = PolygonLib.translatePolygon(triangle.points, -centroid)
+		var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(source_global_trans, centroid)
+		fracture_info.append(PolygonLib.makeShapeInfo(centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
 	
 	return fracture_info
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -186,7 +175,7 @@ func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Arr
 			if area < fracture_min_area:
 				continue
 			
-			var fracture_info : Array = fractureDelaunay(shape, source_trans_global.get_origin(), 0.0, fractures, shard_min_area)
+			var fracture_info : Array = fractureDelaunay(shape, source_trans_global, fractures, shard_min_area)
 			fracture_infos.append(fracture_info)
 	
 	var shape_infos : Array = []
@@ -195,7 +184,7 @@ func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Arr
 			var triangulation : Dictionary = PolygonLib.triangulatePolygon(shape)
 			var shape_area : float = triangulation.area#PolygonLib.getPolygonArea(shape)
 			if shape_area < cut_min_area:
-				var fracture_info : Array = fractureDelaunay(shape, source_trans_global.get_origin(), 0.0, fractures, shard_min_area)
+				var fracture_info : Array = fractureDelaunay(shape, source_trans_global, fractures, shard_min_area)
 				fracture_infos.append(fracture_info)
 				continue
 			

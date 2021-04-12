@@ -1,11 +1,14 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://demo/test-scenes/cut-scenes/CutSceneBasic.tscn" type="PackedScene" id=1]
 [ext_resource path="res://demo/src/RigidBody2D.tscn" type="PackedScene" id=2]
-[ext_resource path="res://demo/src/FractureBody.tscn" type="PackedScene" id=3]
+[ext_resource path="res://demo/src/FractureShard.tscn" type="PackedScene" id=3]
 [ext_resource path="res://demo/src/CutFracture.gd" type="Script" id=4]
 [ext_resource path="res://demo/src/CutShapeVisualizer.tscn" type="PackedScene" id=5]
 [ext_resource path="res://pool-manager/Pool2DBasic.tscn" type="PackedScene" id=6]
+[ext_resource path="res://demo/smiley-face.png" type="Texture" id=7]
+[ext_resource path="res://demo/tile-test-01.png" type="Texture" id=8]
+[ext_resource path="res://demo/src/RigidBody2D.gd" type="Script" id=9]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
@@ -25,10 +28,37 @@ rigidbody_template = ExtResource( 2 )
 [node name="SourcePolygons" type="Node2D" parent="CutFracture" index="0"]
 show_behind_parent = true
 
-[node name="RigidBody2D" parent="CutFracture/SourcePolygons" index="0" instance=ExtResource( 2 )]
+[node name="RigidBody2D" type="RigidBody2D" parent="CutFracture/SourcePolygons" index="0"]
 position = Vector2( 1139.98, -682.293 )
+collision_layer = 4
+collision_mask = 5
+mass = 100.0
 physics_material_override = SubResource( 1 )
+gravity_scale = 0.0
+script = ExtResource( 9 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
+placed_in_level = true
+randomize_texture_properties = false
+poly_texture = ExtResource( 7 )
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CutFracture/SourcePolygons/RigidBody2D" index="0"]
+
+[node name="Polygon2D" type="Polygon2D" parent="CutFracture/SourcePolygons/RigidBody2D" index="1"]
+show_behind_parent = true
+color = Color( 0.545098, 0.545098, 0.545098, 1 )
+texture_offset = Vector2( 256, 256 )
+
+[node name="Line2D" type="Line2D" parent="CutFracture/SourcePolygons/RigidBody2D/Polygon2D" index="0"]
+default_color = Color( 1.25, 1.25, 1.25, 1 )
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="Center" type="Polygon2D" parent="CutFracture/SourcePolygons/RigidBody2D" index="2"]
+visible = false
+color = Color( 0, 0, 0, 1 )
+polygon = PoolVector2Array( -10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272 )
 
 [node name="RigidBody2D2" parent="CutFracture/SourcePolygons" index="1" instance=ExtResource( 2 )]
 position = Vector2( 1241.69, 542.444 )
@@ -36,6 +66,7 @@ mass = 40.0
 physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 100.0
+placed_in_level = true
 
 [node name="RigidBody2D3" parent="CutFracture/SourcePolygons" index="2" instance=ExtResource( 2 )]
 position = Vector2( -1271.35, 589.061 )
@@ -43,6 +74,8 @@ mass = 120.0
 physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 300.0
+placed_in_level = true
+poly_texture = ExtResource( 8 )
 
 [node name="RigidBody2D4" parent="CutFracture/SourcePolygons" index="3" instance=ExtResource( 2 )]
 position = Vector2( -1322.21, -597.536 )
@@ -50,6 +83,7 @@ mass = 20.0
 physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 50.0
+placed_in_level = true
 
 [node name="RigidBody2D5" parent="CutFracture/SourcePolygons" index="4" instance=ExtResource( 2 )]
 position = Vector2( -546.682, 76.2813 )
@@ -57,6 +91,8 @@ mass = 50.0
 physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 125.0
+placed_in_level = true
+poly_texture = ExtResource( 8 )
 
 [node name="RigidBody2D6" parent="CutFracture/SourcePolygons" index="5" instance=ExtResource( 2 )]
 position = Vector2( 402.595, -606.012 )
@@ -64,6 +100,7 @@ mass = 30.0
 physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 75.0
+placed_in_level = true
 
 [node name="RigidBody2D7" parent="CutFracture/SourcePolygons" index="6" instance=ExtResource( 2 )]
 position = Vector2( 317.839, 385.644 )
@@ -71,6 +108,8 @@ mass = 80.0
 physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 200.0
+placed_in_level = true
+poly_texture = ExtResource( 8 )
 
 [node name="Parent" type="Node2D" parent="CutFracture" index="1"]
 
@@ -118,4 +157,5 @@ keep_instances_in_tree = true
 placed_in_level = true
 instance_template = ExtResource( 3 )
 max_amount = 250
+keep_instances_in_tree = true
 [connection signal="timeout" from="CutFracture/SlowMoTimer" to="CutFracture" method="_on_SlowMoTimer_timeout"]

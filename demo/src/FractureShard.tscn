@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://demo/src/FractureShard.gd" type="Script" id=1]
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0.374545, 0 ), 0.0, 3.69565, 0, 0, Vector2( 1, 1 ), 0.0555559, 0.0, 0, 0 ]
+
+[node name="FractureShard" type="Polygon2D"]
+script = ExtResource( 1 )
+lin_drag = 4.0
+ang_drag = 0.25
+gravity_scale = 0.0
+lifetime_scale_curve = SubResource( 1 )
+
+[node name="Line2D" type="Line2D" parent="."]
+modulate = Color( 1.25, 1.25, 1.25, 1 )
+width = 8.0
+default_color = Color( 1, 1, 1, 1 )
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
