@@ -121,10 +121,10 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary) -
 	
 	
 #	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
-#	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), _rng.randf_range(1, 3))
+#	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), _rng.randf_range(0.5, 2.0))
 #	instance.setPolygon(fracture_shard.centered_shape, _cur_fracture_color, texture_info)
-#	instance.addForce(dir * _rng.randf_range(500, 1000))
-#	instance.addTorque(_rng.randf_range(-3, 3))
+#	instance.addForce(dir * _rng.randf_range(250, 600))
+#	instance.addTorque(_rng.randf_range(-2, 2))
 	
 	
 	instance.spawn(fracture_shard.spawn_pos)
