@@ -9,7 +9,7 @@ extends Node2D
 #                     GODOT Polygon 2D Fracture                         
 #           https://github.com/SoloByte/godot-polygon2d-fracture          
 # -----------------------------------------------------------------------
-# Copyright (c) 2021 Dave Grueneis
+# Copyright (c) 2021 David Grueneis
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
