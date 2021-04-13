@@ -215,9 +215,9 @@ func simpleCut(pos : Vector2) -> void:
 
 
 func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
-#	var instance = _pool_cut_visualizer.getInstance()
-#	instance.spawn(cut_pos, fade_speed)
-#	instance.setPolygon(cut_shape)
+	var instance = _pool_cut_visualizer.getInstance()
+	instance.spawn(cut_pos, fade_speed)
+	instance.setPolygon(cut_shape)
 	
 	for source in _source_polygon_parent.get_children():
 		var source_polygon : PoolVector2Array = source.get_polygon()
