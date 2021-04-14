@@ -10,11 +10,11 @@
 [ext_resource path="res://demo/tile-test-01.png" type="Texture" id=8]
 [ext_resource path="res://demo/src/RigidBody2D.gd" type="Script" id=9]
 
-[sub_resource type="PhysicsMaterial" id=2]
+[sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
 bounce = 1.0
 
-[sub_resource type="PhysicsMaterial" id=1]
+[sub_resource type="PhysicsMaterial" id=2]
 friction = 0.0
 bounce = 1.0
 
@@ -33,7 +33,7 @@ position = Vector2( 1139.98, -682.293 )
 collision_layer = 4
 collision_mask = 5
 mass = 100.0
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 gravity_scale = 0.0
 script = ExtResource( 9 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
@@ -63,7 +63,7 @@ polygon = PoolVector2Array( -10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.
 [node name="RigidBody2D2" parent="CutFracture/SourcePolygons" index="1" instance=ExtResource( 2 )]
 position = Vector2( 1241.69, 542.444 )
 mass = 40.0
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 100.0
 placed_in_level = true
@@ -71,7 +71,7 @@ placed_in_level = true
 [node name="RigidBody2D3" parent="CutFracture/SourcePolygons" index="2" instance=ExtResource( 2 )]
 position = Vector2( -1271.35, 589.061 )
 mass = 120.0
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 300.0
 placed_in_level = true
@@ -80,7 +80,7 @@ poly_texture = ExtResource( 8 )
 [node name="RigidBody2D4" parent="CutFracture/SourcePolygons" index="3" instance=ExtResource( 2 )]
 position = Vector2( -1322.21, -597.536 )
 mass = 20.0
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 50.0
 placed_in_level = true
@@ -88,7 +88,7 @@ placed_in_level = true
 [node name="RigidBody2D5" parent="CutFracture/SourcePolygons" index="4" instance=ExtResource( 2 )]
 position = Vector2( -546.682, 76.2813 )
 mass = 50.0
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 125.0
 placed_in_level = true
@@ -97,7 +97,7 @@ poly_texture = ExtResource( 8 )
 [node name="RigidBody2D6" parent="CutFracture/SourcePolygons" index="5" instance=ExtResource( 2 )]
 position = Vector2( 402.595, -606.012 )
 mass = 30.0
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 75.0
 placed_in_level = true
@@ -105,7 +105,7 @@ placed_in_level = true
 [node name="RigidBody2D7" parent="CutFracture/SourcePolygons" index="6" instance=ExtResource( 2 )]
 position = Vector2( 317.839, 385.644 )
 mass = 80.0
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 rand_linear_velocity_range = Vector2( 500, 1000 )
 radius = 200.0
 placed_in_level = true
@@ -116,7 +116,7 @@ poly_texture = ExtResource( 8 )
 [node name="Edge" type="StaticBody2D" parent="CutFracture" index="2"]
 modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
 position = Vector2( 0, 933.82 )
-physics_material_override = SubResource( 1 )
+physics_material_override = SubResource( 2 )
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="CutFracture/Edge" index="0"]
 polygon = PoolVector2Array( -1888.94, -360.544, -1652.27, -611.544, -1891.09, -1005.08, -1888, -1893.82, 1888, -1893.82, 1903.04, -70.0054, 1492.68, 114.992, 320, -325.82, -256, -325.82, -1719.55, 114.992, -1888, -69.82, -1888.94, -357.922, -2024.51, -319.195, -2069.36, 219.263, 2037.58, 313.443, 2081.48, -2057.26, -1996.06, -2091.24, -2025.33, -322.011 )

@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://demo/test-scenes/test-scene-basic/TestSceneBasic.tscn" type="PackedScene" id=1]
 [ext_resource path="res://pool-manager/Pool2DBasic.tscn" type="PackedScene" id=2]
 [ext_resource path="res://demo/src/FractureShard.tscn" type="PackedScene" id=3]
-[ext_resource path="res://demo/src/RigidBody2D.tscn" type="PackedScene" id=4]
 [ext_resource path="res://demo/src/PointFracture.gd" type="Script" id=5]
 [ext_resource path="res://demo/src/CutShapeVisualizer.tscn" type="PackedScene" id=6]
 
@@ -18,14 +17,6 @@ script = ExtResource( 5 )
 fracture_body_color = Color( 0.529412, 0.807843, 0.819608, 1 )
 
 [node name="SourceParent" type="Node2D" parent="PointFracture" index="0"]
-
-[node name="RigidBody2D" parent="PointFracture/SourceParent" index="0" instance=ExtResource( 4 )]
-mass = 500.0
-can_sleep = false
-rand_linear_velocity_range = Vector2( 0, 0 )
-radius = 300.0
-placed_in_level = true
-randomize_texture_properties = false
 
 [node name="Edge" type="StaticBody2D" parent="PointFracture" index="1"]
 modulate = Color( 0.537255, 0.266667, 0.266667, 1 )

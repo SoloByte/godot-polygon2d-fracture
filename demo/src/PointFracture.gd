@@ -76,10 +76,11 @@ func _input(event: InputEvent) -> void:
 
 func simpleCut(pos : Vector2) -> void:
 	if _input_disabled: return
-	var cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(50.0, 1)
+	var cut_shape : PoolVector2Array = polyFracture.generateRandomPolygon(Vector2(25, 150), Vector2(1,72), Vector2.ZERO)
 	cutSourcePolygons(pos, cut_shape, 0.0, _rng.randf_range(400.0, 800.0), 2.0)
 	_input_disabled = true
 	set_deferred("_input_disabled", false)
+
 
 
 func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
@@ -133,7 +134,7 @@ func spawnRigibody2d(shape_info : Dictionary, color : Color, lin_vel : Vector2, 
 	instance.global_rotation = shape_info.spawn_rot
 	instance.set_polygon(shape_info.centered_shape)
 	instance.modulate = color
-	instance.linear_velocity = lin_vel# + (spawn_pos - cut_pos).normalized() * 50
+	instance.linear_velocity = lin_vel
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
 	instance.setTexture(PolygonLib.setTextureOffset(texture_info, shape_info.centroid))
@@ -144,15 +145,16 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, n
 	if not instance:
 		return
 	
-	#fracture shard variant
+	#------------fracture shard variant--------------
 	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
 	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), _rng.randf_range(0.5, 2.0))
 	instance.setPolygon(fracture_shard.centered_shape, _cur_fracture_color, PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
 	instance.setMass(new_mass)
-	instance.addForce(dir * 500.0)
-	instance.addTorque(_rng.randf_range(-2, 2))
+#	instance.addForce(dir * 500.0)
+#	instance.addTorque(_rng.randf_range(-2, 2))
 	
-	#fracture body variant
+	
+	#-------fracture body variant----------------
 #	instance.spawn(fracture_shard.spawn_pos)
 #	instance.global_rotation = fracture_shard.spawn_rot
 #
@@ -167,3 +169,7 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, n
 #	instance.angular_velocity = _rng.randf_range(-1, 1)
 #
 #	instance.setTexture(PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
+
+
+
+
