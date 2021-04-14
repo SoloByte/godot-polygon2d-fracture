@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://demo/src/point-fracture-ball/PointFractureBall.gd" type="Script" id=1]
+
+[sub_resource type="PhysicsMaterial" id=1]
+friction = 0.0
+bounce = 1.0
+
+[node name="PointFractureBall" type="RigidBody2D"]
+modulate = Color( 1.66, 0.56, 0, 1 )
+collision_layer = 8
+collision_mask = 2147483653
+mass = 2.0
+physics_material_override = SubResource( 1 )
+gravity_scale = 10.0
+contacts_reported = 1
+contact_monitor = true
+can_sleep = false
+script = ExtResource( 1 )
+radius = 25.0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

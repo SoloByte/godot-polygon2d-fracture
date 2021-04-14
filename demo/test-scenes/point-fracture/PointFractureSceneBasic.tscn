@@ -1,12 +1,13 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://demo/test-scenes/test-scene-basic/TestSceneBasic.tscn" type="PackedScene" id=1]
 [ext_resource path="res://pool-manager/Pool2DBasic.tscn" type="PackedScene" id=2]
 [ext_resource path="res://demo/src/FractureShard.tscn" type="PackedScene" id=3]
+[ext_resource path="res://demo/src/point-fracture-ball/PointFractureBall.tscn" type="PackedScene" id=4]
 [ext_resource path="res://demo/src/PointFracture.gd" type="Script" id=5]
 [ext_resource path="res://demo/src/CutShapeVisualizer.tscn" type="PackedScene" id=6]
 
-[sub_resource type="PhysicsMaterial" id=1]
+[sub_resource type="PhysicsMaterial" id=2]
 friction = 0.0
 bounce = 1.0
 
@@ -15,12 +16,13 @@ bounce = 1.0
 [node name="PointFracture" type="Node2D" parent="." index="0"]
 script = ExtResource( 5 )
 fracture_body_color = Color( 0.529412, 0.807843, 0.819608, 1 )
+no_ammo_line_color = Color( 0.843137, 0.384314, 0.384314, 1 )
 
 [node name="SourceParent" type="Node2D" parent="PointFracture" index="0"]
 
 [node name="Edge" type="StaticBody2D" parent="PointFracture" index="1"]
 modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
-physics_material_override = SubResource( 1 )
+physics_material_override = SubResource( 2 )
 __meta__ = {
 "_editor_description_": ""
 }
@@ -43,20 +45,34 @@ end_cap_mode = 2
 [node name="Pool_FractureShards" parent="PointFracture" index="2" instance=ExtResource( 2 )]
 placed_in_level = true
 instance_template = ExtResource( 3 )
-max_amount = 250
+max_amount = 100
+instantiate_new_on_empty = true
 keep_instances_in_tree = true
 
 [node name="Pool_CutVisualizer" parent="PointFracture" index="3" instance=ExtResource( 2 )]
 placed_in_level = true
 instance_template = ExtResource( 6 )
-max_amount = 30
+max_amount = 25
 instantiate_new_on_empty = true
 keep_instances_in_tree = true
 
+[node name="Pool_PointFractureBall" parent="PointFracture" index="4" instance=ExtResource( 2 )]
+placed_in_level = true
+instance_template = ExtResource( 4 )
+max_amount = 5
+
+[node name="FlickLine" type="Line2D" parent="PointFracture" index="5"]
+default_color = Color( 1.66, 0.56, 0, 1 )
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
 [node name="Title" parent="CanvasLayer" index="0"]
-text = "POINT FRACTURE"
+text = "POINT FRACTURE (max ammo: 5)"
 
 [node name="InfoLabel" parent="CanvasLayer" index="1"]
 text = "CHANGE TEST [W]
+FLICK [LMB HOLD]
 FULLSCREEN [F]
 QUIT [ESC]"

@@ -51,6 +51,7 @@ export(Curve) var lifetime_scale_curve
 
 
 
+
 onready var _line := $Line2D
 onready var _timer := $Timer
 onready var _line_lerp_start_color : Color = _line.modulate
@@ -69,7 +70,6 @@ var _ang_vel : float = 0.0
 var _mass : float = 1.0
 
 var _scale_lerp_start := Vector2.ZERO
-#var _dead : bool = false
 
 
 
@@ -89,13 +89,10 @@ func _process(delta: float) -> void:
 		if lifetime_scale_curve:
 			p = lifetime_scale_curve.interpolate_baked(p)
 		global_scale = lerp(_scale_lerp_start, Vector2.ZERO, p)
-	
-	
+
 
 func _physics_process(delta: float) -> void:
 	addForce(gravity_direction.normalized() * gravity_scale * delta)
-#	var friction : Vector2 = (-1.0 * _lin_vel).normalized() * lin_drag
-#	_lin_vel += friction
 	_lin_vel += _lin_accel
 	_ang_vel += _ang_accel
 	
@@ -112,10 +109,8 @@ func _physics_process(delta: float) -> void:
 	
 	_lin_accel = Vector2.ZERO
 	_ang_accel = 0.0
-	
-#	print("Lin vel: ", _lin_vel, " Ang Vel: ", _ang_vel)
-#	if _dead:
-#		scale = lerp(scale, Vector2.ZERO, delta)
+
+
 
 
 func spawn(pos : Vector2, rot : float, s : Vector2, lifetime : float = 3.0) -> void:
@@ -140,11 +135,12 @@ func spawn(pos : Vector2, rot : float, s : Vector2, lifetime : float = 3.0) -> v
 
 
 func despawn() -> void:
-#	_dead = false
 	visible = false
 	set_process(false)
 	set_physics_process(false)
 	_t = 1.0
+
+
 
 
 func addForce(force : Vector2) -> void:
@@ -152,8 +148,11 @@ func addForce(force : Vector2) -> void:
 		force /= _mass
 	_lin_accel += force
 
+
 func addTorque(torque : float) -> void:
 	_ang_accel += torque
+
+
 
 
 func setPolygon(poly : PoolVector2Array, c : Color, texture_info : Dictionary) -> void:
@@ -174,11 +173,12 @@ func setTexture(texture_info : Dictionary) -> void:
 func setColor(color : Color) -> void:
 	self_modulate = color
 
+
 func setMass(new_mass : float) -> void:
 	_mass = new_mass
 
 
+
+
 func _on_Timer_timeout() -> void:
-#	if _dead: return
-#	_dead = true
 	emit_signal("Despawn", self)
