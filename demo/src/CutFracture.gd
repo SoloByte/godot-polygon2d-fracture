@@ -53,7 +53,6 @@ onready var polyFracture := PolygonFracture.new()
 onready var _source_polygon_parent := $SourcePolygons
 onready var _rng := RandomNumberGenerator.new()
 onready var _cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(100.0, 1)
-onready var _slowmo_timer := $SlowMoTimer
 onready var _cut_line := $CutLine
 onready var _pool_cut_visualizer := $Pool_CutVisualizer
 onready var _pool_fracture_shards := $Pool_FractureShards
@@ -122,11 +121,6 @@ func _input(event: InputEvent) -> void:
 			else:
 				if event.pressed:
 					_cut_line_enabled = true
-
-
-#func _exit_tree() -> void:
-#	_pool_cut_visualizer.clearPoolInstant()
-#	_pool_fracture_shards.clearPoolInstant()
 
 
 
@@ -267,7 +261,7 @@ func spawnRigibody2d(shape_info : Dictionary, color : Color, lin_vel : Vector2, 
 	instance.global_rotation = shape_info.spawn_rot
 	instance.set_polygon(shape_info.centered_shape)
 	instance.modulate = color
-	instance.linear_velocity = lin_vel# + (spawn_pos - cut_pos).normalized() * 50
+	instance.linear_velocity = lin_vel
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
 	instance.setTexture(PolygonLib.setTextureOffset(texture_info, shape_info.centroid))
@@ -286,26 +280,3 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, n
 	instance.setMass(new_mass)
 	instance.addForce(dir * 500.0)
 	instance.addTorque(_rng.randf_range(-2, 2))
-	
-	
-	#fracture body variant
-#	instance.spawn(fracture_shard.spawn_pos)
-#	instance.global_rotation = fracture_shard.spawn_rot
-#
-#	if instance.has_method("setPolygon"):
-#		var s : Vector2 = fracture_shard.source_global_trans.get_scale()
-#		instance.setPolygon(fracture_shard.centered_shape, s)
-#
-#	instance.setColor(_cur_fracture_color)
-#
-#	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
-#	instance.linear_velocity = dir * _rng.randf_range(300, 500)
-#	instance.angular_velocity = _rng.randf_range(-1, 1)
-#
-#	instance.setTexture(PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
-
-
-
-
-func _on_SlowMoTimer_timeout() -> void:
-	Engine.time_scale = 1.0

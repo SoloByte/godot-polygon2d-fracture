@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://demo/test-scenes/test-scene-basic/TestSceneBasic.tscn" type="PackedScene" id=1]
 [ext_resource path="res://pool-manager/Pool2DBasic.tscn" type="PackedScene" id=2]
@@ -6,8 +6,9 @@
 [ext_resource path="res://demo/src/point-fracture-ball/PointFractureBall.tscn" type="PackedScene" id=4]
 [ext_resource path="res://demo/src/PointFracture.gd" type="Script" id=5]
 [ext_resource path="res://demo/src/CutShapeVisualizer.tscn" type="PackedScene" id=6]
+[ext_resource path="res://demo/src/Arrow.tscn" type="PackedScene" id=7]
 
-[sub_resource type="PhysicsMaterial" id=2]
+[sub_resource type="PhysicsMaterial" id=1]
 friction = 0.0
 bounce = 1.0
 
@@ -22,7 +23,7 @@ no_ammo_line_color = Color( 0.843137, 0.384314, 0.384314, 1 )
 
 [node name="Edge" type="StaticBody2D" parent="PointFracture" index="1"]
 modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
-physics_material_override = SubResource( 2 )
+physics_material_override = SubResource( 1 )
 __meta__ = {
 "_editor_description_": ""
 }
@@ -62,11 +63,14 @@ instance_template = ExtResource( 4 )
 max_amount = 5
 
 [node name="FlickLine" type="Line2D" parent="PointFracture" index="5"]
-default_color = Color( 1.66, 0.56, 0, 1 )
+modulate = Color( 1.66, 0.56, 0, 1 )
+default_color = Color( 1, 1, 1, 1 )
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
 antialiased = true
+
+[node name="Arrow" parent="PointFracture/FlickLine" index="0" instance=ExtResource( 7 )]
 
 [node name="Title" parent="CanvasLayer" index="0"]
 text = "POINT FRACTURE (max ammo: 5)"

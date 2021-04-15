@@ -63,7 +63,8 @@ onready var _pool_point_fracture_ball := $Pool_PointFractureBall
 onready var _source_polygon_parent := $SourceParent
 onready var _rng := RandomNumberGenerator.new()
 onready var _flick_line := $FlickLine
-onready var _default_flick_line_color : Color = _flick_line.default_color
+onready var _flick_line_arrow := $FlickLine/Arrow
+onready var _default_flick_line_color : Color = _flick_line.modulate
 
 
 
@@ -89,13 +90,14 @@ func _process(delta: float) -> void:
 		
 		var line_point : Vector2 = _flick_start_point + flick_vec.normalized() * min(flick_vec.length(), FLICK_MAX_VELOCITY / FLICK_MAGNITUDE_SCALE_FACTOR)
 		
+		_flick_line_arrow.global_rotation = flick_vec.normalized().angle() + PI
 		
 		_flick_line.set_point_position(1, line_point)
 		
 		if _fracture_balls_count >= MAX_AMMO:
-			_flick_line.default_color = no_ammo_line_color
+			_flick_line.modulate = no_ammo_line_color
 		else:
-			_flick_line.default_color = _default_flick_line_color
+			_flick_line.modulate = _default_flick_line_color
 
 
 func _input(event: InputEvent) -> void:
@@ -104,6 +106,7 @@ func _input(event: InputEvent) -> void:
 		if event.button_index == 1:
 			if event.pressed:
 				_flick_start_point = get_global_mouse_position()
+				_flick_line_arrow.global_position = _flick_start_point
 				_flick_line.set_point_position(0, _flick_start_point)
 				_flick_line.set_point_position(1, _flick_start_point)
 				_flick_line.visible = true
@@ -122,7 +125,7 @@ func _input(event: InputEvent) -> void:
 				if not instance:
 					return
 				
-				var launch_vec : Vector2 = flick_vec.normalized()
+				var launch_vec : Vector2 = -flick_vec.normalized()
 				var launch_magnitude : float = clamp(flick_vec.length() * FLICK_MAGNITUDE_SCALE_FACTOR, FLICK_MIN_VELOCITY, FLICK_MAX_VELOCITY)
 				var rand_lifetime : float = _rng.randf_range(5.0, 10.0)
 				instance.spawn(_flick_start_point, launch_vec * launch_magnitude, rand_lifetime, self)

@@ -32,8 +32,7 @@ extends Node
 
 
 
-#!!!----All pooled instances need these 3 things----!!!
-#func spawn(pos : Vector2) -> called when instance is used
+#!!!----All pooled instances need these 2 things----!!!
 #func despawn() -> called when instance is finished
 #signal Despawn(self) -> instance emits this signal when finished to let the pool know to despawn it
 #-----------------------------------------------------
