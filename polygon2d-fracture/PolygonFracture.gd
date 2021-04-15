@@ -3,6 +3,35 @@ class_name PolygonFracture
 
 
 
+# MIT License
+# -----------------------------------------------------------------------
+#                       This file is part of:                           
+#                     GODOT Polygon 2D Fracture                         
+#           https://github.com/SoloByte/godot-polygon2d-fracture          
+# -----------------------------------------------------------------------
+# Copyright (c) 2021 David Grueneis
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+
+
 var _rng : RandomNumberGenerator
 
 
@@ -15,7 +44,6 @@ func _init(new_seed : int = -1) -> void:
 		_rng.randomize()
 	else:
 		_rng.seed = new_seed
-
 
 
 
@@ -194,9 +222,6 @@ func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Arr
 	return {"shapes" : shape_infos, "fractures" : fracture_infos}
 
 
-
-
-
 #returns an array of PoolVector2Arrays -> each PoolVector2Array consists of two Vector2 [start, end]
 #is used in the func fracture 
 func getCutLinesFromPoints(points : Array, cuts : int, max_size : float) -> Array:
@@ -241,7 +266,29 @@ func getCutLines(bounding_rect : Rect2, number : int) -> Array:
 	return lines
 
 
-
+#generate a random polygon
+# points a generated around a circle (starting at 3 o´clock , clock wise)
+# each iteration a random angle step between angle_step_range.x and angle_step_range.y is calculated
+# that random angle step is added to the current angle
+# then a Vector2.RIGHT is scaled by a random size between radius_range.x and radius_range.y
+# finally the scaled vector is rotated by the current angle
+# !!!the angle_step_range is in degrees, x < y and x >= 0 and y > 0!!!
+# !!!radius_range  x < y and x >= 0 and y > 0!!!
+func generateRandomPolygon(radius_range : Vector2, angle_step_range_deg : Vector2, offset := Vector2.ZERO) -> PoolVector2Array:
+	var random_polygon : PoolVector2Array = []
+	
+	var total_angle_deg : float = 0.0
+	
+	while true:
+		var angle_step_deg : float = _rng.randf_range(angle_step_range_deg.x, angle_step_range_deg.y)
+		total_angle_deg += angle_step_deg
+		if total_angle_deg >= 360:
+			break
+		
+		var point := Vector2.RIGHT * _rng.randf_range(radius_range.x, radius_range.y)
+		random_polygon.append(point.rotated(deg2rad(total_angle_deg)) + offset)
+	
+	return random_polygon
 
 
 func getRandomPointsInRectangle(rectangle : Rect2, number : int) -> PoolVector2Array:

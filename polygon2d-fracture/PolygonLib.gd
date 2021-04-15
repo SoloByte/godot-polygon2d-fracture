@@ -3,6 +3,33 @@ class_name PolygonLib
 
 
 
+# MIT License
+# -----------------------------------------------------------------------
+#                       This file is part of:                           
+#                     GODOT Polygon 2D Fracture                         
+#           https://github.com/SoloByte/godot-polygon2d-fracture          
+# -----------------------------------------------------------------------
+# Copyright (c) 2021 David Grueneis
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 
 
 #returns a triangulation dictionary (is used in other funcs parameters)
@@ -61,11 +88,14 @@ static func getPolygonCentroid(triangles : Array, total_area : float) -> Vector2
 		weighted_centroid += (triangle.centroid * triangle.area)
 	return weighted_centroid / total_area
 
+#the same as getPolygonCentroid but only takes the source polygon (if you have no triangulation use this)
+#if you need triangulation it is better to triangulate the polygon, store the triangulation info and use getPolygonCentroid
+#with the generated triangles
 static func calculatePolygonCentroid(poly : PoolVector2Array) -> Vector2:
 	var triangulation : Dictionary = triangulatePolygon(poly, true, true)
 	return getPolygonCentroid(triangulation.triangles, triangulation.area)
 
-
+#deprecated and not in use anymore (but maybe it is helpful to someone)
 static func getPolygonVisualCenterPoint(poly : PoolVector2Array) -> Vector2:
 	var center_points : Array = []
 	
@@ -97,7 +127,7 @@ static func rotatePolygon(poly : PoolVector2Array, rot : float) -> PoolVector2Ar
 	
 	return rotated_polygon
 
-
+#scales all points of a polygon
 static func scalePolygon(poly : PoolVector2Array, scale : Vector2) -> PoolVector2Array:
 	var scaled_polygon : PoolVector2Array = []
 	
@@ -105,7 +135,6 @@ static func scalePolygon(poly : PoolVector2Array, scale : Vector2) -> PoolVector
 		scaled_polygon.append(p * scale)
 	
 	return scaled_polygon 
-
 
 #calculates the centroid of the polygon and uses it to translate the polygon to Vector2.ZERO
 static func centerPolygon(poly : PoolVector2Array) -> PoolVector2Array:
@@ -175,7 +204,7 @@ static func getTriangleArea(points : PoolVector2Array) -> float:
 	var area : float = sqrt(value)
 	return area
 
-
+#centroid is the center point of a triangle
 static func getTriangleCentroid(points : PoolVector2Array) -> Vector2:
 	var ab : Vector2 = points[1] - points[0]
 	var ac : Vector2 = points[2] - points[0]
@@ -261,6 +290,8 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 
 
 
+
+
 #cut polygon = cut shape used to cut source polygon
 #get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
@@ -291,31 +322,32 @@ static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector
 static func makeShapeInfo(centered_shape : PoolVector2Array, centroid : Vector2, spawn_pos : Vector2, area : float, source_global_trans : Transform2D) -> Dictionary:
 	return {"centered_shape" : centered_shape, "centroid" : centroid, "spawn_pos" : spawn_pos, "spawn_rot" : source_global_trans.get_rotation(), "area" : area, "source_global_trans" : source_global_trans}
 
+#makes a shape info with the given parameters
 static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PoolVector2Array) -> Dictionary:
 	var triangulation : Dictionary = triangulatePolygon(source_polygon, true, true)
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
 	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
 	return makeShapeInfo(centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
+#makes a shape info with the given parameters and has different parameters than getShapeInfo
 static func getShapeInfoSimple(source_global_trans : Transform2D, source_polygon : PoolVector2Array, triangulation : Dictionary) -> Dictionary:
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
 	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
 	return makeShapeInfo(centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
+#calculates the global world position for a given centroid
 static func getShapeSpawnPos(source_global_trans : Transform2D, centroid : Vector2) -> Vector2:
 	var spawn_pos : Vector2 = toGlobal(source_global_trans, centroid)
 	return spawn_pos
 
-
+#does the same as Node.toGlobal()
 static func toGlobal(global_transform : Transform2D, local_pos : Vector2) -> Vector2:
 	return global_transform.xform(local_pos)
 
+#does the same as Node.toLocal()
 static func toLocal(global_transform : Transform2D, global_pos : Vector2) -> Vector2:
 	return global_transform.affine_inverse().xform(global_pos)
 
-static func toLocalWithoutRot(global_transform : Transform2D, global_pos : Vector2) -> Vector2:
-	var new_transform := Transform2D(0.0, global_transform.origin)
-	return new_transform.affine_inverse().xform(global_pos)
 
 
 #just a wrapper for the Geometry funcs to filter out holes if wanted----------------------------------------------

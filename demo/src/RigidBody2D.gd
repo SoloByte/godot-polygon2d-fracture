@@ -1,6 +1,37 @@
 extends RigidBody2D
 
 
+
+
+# MIT License
+# -----------------------------------------------------------------------
+#                       This file is part of:                           
+#                     GODOT Polygon 2D Fracture                         
+#           https://github.com/SoloByte/godot-polygon2d-fracture          
+# -----------------------------------------------------------------------
+# Copyright (c) 2021 David Grueneis
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+
+
 export(Vector2) var rand_linear_velocity_range = Vector2(750.0, 1000.0)
 #export(Vector2) var rand_angular_velocity_range = Vector2(-10.0, 10.0)
 export(float) var radius : float = 250.0
@@ -67,6 +98,3 @@ func get_polygon() -> PoolVector2Array:
 
 func set_polygon(poly : PoolVector2Array) -> void:
 	setPolygon(poly)
-
-#func _process(delta: float) -> void:
-#	print("Rot RB: ", global_rotation, " Rot Poly: ", _polygon2d.global_rotation, " Rot Deg RB: ", rotation_degrees, " Rot Deg Poly: ", _polygon2d.rotation_degrees)

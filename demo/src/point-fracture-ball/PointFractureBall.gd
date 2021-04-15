@@ -1,4 +1,4 @@
-extends Node2D
+extends RigidBody2D
 
 
 
@@ -31,37 +31,67 @@ extends Node2D
 
 
 
-export(Array, PackedScene) var test_scenes
-
-var _cur_test_scene_index : int = 0
-var _cur_test_scene = null
+signal Despawn(ref)
 
 
 
 
-func _ready():
-	_cur_test_scene_index = -1
-	changeTest()
+export(float) var radius : float = 50.0
 
 
 
-func _input(event):
-	if event.is_action_pressed("fullscreen"):
-		OS.window_fullscreen = not OS.window_fullscreen
+
+onready var _poly := $Polygon2D
+onready var _col_poly := $CollisionPolygon2D
+onready var _timer := $Timer
+
+
+
+
+var point_fracture = null
+var launch_velocity : float = 0.0
+
+
+
+
+func _ready() -> void:
+	setPolygon(PolygonLib.createCirclePolygon(radius, 1))
+
+
+func _integrate_forces(state: Physics2DDirectBodyState) -> void:
+	if state.get_contact_count() > 0:
+		var body = state.get_contact_collider_object(0)
+		if body is RigidBody2D:
+			var pos : Vector2 = state.get_contact_collider_position(0)
+			point_fracture.fractureCollision(pos, body, self)
+
+
+func spawn(pos : Vector2, launch_vector : Vector2, lifetime : float, point_fracture) -> void:
+	launch_velocity = launch_vector.length()
+	self.point_fracture = point_fracture
+	global_position = pos
+	_timer.start(lifetime)
 	
-	if event.is_action_pressed("ui_cancel"):
-		get_tree().quit()
-	
-	if event.is_action_pressed("change-test"):
-		changeTest()
+	linear_velocity = launch_vector
 
 
-func changeTest() -> void:
-	Engine.time_scale = 1.0
-	if _cur_test_scene:
-		_cur_test_scene.queue_free()
-	
-	_cur_test_scene_index = wrapi(_cur_test_scene_index + 1, 0, test_scenes.size())
-	var instance = test_scenes[_cur_test_scene_index].instance()
-	add_child(instance)
-	_cur_test_scene = instance
+func despawn() -> void:
+	global_rotation = 0.0
+	linear_velocity = Vector2.ZERO
+	angular_velocity = 0.0
+	set_applied_force(Vector2.ZERO)
+
+
+func destroy() -> void:
+	_timer.stop()
+	emit_signal("Despawn", self)
+
+
+func setPolygon(polygon : PoolVector2Array) -> void:
+	_poly.set_polygon(polygon)
+	_col_poly.set_polygon(polygon)
+
+
+func _on_Timer_timeout() -> void:
+	point_fracture.fractureBallDespawned(global_position, _poly.get_polygon())
+	destroy()

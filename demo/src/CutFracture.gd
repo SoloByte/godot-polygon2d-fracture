@@ -3,6 +3,35 @@ extends Node2D
 
 
 
+# MIT License
+# -----------------------------------------------------------------------
+#                       This file is part of:                           
+#                     GODOT Polygon 2D Fracture                         
+#           https://github.com/SoloByte/godot-polygon2d-fracture          
+# -----------------------------------------------------------------------
+# Copyright (c) 2021 David Grueneis
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+
+
 const CUT_LINE_POINT_MIN_DISTANCE : float = 40.0 #distance before new point is added (the smaller the more detailed is the visual line (not the cut line)
 const CUT_LINE_STATIONARY_DELAY : float = 0.1 #after that amount of seconds remaining stationary will end the cut line process and cut the sources
 const CUT_LINE_DIRECTION_THRESHOLD : float = -0.7 #smaller than treshold will end the cut line process and cut the sources (start_dir.dot(cur_dir) < threshold = endLine)
@@ -24,7 +53,6 @@ onready var polyFracture := PolygonFracture.new()
 onready var _source_polygon_parent := $SourcePolygons
 onready var _rng := RandomNumberGenerator.new()
 onready var _cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(100.0, 1)
-onready var _slowmo_timer := $SlowMoTimer
 onready var _cut_line := $CutLine
 onready var _pool_cut_visualizer := $Pool_CutVisualizer
 onready var _pool_fracture_shards := $Pool_FractureShards
@@ -93,11 +121,6 @@ func _input(event: InputEvent) -> void:
 			else:
 				if event.pressed:
 					_cut_line_enabled = true
-
-
-#func _exit_tree() -> void:
-#	_pool_cut_visualizer.clearPoolInstant()
-#	_pool_fracture_shards.clearPoolInstant()
 
 
 
@@ -186,9 +209,9 @@ func simpleCut(pos : Vector2) -> void:
 
 
 func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
-#	var instance = _pool_cut_visualizer.getInstance()
-#	instance.spawn(cut_pos, fade_speed)
-#	instance.setPolygon(cut_shape)
+	var instance = _pool_cut_visualizer.getInstance()
+	instance.spawn(cut_pos, fade_speed)
+	instance.setPolygon(cut_shape)
 	
 	for source in _source_polygon_parent.get_children():
 		var source_polygon : PoolVector2Array = source.get_polygon()
@@ -238,7 +261,7 @@ func spawnRigibody2d(shape_info : Dictionary, color : Color, lin_vel : Vector2, 
 	instance.global_rotation = shape_info.spawn_rot
 	instance.set_polygon(shape_info.centered_shape)
 	instance.modulate = color
-	instance.linear_velocity = lin_vel# + (spawn_pos - cut_pos).normalized() * 50
+	instance.linear_velocity = lin_vel
 	instance.angular_velocity = ang_vel
 	instance.mass = mass
 	instance.setTexture(PolygonLib.setTextureOffset(texture_info, shape_info.centroid))
@@ -257,26 +280,3 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, n
 	instance.setMass(new_mass)
 	instance.addForce(dir * 500.0)
 	instance.addTorque(_rng.randf_range(-2, 2))
-	
-	
-	#fracture body variant
-#	instance.spawn(fracture_shard.spawn_pos)
-#	instance.global_rotation = fracture_shard.spawn_rot
-#
-#	if instance.has_method("setPolygon"):
-#		var s : Vector2 = fracture_shard.source_global_trans.get_scale()
-#		instance.setPolygon(fracture_shard.centered_shape, s)
-#
-#	instance.setColor(_cur_fracture_color)
-#
-#	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
-#	instance.linear_velocity = dir * _rng.randf_range(300, 500)
-#	instance.angular_velocity = _rng.randf_range(-1, 1)
-#
-#	instance.setTexture(PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
-
-
-
-
-func _on_SlowMoTimer_timeout() -> void:
-	Engine.time_scale = 1.0
