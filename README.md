@@ -3,6 +3,7 @@
 
 
 ## UPDATES
+- UPDATE v1.3.0 texture system + point fracture system + big cleanup
 - UPDATE v1.2.0 overhaul of mouse cut system + important bug fixes + pool manager script (bonus) + "juice".
 - UPDATE v1.1.0 adds cutting of polygons.
 
@@ -11,8 +12,7 @@
 ## Info
 
 Works with GodotEngine 3.2+
-
-I used Godot 3.2.3.
+Tested with Godot Versions: 3.2.3
 
 Two simple scripts for fracturing and cutting polygons. PolygonFracture.gd is the actual script that fractures/cuts polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, makeCirclePolygon, etc.
 
@@ -24,6 +24,13 @@ The pool manager script added in [Update v1.2.0] is just a bonus. You can use it
 
 PS: To test the actual fracture code performance just increase the min area (around 5000) because then less rigid bodies are spawned. You wont see many fracture shards either, though. (spawning and despawning that many rigid bodies at once cause the biggest performance hit - pooling would alleviate that for some part)
 
+
+## Point Fracture
+Originally I wanted to do a more sophisticated point fracture system but it always turned out to be a complicated mess. Finally I figured out a simpler way with using the already implemented Cut-Fracture system. I added a func to generate a randomized polygon and with a point (like a collision point), this randomized polygon can be used in the cut fracture method.
+
+In this gif you can also see that polygons with textures can now be cut/fractured too :) 
+
+![](gifs/godot-polygon2d-pointfracture-05.gif)
 
 
 ## Cut Method
