@@ -64,4 +64,12 @@ func changeTest() -> void:
 	_cur_test_scene_index = wrapi(_cur_test_scene_index + 1, 0, test_scenes.size())
 	var instance = test_scenes[_cur_test_scene_index].instance()
 	add_child(instance)
+	
+	#for some reason I need to do that in Godot v3.3.1...
+	#the camera in the scene is already setup with current = true and zoom = Vector2(2,2)
+	#but it does not work without setting it here again
+	instance.get_node("Camera2D").current = true
+	instance.get_node("Camera2D").zoom = Vector2(2,2)
+	
+	
 	_cur_test_scene = instance
