@@ -2,6 +2,46 @@ extends RigidBody2D
 class_name Blob
 
 
+
+
+# MIT License
+# -----------------------------------------------------------------------
+#                       This file is part of:                           
+#                     GODOT Polygon 2D Fracture                         
+#           https://github.com/SoloByte/godot-polygon2d-fracture          
+# -----------------------------------------------------------------------
+# Copyright (c) 2021 David Grueneis
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+
+
+
+
+
+
+
+
+
+
+
 signal Died(ref, pos)
 signal Damaged(blob, pos, shape, color, fade_speed)
 signal Fractured(blob, fracture_shard, new_mass, color, fracture_force, p)
@@ -68,13 +108,15 @@ onready var _polygon := $Shape/Polygon2D
 onready var _line := $Shape/Line2D
 onready var _drop_poly := $DropPoly
 onready var _origin_poly := $OriginPoly
+
 onready var _rng := RandomNumberGenerator.new()
 onready var _target_pos_timer := $TargetPosTimer
 onready var _poly_fracture := PolygonFracture.new()
 onready var _hit_flash_poly := $FlashPolygon
 onready var _hit_flash_anim_player := $AnimationPlayer
 onready var _invincible_timer := $InvincibleTimer
-onready var _invincible_anim_player := $InvincibleAnimPlayer
+
+
 
 func isInvincible() -> bool:
 	return not _invincible_timer.is_stopped()
@@ -184,24 +226,39 @@ func _ready() -> void:
 
 func _integrate_forces(state: Physics2DDirectBodyState) -> void:
 	if isKnockbackActive(): return
-	
-	
+
+
 	if state.get_contact_count() > 0:
-		if target == null:
-			var new_target = state.get_contact_collider_object(_rng.randi_range(0, state.get_contact_count() - 1))
-			setTarget(new_target)
 		
+		var collisions : Dictionary = {}
+		#filtering the collisions
 		for i in range(state.get_contact_count()):
-			var body = state.get_contact_collider_object(i)
-			if body is RigidBody2D:
-				if body.has_method("damage"):
-					var pos : Vector2 = state.get_contact_collider_position(0)
-					var force : Vector2 = (body.global_position - global_position).normalized() * collision_knockback_force
-					var damage_info : Dictionary = body.damage(collision_damage, pos, force, collision_knockback_time, self, getCurColor())
-	
-	
-	
-	
+			var id = state.get_contact_collider_id(i)
+			if collisions.has(id):
+				var shape = state.get_contact_collider_shape(i)
+				collisions[id].shapes.append(shape)
+			else:
+				var body = state.get_contact_collider_object(i)
+				var shape = state.get_contact_collider_shape(i)
+				var pos = state.get_contact_collider_position(i)
+				collisions[id] = {"body" : body, "shapes" : [shape], "pos" : pos}
+		
+		
+		var count : int = collisions.values().size()
+		if target == null and count > 0:
+			if count == 1:
+				setTarget(collisions.values()[0].body)
+			else:
+				var rand_index : int = _rng.randi_range(0, count - 1)
+				setTarget(collisions.values()[rand_index].body)
+		
+		
+		for col in collisions.values():
+			if col.body is RigidBody2D:
+				if col.body.has_method("damage"):
+					var force : Vector2 = (col.body.global_position - global_position).normalized() * collision_knockback_force
+					col.body.call_deferred("damage", collision_damage, col.pos, force, collision_knockback_time, self, getCurColor())
+		
 	var input := Vector2.ZERO
 	
 	if target and is_instance_valid(target): 
@@ -262,7 +319,7 @@ func damage(damage : Vector2, point : Vector2, knockback_force : Vector2, knockb
 	var percent_cut : float = 0.0
 	var cut_shape : PoolVector2Array = _poly_fracture.generateRandomPolygon(damage, Vector2(12,72), Vector2.ZERO)
 	var cut_shape_area : float = PolygonLib.getPolygonArea(cut_shape)
-	emit_signal("Damaged", self, point, cut_shape, damage_color, 1.0)
+	emit_signal("Damaged", self, point, cut_shape, damage_color, 5.0)
 #	spawnShapeVisualizer(point, 0.0, cut_shape, damage_color, 1.0)
 	var fracture_info : Dictionary = _poly_fracture.cutFracture(_polygon.get_polygon(), cut_shape, get_global_transform(), Transform2D(0.0, point), start_area * shape_area_percent, 200, 50, fractures)
 	
@@ -309,7 +366,6 @@ func damage(damage : Vector2, point : Vector2, knockback_force : Vector2, knockb
 		_drop_poly.modulate.a = lerp(0.2, 0.7, 1.0 - getHealthPercent())
 		
 		_invincible_timer.start(invincible_time)
-		_invincible_anim_player.play("blink")
 		if hasRegeneration():
 			if canRegenerate():
 				var rand_time : float = _rng.randf_range(abs(regeneration_interval_range.x), abs(regeneration_interval_range.y))
@@ -319,28 +375,6 @@ func damage(damage : Vector2, point : Vector2, knockback_force : Vector2, knockb
 					applyColor(regeneration_color)
 			
 	return {"percent_cut" : percent_cut , "dead" : isDead()}
-
-
-#func spawnShapeVisualizer(pos : Vector2, rot : float, shape : PoolVector2Array, color : Color, fade_speed : float) -> void:
-#	var instance = PoolServer.getInstance("shape-visualizer")
-#	if instance:
-#		instance.setPolygon(shape)
-#		instance.spawn(pos, rot, color, fade_speed)
-
-
-#func spawnFractureBody(fracture_shard : Dictionary, new_mass : float, p : float = 1.0) -> void:
-#	var instance = PoolServer.getInstance("fracture-shards")
-#	if not instance:
-#		return
-#
-#
-#	#fracture shard variant
-#	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
-#	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), _rng.randf_range(0.5, 2.0))
-#	instance.setPolygon(fracture_shard.centered_shape, getCurColor())
-#	instance.setMass(new_mass)
-#	instance.addForce(dir * fracture_force * p)
-#	instance.addTorque(_rng.randf_range(-2, 2) * p)
 
 
 func setNewTargetPos() -> void:
@@ -443,7 +477,3 @@ func _on_TargetPosTimer_timeout() -> void:
 
 func On_Regeneration_Timer_Timeout() -> void:
 	heal(regeneration_amount)
-
-
-func _on_InvincibleTimer_timeout() -> void:
-	_invincible_anim_player.stop(true)
