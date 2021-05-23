@@ -402,6 +402,9 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 	
 	return beam
 
+
+#implemented thanks to Daniel Shiffman´s (@shiffman) coding challenges
+#https://thecodingtrain.com/CodingChallenges/019-superellipse.html
 #https://en.wikipedia.org/wiki/Superellipse
 static func createSuperEllipsePolygon(p_number : int, a : float, b : float, n : float, start_angle_deg : float = 0.0, max_angle_deg : float = 360.0, offset := Vector2.ZERO) -> PoolVector2Array:
 	var poly : PoolVector2Array = []
@@ -421,6 +424,8 @@ static func createSuperEllipsePolygon(p_number : int, a : float, b : float, n : 
 		current_angle_rad += angle_step_rad
 	return poly
 
+#implemented thanks to Daniel Shiffman´s (@shiffman) coding challenges
+#https://thecodingtrain.com/CodingChallenges/023-supershape2d.html
 #http://paulbourke.net/geometry/supershape/
 static func createSupershape2DPolygon(p_number : int, a : float, b : float, m : float, n1 : float, n2 : float, n3 : float, start_angle_deg : float = 0.0, max_angle_deg : float = 360.0, offset := Vector2.ZERO) -> PoolVector2Array:
 	var poly : PoolVector2Array = []
