@@ -136,7 +136,7 @@ func fractureDelaunay(source_polygon : PoolVector2Array, source_global_trans : T
 #						var source_global_trans := Transform2D(world_rot_rad, world_pos)
 						var centered_shape = PolygonLib.translatePolygon(r, -centroid)
 						var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(source_global_trans, centroid)
-						fracture_info.append(PolygonLib.makeShapeInfo(centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
+						fracture_info.append(PolygonLib.makeShapeInfo(r, centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
 				else:
 					var t : Dictionary = PolygonLib.triangulatePolygon(r, true, true)
 					if t.area >= min_discard_area:
@@ -161,7 +161,7 @@ func fractureDelaunayConvex(concave_polygon : PoolVector2Array, source_global_tr
 #		var source_global_trans := Transform2D(world_rot_rad, world_pos)
 		var centered_shape = PolygonLib.translatePolygon(triangle.points, -centroid)
 		var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(source_global_trans, centroid)
-		fracture_info.append(PolygonLib.makeShapeInfo(centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
+		fracture_info.append(PolygonLib.makeShapeInfo(triangle.points, centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
 	
 	return fracture_info
 
@@ -181,7 +181,7 @@ func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, source_glob
 #		var source_global_trans := Transform2D(world_rot_rad, world_pos)
 		var centered_shape = PolygonLib.translatePolygon(triangle.points, -centroid)
 		var spawn_pos : Vector2 = PolygonLib.getShapeSpawnPos(source_global_trans, centroid)
-		fracture_info.append(PolygonLib.makeShapeInfo(centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
+		fracture_info.append(PolygonLib.makeShapeInfo(triangle.points, centered_shape, centroid, spawn_pos, triangle.area, source_global_trans))
 	
 	return fracture_info
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------

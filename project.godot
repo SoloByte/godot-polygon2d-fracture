@@ -9,6 +9,16 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "RigidBody2D",
+"class": "Blob",
+"language": "GDScript",
+"path": "res://demo/src/blob/Blob.gd"
+}, {
+"base": "Node2D",
+"class": "CircleCast",
+"language": "GDScript",
+"path": "res://demo/src/circle-cast/CircleCast.gd"
+}, {
 "base": "Reference",
 "class": "PolygonFracture",
 "language": "GDScript",
@@ -20,6 +30,8 @@ _global_script_classes=[ {
 "path": "res://polygon2d-fracture/PolygonLib.gd"
 } ]
 _global_script_class_icons={
+"Blob": "",
+"CircleCast": "",
 "PolygonFracture": "",
 "PolygonLib": ""
 }
@@ -73,6 +85,11 @@ cut_line={
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
  ]
 }
+
+[layer_names]
+
+2d_physics/layer_1="Wall"
+2d_physics/layer_10="Blob"
 
 [rendering]
 

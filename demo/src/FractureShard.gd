@@ -164,6 +164,7 @@ func setPolygon(poly : PoolVector2Array, c : Color, texture_info : Dictionary) -
 
 
 func setTexture(texture_info : Dictionary) -> void:
+	if not texture_info: return
 	texture = texture_info.texture
 	texture_scale = texture_info.scale
 	texture_offset = texture_info.offset
