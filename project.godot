@@ -28,12 +28,18 @@ _global_script_classes=[ {
 "class": "PolygonLib",
 "language": "GDScript",
 "path": "res://polygon2d-fracture/PolygonLib.gd"
+}, {
+"base": "Reference",
+"class": "PolygonRestorer",
+"language": "GDScript",
+"path": "res://polygon2d-fracture/PolygonRestorer.gd"
 } ]
 _global_script_class_icons={
 "Blob": "",
 "CircleCast": "",
 "PolygonFracture": "",
-"PolygonLib": ""
+"PolygonLib": "",
+"PolygonRestorer": ""
 }
 
 [application]

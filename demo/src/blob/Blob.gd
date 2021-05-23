@@ -33,11 +33,10 @@ class_name Blob
 
 
 
-
-
-
-
-
+#Blobs are the enemies of my game Fracture Hell.
+#This script is almost identical to the one I use in Fracture Hell.
+#Check the game out on itch.io [https://solobytegames.itch.io/fracture-hell].
+#Comments, Feedback, a Rating, or any other form of interaction is greatly appreciated :D
 
 
 
@@ -46,7 +45,7 @@ signal Died(ref, pos)
 signal Damaged(blob, pos, shape, color, fade_speed)
 signal Fractured(blob, fracture_shard, new_mass, color, fracture_force, p)
 
-
+export(bool) var advanced_regeneration : bool = false
 export(float) var invincible_time = 0.5
 export(Color) var color_default
 export(float) var radius : float = 24.0
@@ -98,6 +97,8 @@ var total_frame_heal_amount : float = 0.0
 var regeneration_timer : Timer = null
 var regeneration_started : bool = false
 
+var polygon_restorer : PolygonRestorer = null
+
 
 onready var find_new_target_pos_tolerance_sq : float = find_new_target_pos_tolerance * find_new_target_pos_tolerance
 onready var target_reached_tolerance_sq : float = target_reached_tolerance * target_reached_tolerance
@@ -141,22 +142,17 @@ func canRegenerate() -> bool:
 func isRegenerating() -> bool:
 	return regeneration_started
 
-
-
 func setTarget(new_target) -> void:
 	target = new_target
 #	if target and is_instance_valid(target):
 	startTargetPosTimer(target_pos_interval_range.x, target_pos_interval_range.y)
 	setNewTargetPos()
 
-
 func isKnockbackActive() -> bool:
 	return knockback_timer > 0.0
 
-
 func getCurColor() -> Color:
 	return _origin_poly.modulate
-
 
 func getCurMaxSpeed() -> float:
 	var factor :  float = 1.0
@@ -199,6 +195,9 @@ func _ready() -> void:
 	
 	cur_area = start_area
 	
+	
+	if not advanced_regeneration:
+		polygon_restorer = PolygonRestorer.new()
 	
 	applyColor(color_default)
 	
@@ -350,13 +349,16 @@ func damage(damage : Vector2, point : Vector2, knockback_force : Vector2, knockb
 				biggest_area = shape.area
 				cur_shape = shape
 		
+		if polygon_restorer:
+			polygon_restorer.addShape(_polygon.get_polygon(), cur_area)
 		
 		setPolygon(cur_shape.shape)
 		
 #		SoundServer.play2D("hurt", global_position, "blob", 1.0, SoundServer.OVERRIDE_BEHAVIOUR.OLDEST, -1)
 		
-		apply_central_impulse(knockback_force)
-		knockback_timer = knockback_time
+		if _rng.randf() > 0.1:
+			apply_central_impulse(knockback_force)
+			knockback_timer = knockback_time
 		
 		percent_cut = cur_shape.area / cur_area
 		cur_area = cur_shape.area
@@ -425,8 +427,15 @@ func heal(heal_amount : float) -> void:
 
 func restore() -> void:
 	if total_frame_heal_amount > 0.0:
-		var poly : PoolVector2Array = PolygonLib.restorePolygon(_polygon.get_polygon(), start_poly, total_frame_heal_amount)
-		var area : float = PolygonLib.getPolygonArea(poly)
+		var poly : PoolVector2Array
+		var area : float = 0.0
+		if polygon_restorer:
+			var shape_entry : Dictionary = polygon_restorer.popLast()
+			poly = shape_entry.shape
+			area = shape_entry.area
+		else:
+			poly = PolygonLib.restorePolygon(_polygon.get_polygon(), start_poly, total_frame_heal_amount)
+			area = PolygonLib.getPolygonArea(poly)
 		
 		if area / start_area > heal_treshold:
 			cur_area = start_area
