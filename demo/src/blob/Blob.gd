@@ -198,6 +198,7 @@ func _ready() -> void:
 	
 	if not advanced_regeneration:
 		polygon_restorer = PolygonRestorer.new()
+		polygon_restorer.addShape(_polygon.get_polygon(), start_area)
 	
 	applyColor(color_default)
 	
@@ -349,8 +350,11 @@ func damage(damage : Vector2, point : Vector2, knockback_force : Vector2, knockb
 				biggest_area = shape.area
 				cur_shape = shape
 		
+#		if polygon_restorer:
+#			polygon_restorer.addShape(_polygon.get_polygon(), cur_area)
+		
 		if polygon_restorer:
-			polygon_restorer.addShape(_polygon.get_polygon(), cur_area)
+			polygon_restorer.addShape(cur_shape.shape, cur_shape.area)
 		
 		setPolygon(cur_shape.shape)
 		
