@@ -61,6 +61,23 @@ There are two different systems for fracturing polygons.
 
 
 
+## Restoring
+
+![](gifs/polygon-fracture-restore-simple01.gif)
+
+I added two different methods of restoring polygons to their original state. 
+
+### Simple
+The simple method uses the polygonRestorer.gd script. This is a simple class with an array(stack) of polygons. Each polygon represents a state. The last element represents the previous polygon, the first element represents the original polygon. The user can add new shapes, get the original state, the current state or the previous state with simple functions. 
+
+### Advanced
+The advanced method just uses 1 function in the polygonLib.gd script. The simple method stores the states of the polygon and can restore each state. The advanced method grows the polygon by a certain amount while restricting it to the original polygons shape. In other words: the simple method can only restore discrete states while the advanced method can restore any amount in between. Unfortunately the advanced method comes with a bigger performace cost. As seen in the demo, it should not be a problem using it every now and then but restore intervals below about 0.2 seconds can slow things down significantly.
+
+I would suggest just testing it because as always it depends on how and for what you want to use it ;)
+
+
+
+
 I need the fracturing for my game but I thought I share it with anyone interested. My method is not the best or most performant method out there, and also implemented via GDScript (for ease of use), so don´t expect any performance miracles. There are other solutions out there, but I did not find a simple solution for fracturing 2d polygons in the way I wanted. Maybe sometime in the future, I will look into Voronoi fractures, to make the fractures look better. (Now the polygon is just randomly fractured)
 
 
