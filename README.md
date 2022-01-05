@@ -2,6 +2,12 @@
 
 
 
+## DEVELOPER WORDS
+I am currently using this tool in my game Fracture Hell. You can take a look to see what it is capable of or how it can be used. Buying Fracture Hell is a great way to support me if you are interested and any feedback regarding this tool or Fracture Hell is greatly appreciated. 
+Fracture Hell is available on [Steam](https://store.steampowered.com/app/1713770/Fracture_Hell/) and [Itch Io](https://solobytegames.itch.io/fracture-hell).
+
+
+
 ## UPDATES
 - UPDATE v1.4.0 adds polygon restoring - simple and advanced
 - UPDATE v1.3.0 texture system + point fracture system + big cleanup
