@@ -89,5 +89,5 @@ I need the fracturing for my game but I thought I share it with anyone intereste
 
 
 ## Other Solutions
-- goost (https://github.com/goostengine/goost) for example, but requires building Godot from source
+- Goost (https://github.com/goostengine/goost), which can be downloaded at [Goost official website](https://goostengine.github.io/), otherwise requires building Godot from source.
 - Godot-3-2D-Destructible-Objects (https://github.com/hiulit/Godot-3-2D-Destructible-Objects) but only works for sprites
