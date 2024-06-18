@@ -7,12 +7,12 @@ var shape_stack : Array = []
 var cur_entry : Dictionary
 
 
-func getOriginShape() -> PoolVector2Array:
+func getOriginShape() -> PackedVector2Array:
 	if shape_stack.size() <= 0:
 		if cur_entry:
 			return cur_entry.shape
 		else:
-			return PoolVector2Array([])
+			return PackedVector2Array([])
 	else:
 		return shape_stack.front().shape
 
@@ -25,7 +25,7 @@ func getOriginArea() -> float:
 	else:
 		return shape_stack.front().area
 
-func getCurShape() -> PoolVector2Array:
+func getCurShape() -> PackedVector2Array:
 	if shape_stack.size() <= 0:
 		return getOriginShape()
 	else:
@@ -41,16 +41,16 @@ func getCurArea() -> float:
 
 
 func _init() -> void:
-	cur_entry = createShapeEntry(PoolVector2Array([]), -1.0, true)
+	cur_entry = createShapeEntry(PackedVector2Array([]), -1.0, true)
 
 
 
 
 func clear() -> void:
 	shape_stack.clear()
-	cur_entry = createShapeEntry(PoolVector2Array([]), -1.0, true)
+	cur_entry = createShapeEntry(PackedVector2Array([]), -1.0, true)
 
-func addShape(shape : PoolVector2Array, shape_area : float = -1.0) -> void:
+func addShape(shape : PackedVector2Array, shape_area : float = -1.0) -> void:
 	if not cur_entry.empty:
 		shape_stack.push_back(cur_entry)
 	
@@ -58,18 +58,18 @@ func addShape(shape : PoolVector2Array, shape_area : float = -1.0) -> void:
 
 func popLast() -> Dictionary:
 	if shape_stack.size() <= 0:
-		return createShapeEntry(PoolVector2Array([]), -1.0, true)
+		return createShapeEntry(PackedVector2Array([]), -1.0, true)
 	
 	cur_entry = shape_stack.pop_back()
 	return cur_entry
 
 func getLast() -> Dictionary:
 	if shape_stack.size() <= 0:
-		return createShapeEntry(PoolVector2Array([]), -1.0, true)
+		return createShapeEntry(PackedVector2Array([]), -1.0, true)
 	else:
 		return shape_stack.back()
 
-func createShapeEntry(shape : PoolVector2Array, area : float = -1.0, empty : bool = false) -> Dictionary:
+func createShapeEntry(shape : PackedVector2Array, area : float = -1.0, empty : bool = false) -> Dictionary:
 	if area <= 0.0:
 		area = PolygonLib.getPolygonArea(shape)
 	

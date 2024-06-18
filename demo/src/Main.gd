@@ -31,7 +31,7 @@ extends Node2D
 
 
 
-export(Array, PackedScene) var test_scenes
+@export var test_scenes : Array[PackedScene]  # (Array, PackedScene)
 
 var _cur_test_scene_index : int = 0
 var _cur_test_scene = null
@@ -47,7 +47,7 @@ func _ready():
 
 func _input(event):
 	if event.is_action_pressed("fullscreen"):
-		OS.window_fullscreen = not OS.window_fullscreen
+		get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (not ((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED
 	
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().quit()
@@ -62,14 +62,14 @@ func changeTest() -> void:
 		_cur_test_scene.queue_free()
 	
 	_cur_test_scene_index = wrapi(_cur_test_scene_index + 1, 0, test_scenes.size())
-	var instance = test_scenes[_cur_test_scene_index].instance()
+	var instance = test_scenes[_cur_test_scene_index].instantiate()
 	add_child(instance)
 	
 	#for some reason I need to do that in Godot v3.3.1...
 	#the camera in the scene is already setup with current = true and zoom = Vector2(2,2)
 	#but it does not work without setting it here again
-	instance.get_node("Camera2D").current = true
-	instance.get_node("Camera2D").zoom = Vector2(2,2)
+	instance.get_node("Camera2D").make_current()
+	instance.get_node("Camera2D").zoom = Vector2(0.25,0.25)
 	
 	
 	_cur_test_scene = instance

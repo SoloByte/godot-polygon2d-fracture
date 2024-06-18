@@ -1,19 +1,19 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=12 format=3 uid="uid://b785hkyo03kns"]
 
-[ext_resource path="res://demo/src/Main.gd" type="Script" id=1]
-[ext_resource path="res://demo/test-scenes/fracture-scenes/usable/Fracture_Simple.tscn" type="PackedScene" id=2]
-[ext_resource path="res://demo/test-scenes/fracture-scenes/usable/Fracture_Delaunay.tscn" type="PackedScene" id=3]
-[ext_resource path="res://demo/test-scenes/fracture-scenes/usable/Fracture_DelaunayRectangle.tscn" type="PackedScene" id=4]
-[ext_resource path="res://demo/test-scenes/fracture-scenes/usable/Fracture_DelaunayConvex.tscn" type="PackedScene" id=5]
-[ext_resource path="res://demo/test-scenes/fracture-scenes/usable/Fracture.tscn" type="PackedScene" id=6]
-[ext_resource path="res://demo/test-scenes/cut-scenes/usable/CutFracture.tscn" type="PackedScene" id=7]
-[ext_resource path="res://demo/WorldEnvironment.tscn" type="PackedScene" id=8]
-[ext_resource path="res://demo/test-scenes/point-fracture/usable/PointFractureScene.tscn" type="PackedScene" id=9]
-[ext_resource path="res://demo/test-scenes/blob-scenes/usable/BlobRestoreAdvScene.tscn" type="PackedScene" id=10]
-[ext_resource path="res://demo/test-scenes/blob-scenes/usable/BlobRestoreSimpleScene.tscn" type="PackedScene" id=11]
+[ext_resource type="Script" path="res://demo/src/Main.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://b5nk7e37xxhkg" path="res://demo/test-scenes/fracture-scenes/usable/Fracture_Simple.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://cub2gj0u8g4qv" path="res://demo/test-scenes/fracture-scenes/usable/Fracture_Delaunay.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://uw5nk55tgvrf" path="res://demo/test-scenes/fracture-scenes/usable/Fracture_DelaunayRectangle.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://cy7qo4lnb6sc3" path="res://demo/test-scenes/fracture-scenes/usable/Fracture_DelaunayConvex.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://dsamrisjqiixl" path="res://demo/test-scenes/fracture-scenes/usable/Fracture.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://vdocs38e3ce0" path="res://demo/test-scenes/cut-scenes/usable/CutFracture.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://demo/WorldEnvironment.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://bls1gwiki0ia4" path="res://demo/test-scenes/point-fracture/usable/PointFractureScene.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://pdw1oj7ma01k" path="res://demo/test-scenes/blob-scenes/usable/BlobRestoreAdvScene.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://c1frwj2m6e4hx" path="res://demo/test-scenes/blob-scenes/usable/BlobRestoreSimpleScene.tscn" id="11"]
 
 [node name="Main" type="Node2D"]
-script = ExtResource( 1 )
-test_scenes = [ ExtResource( 7 ), ExtResource( 9 ), ExtResource( 11 ), ExtResource( 10 ), ExtResource( 3 ), ExtResource( 5 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 2 ) ]
+script = ExtResource("1")
+test_scenes = Array[PackedScene]([ExtResource("7"), ExtResource("9"), ExtResource("11"), ExtResource("10"), ExtResource("3"), ExtResource("5"), ExtResource("4"), ExtResource("6"), ExtResource("2")])
 
-[node name="WorldEnvironment" parent="." instance=ExtResource( 8 )]
+[node name="WorldEnvironment" parent="." instance=ExtResource("8")]

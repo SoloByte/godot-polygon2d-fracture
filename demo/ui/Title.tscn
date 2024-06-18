@@ -8,11 +8,11 @@ corner_radius_bottom_left = 20
 [node name="Title" type="Label"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -585.0
-margin_right = 45.0
-margin_bottom = 36.0
-rect_scale = Vector2( 2, 2 )
-custom_styles/normal = SubResource( 1 )
+offset_left = -585.0
+offset_right = 45.0
+offset_bottom = 36.0
+scale = Vector2( 2, 2 )
+theme_override_styles/normal = SubResource( 1 )
 text = "DELAUNY FRACTURE"
 align = 1
 valign = 1

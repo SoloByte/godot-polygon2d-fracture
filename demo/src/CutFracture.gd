@@ -43,19 +43,19 @@ const CUT_LINE_EPSILON : float = 10.0 # used in func simplifyLineRDP // how deta
 
 
 
-export(Color) var fracture_body_color
-export(PackedScene) var rigidbody_template
+@export var fracture_body_color: Color
+@export var rigidbody_template: PackedScene
 
 
 
 
-onready var polyFracture := PolygonFracture.new()
-onready var _source_polygon_parent := $SourcePolygons
-onready var _rng := RandomNumberGenerator.new()
-onready var _cut_shape : PoolVector2Array = PolygonLib.createCirclePolygon(100.0, 1)
-onready var _cut_line := $CutLine
-onready var _pool_cut_visualizer := $Pool_CutVisualizer
-onready var _pool_fracture_shards := $Pool_FractureShards
+@onready var polyFracture := PolygonFracture.new()
+@onready var _source_polygon_parent := $SourcePolygons
+@onready var _rng := RandomNumberGenerator.new()
+@onready var _cut_shape : PackedVector2Array = PolygonLib.createCirclePolygon(100.0, 1)
+@onready var _cut_line := $CutLine
+@onready var _pool_cut_visualizer := $Pool_CutVisualizer
+@onready var _pool_fracture_shards := $Pool_FractureShards
 
 
 
@@ -66,7 +66,7 @@ var _cur_fracture_color : Color = fracture_body_color
 
 var _cut_line_enabled : bool = false
 var _cut_line_total_length : float = 0.0
-var _cut_line_points : PoolVector2Array = []
+var _cut_line_points : PackedVector2Array = []
 var _cut_line_start_direction := Vector2.ZERO
 var _cut_line_t : float = 0.0
 var _cut_line_last_end_point := Vector3.ZERO #z is used as bool -> 0 = not a valid point/ 1 = valid point
@@ -77,7 +77,7 @@ var _cut_line_last_end_point := Vector3.ZERO #z is used as bool -> 0 = not a val
 func _ready() -> void:
 	_rng.randomize()
 	
-	var color := Color.white
+	var color := Color.WHITE
 	color.s = fracture_body_color.s
 	color.v = fracture_body_color.v
 	color.h = _rng.randf()
@@ -173,8 +173,8 @@ func endCutLine() -> void:
 	if _cut_line_points.size() > 1 and _cut_line_total_length > CUT_LINE_MIN_LENGTH and not _input_disabled:
 		
 #		var final_line : PoolVector2Array = PolygonLib.simplifyLine(_cut_line_points, CUT_LINE_SEGMENT_MIN_LENGTH)
-		var final_line : PoolVector2Array = PolygonLib.simplifyLineRDP(_cut_line_points, CUT_LINE_EPSILON)
-		var final_shape : PoolVector2Array = []
+		var final_line : PackedVector2Array = PolygonLib.simplifyLineRDP(_cut_line_points, CUT_LINE_EPSILON)
+		var final_shape : PackedVector2Array = []
 		
 		final_shape = PolygonLib.offsetPolyline(final_line, 2.0, true)[0]
 		final_shape = PolygonLib.translatePolygon(final_shape, -_cut_line_points[0])
@@ -208,13 +208,13 @@ func simpleCut(pos : Vector2) -> void:
 
 
 
-func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
+func cutSourcePolygons(cut_pos : Vector2, cut_shape : PackedVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
 	var instance = _pool_cut_visualizer.getInstance()
 	instance.spawn(cut_pos, fade_speed)
 	instance.setPolygon(cut_shape)
 	
 	for source in _source_polygon_parent.get_children():
-		var source_polygon : PoolVector2Array = source.get_polygon()
+		var source_polygon : PackedVector2Array = source.get_polygon()
 		var total_area : float = PolygonLib.getPolygonArea(source_polygon)
 		
 		var source_trans : Transform2D = source.get_global_transform()
@@ -255,7 +255,7 @@ func cutSourcePolygons(cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot 
 
 
 func spawnRigibody2d(shape_info : Dictionary, color : Color, lin_vel : Vector2, ang_vel : float, mass : float, cut_pos : Vector2, texture_info : Dictionary) -> void:
-	var instance = rigidbody_template.instance()
+	var instance = rigidbody_template.instantiate()
 	_source_polygon_parent.add_child(instance)
 	instance.global_position = shape_info.spawn_pos
 	instance.global_rotation = shape_info.spawn_rot

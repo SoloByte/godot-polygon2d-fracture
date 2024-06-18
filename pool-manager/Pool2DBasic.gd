@@ -40,15 +40,15 @@ extends Node
 
 
 #if pool is added to scene tree from the editor use this or setup the pool via code later
-export(bool) var placed_in_level : bool = false
-export(PackedScene) var instance_template
-export(int) var max_amount : int = 0
-export(bool) var instantiate_new_on_empty : bool = false
-export(bool) var keep_instances_in_tree : bool = false
+@export var placed_in_level: bool = false
+@export var instance_template: PackedScene
+@export var max_amount: int = 0
+@export var instantiate_new_on_empty: bool = false
+@export var keep_instances_in_tree: bool = false
 
 
 #all instances are a child of this node
-onready var _instance_parent := $Instances
+@onready var _instance_parent := $Instances
 
 
 
@@ -157,11 +157,11 @@ func addInstances(amount : int) -> void:
 
 
 func addSingleInstance():
-	var instance = template.instance()
+	var instance = template.instantiate()
 	instances_ready.push_back(instance)
 	if keep_in_tree:
 		_instance_parent.add_child(instance)
-	instance.connect("Despawn", self, "On_Instance_Despawn")
+	instance.connect("Despawn", Callable(self, "On_Instance_Despawn"))
 	return instance
 
 
@@ -187,7 +187,7 @@ func On_Instance_Despawn(instance) -> void:
 	if clear_in_process:
 		var index : int = instances_in_use.find(instance)
 		if index >= 0:
-			instances_in_use.remove(index)
+			instances_in_use.remove_at(index)
 			instance.queue_free()
 		
 			if instances_in_use.size() <= 0:
@@ -195,7 +195,7 @@ func On_Instance_Despawn(instance) -> void:
 	else:
 		var index : int = instances_in_use.find(instance)
 		if index >= 0:
-			instances_in_use.remove(index)
+			instances_in_use.remove_at(index)
 			instances_ready.append(instance)
 			
 			if instance.has_method("despawn"):

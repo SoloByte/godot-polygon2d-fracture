@@ -33,21 +33,21 @@ extends Node2D
 
 
 
-onready var _rng := RandomNumberGenerator.new()
-onready var _blob_parent := $BlobParent
-onready var _pool_cut_visualizer := $Pool_CutVisualizer
-onready var _pool_fracture_shards := $Pool_FractureShards
+@onready var _rng := RandomNumberGenerator.new()
+@onready var _blob_parent := $BlobParent
+@onready var _pool_cut_visualizer := $Pool_CutVisualizer
+@onready var _pool_fracture_shards := $Pool_FractureShards
 
 
 
 func _ready() -> void:
 	for blob in _blob_parent.get_children():
-		blob.connect("Damaged", self, "On_Blob_Damaged")
-		blob.connect("Fractured", self, "On_Blob_Fractured")
+		blob.connect("Damaged", Callable(self, "On_Blob_Damaged"))
+		blob.connect("Fractured", Callable(self, "On_Blob_Fractured"))
 
 
 
-func spawnShapeVisualizer(cut_pos : Vector2, cut_shape : PoolVector2Array, fade_speed : float) -> void:
+func spawnShapeVisualizer(cut_pos : Vector2, cut_shape : PackedVector2Array, fade_speed : float) -> void:
 	var instance = _pool_cut_visualizer.getInstance()
 	instance.spawn(cut_pos, fade_speed)
 	instance.setPolygon(cut_shape)
@@ -68,7 +68,7 @@ func spawnFractureBody(fracture_shard : Dictionary, new_mass : float, color : Co
 
 
 
-func On_Blob_Damaged(blob, pos : Vector2, shape : PoolVector2Array, color : Color, fade_speed : float) -> void:
+func On_Blob_Damaged(blob, pos : Vector2, shape : PackedVector2Array, color : Color, fade_speed : float) -> void:
 	spawnShapeVisualizer(pos, shape, fade_speed)
 
 func On_Blob_Fractured(blob, fracture_shard : Dictionary, new_mass : float, color : Color, fracture_force : float, p : float) -> void:

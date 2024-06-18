@@ -2,10 +2,10 @@
 
 [node name="Arrow" type="Polygon2D"]
 color = Color( 1, 1, 1, 0.392157 )
-polygon = PoolVector2Array( 0, 0, 0, -32, 96, 0, 0, 32 )
+polygon = PackedVector2Array( 0, 0, 0, -32, 96, 0, 0, 32 )
 
 [node name="Line2D" type="Line2D" parent="."]
-points = PoolVector2Array( 0, -32, 96, 0, 0, 32, 0, -32 )
+points = PackedVector2Array( 0, -32, 96, 0, 0, 32, 0, -32 )
 default_color = Color( 1, 1, 1, 1 )
 joint_mode = 2
 begin_cap_mode = 2

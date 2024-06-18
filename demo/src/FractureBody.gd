@@ -42,11 +42,11 @@ signal Despawn(ref)
 
 
 
-onready var _col_poly := $CollisionPolygon2D
-onready var _poly := $Polygon2D
-onready var _line := $Line2D
-onready var _timer := $Timer
-onready var _line_lerp_start_color : Color = _line.modulate
+@onready var _col_poly := $CollisionPolygon2D
+@onready var _poly := $Polygon2D
+@onready var _line := $Line2D
+@onready var _timer := $Timer
+@onready var _line_lerp_start_color : Color = _line.modulate
 
 
 
@@ -77,7 +77,7 @@ func despawn() -> void:
 	global_rotation = 0.0
 	linear_velocity = Vector2.ZERO
 	angular_velocity = 0.0
-	set_applied_force(Vector2.ZERO)
+	apply_force(Vector2.ZERO)
 	set_process(false)
 	_t = 1.0
 
@@ -89,7 +89,7 @@ func despawn() -> void:
 #	_line.scale = s
 
 
-func setPolygon(polygon : PoolVector2Array, new_scale : Vector2) -> void:
+func setPolygon(polygon : PackedVector2Array, new_scale : Vector2) -> void:
 	_poly.set_polygon(polygon)
 	polygon.append(polygon[0])
 	_line.points = polygon

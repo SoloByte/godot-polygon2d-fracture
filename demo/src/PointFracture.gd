@@ -39,8 +39,8 @@ const MAX_AMMO : int = 5
 
 
 
-export(Color) var fracture_body_color
-export(Color) var no_ammo_line_color
+@export var fracture_body_color: Color
+@export var no_ammo_line_color: Color
 
 
 
@@ -53,18 +53,18 @@ var _fracture_balls_count : int = 0
 
 
 
-onready var rigidbody_template = preload("res://demo/src/RigidBody2D.tscn")
-onready var polyFracture := PolygonFracture.new()
+@onready var rigidbody_template = preload("res://demo/src/RigidBody2D.tscn")
+@onready var polyFracture := PolygonFracture.new()
 
-onready var _pool_fracture_shards := $Pool_FractureShards
-onready var _pool_cut_visualizer := $Pool_CutVisualizer
-onready var _pool_point_fracture_ball := $Pool_PointFractureBall
+@onready var _pool_fracture_shards := $Pool_FractureShards
+@onready var _pool_cut_visualizer := $Pool_CutVisualizer
+@onready var _pool_point_fracture_ball := $Pool_PointFractureBall
 
-onready var _source_polygon_parent := $SourceParent
-onready var _rng := RandomNumberGenerator.new()
-onready var _flick_line := $FlickLine
-onready var _flick_line_arrow := $FlickLine/Arrow
-onready var _default_flick_line_color : Color = _flick_line.modulate
+@onready var _source_polygon_parent := $SourceParent
+@onready var _rng := RandomNumberGenerator.new()
+@onready var _flick_line := $FlickLine
+@onready var _flick_line_arrow := $FlickLine/Arrow
+@onready var _default_flick_line_color : Color = _flick_line.modulate
 
 
 
@@ -72,7 +72,7 @@ onready var _default_flick_line_color : Color = _flick_line.modulate
 func _ready() -> void:
 	_rng.randomize()
 	
-	var color := Color.white
+	var color := Color.WHITE
 	color.s = fracture_body_color.s
 	color.v = fracture_body_color.v
 	color.h = _rng.randf()
@@ -137,10 +137,10 @@ func _input(event: InputEvent) -> void:
 
 
 
-func cutSourcePolygons(source, cut_pos : Vector2, cut_shape : PoolVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
+func cutSourcePolygons(source, cut_pos : Vector2, cut_shape : PackedVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
 	spawnVisualizer(cut_pos, cut_shape, fade_speed)
 	
-	var source_polygon : PoolVector2Array = source.get_polygon()
+	var source_polygon : PackedVector2Array = source.get_polygon()
 	var total_area : float = PolygonLib.getPolygonArea(source_polygon)
 	
 	var source_trans : Transform2D = source.get_global_transform()
@@ -182,7 +182,7 @@ func fractureCollision(pos : Vector2, other_body, fracture_ball) -> void:
 	if _fracture_disabled: return
 	
 	var p : float = fracture_ball.launch_velocity / FLICK_MAX_VELOCITY
-	var cut_shape : PoolVector2Array = polyFracture.generateRandomPolygon(Vector2(25, 200) * p, Vector2(18,72), Vector2.ZERO)
+	var cut_shape : PackedVector2Array = polyFracture.generateRandomPolygon(Vector2(25, 200) * p, Vector2(18,72), Vector2.ZERO)
 	cutSourcePolygons(other_body, pos, cut_shape, 0.0, _rng.randf_range(400.0, 800.0), 2.0)
 	
 	_fracture_disabled = true
@@ -192,7 +192,7 @@ func fractureCollision(pos : Vector2, other_body, fracture_ball) -> void:
 
 
 func spawnRigibody2d(shape_info : Dictionary, color : Color, lin_vel : Vector2, ang_vel : float, mass : float, cut_pos : Vector2, texture_info : Dictionary) -> void:
-	var instance = rigidbody_template.instance()
+	var instance = rigidbody_template.instantiate()
 	_source_polygon_parent.add_child(instance)
 	instance.global_position = shape_info.spawn_pos
 	instance.global_rotation = shape_info.spawn_rot
@@ -215,7 +215,7 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, n
 	instance.setMass(new_mass)
 
 
-func spawnVisualizer(pos : Vector2, poly : PoolVector2Array, fade_speed : float) -> void:
+func spawnVisualizer(pos : Vector2, poly : PackedVector2Array, fade_speed : float) -> void:
 	var instance = _pool_cut_visualizer.getInstance()
 	instance.spawn(pos, fade_speed)
 	instance.setPolygon(poly)
@@ -223,7 +223,7 @@ func spawnVisualizer(pos : Vector2, poly : PoolVector2Array, fade_speed : float)
 
 
 
-func fractureBallDespawned(pos : Vector2, poly : PoolVector2Array) -> void:
+func fractureBallDespawned(pos : Vector2, poly : PackedVector2Array) -> void:
 	spawnVisualizer(pos, poly, 0.75)
 	_fracture_balls_count -= 1
 

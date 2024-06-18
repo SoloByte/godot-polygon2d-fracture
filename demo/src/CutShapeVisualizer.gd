@@ -38,8 +38,8 @@ signal Despawn(ref)
 
 
 
-export(Color) var start_color = Color(1.5, 1.5, 1.5, 1.0)
-export(Color) var end_color = Color(1.0, 1.0, 1.0, 0.1)
+@export var start_color: Color = Color(1.5, 1.5, 1.5, 1.0)
+@export var end_color: Color = Color(1.0, 1.0, 1.0, 0.1)
 
 
 
@@ -81,7 +81,7 @@ func _process(delta: float) -> void:
 
 
 
-func setPolygon(poly : PoolVector2Array) -> void:
+func setPolygon(poly : PackedVector2Array) -> void:
 	t = 0.0
 	color = start_color
 	set_polygon(poly)

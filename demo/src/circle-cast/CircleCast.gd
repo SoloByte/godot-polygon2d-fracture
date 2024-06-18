@@ -33,19 +33,19 @@ class_name CircleCast
 
 
 
-export(float) var radius : float = 1.0
-export(int, LAYERS_2D_PHYSICS) var collision_layer
+@export var radius: float = 1.0
+@export var collision_layer: int
 
-export(int) var max_results : int = 6
-export(float) var margin : float = 0.0
+@export var max_results: int = 6
+@export var margin: float = 0.0
 
-export(bool) var collide_with_bodies = true
-export(bool) var collide_with_areas = false
-
-
+@export var collide_with_bodies: bool = true
+@export var collide_with_areas: bool = false
 
 
-var _query : Physics2DShapeQueryParameters = null
+
+
+var _query : PhysicsShapeQueryParameters2D = null
 var _circle_shape : CircleShape2D = null
 var _excluded : Array = []
 
@@ -62,7 +62,7 @@ func removeExclusion(obj) -> void:
 
 func removeExclusionIndex(index : int) -> void:
 	if not _excluded or _excluded.size() <= 0 or index < 0 or index >= _excluded.size(): return
-	_excluded.remove(index)
+	_excluded.remove_at(index)
 
 
 
@@ -78,12 +78,12 @@ func getCircleShape() -> CircleShape2D:
 	return _circle_shape
 
 
-func getQuery() -> Physics2DShapeQueryParameters:
+func getQuery() -> PhysicsShapeQueryParameters2D:
 	if not _query:
 		setQuery(createQuerySimple())
 	return _query
 
-func setQuery(query : Physics2DShapeQueryParameters) -> void:
+func setQuery(query : PhysicsShapeQueryParameters2D) -> void:
 	_query = query
 
 
@@ -91,7 +91,7 @@ func updateQuery(pos : Vector2, rot : float, r : float = -1.0) -> void:
 	setCircleShapeRadius(r)
 	updateCustomQuery(getQuery(), pos, rot, null)
 
-func updateCustomQuery(query : Physics2DShapeQueryParameters, pos : Vector2, rot : float, shape = null) -> void:
+func updateCustomQuery(query : PhysicsShapeQueryParameters2D, pos : Vector2, rot : float, shape = null) -> void:
 	if not query: return
 	query.transform = Transform2D(rot, pos)
 	if shape:
@@ -99,11 +99,11 @@ func updateCustomQuery(query : Physics2DShapeQueryParameters, pos : Vector2, rot
 
 
 
-func createQuerySimple() -> Physics2DShapeQueryParameters:
+func createQuerySimple() -> PhysicsShapeQueryParameters2D:
 	return createQuery(global_position, global_rotation, Vector2.ZERO, getCircleShape(), collision_layer, _excluded, collide_with_bodies, collide_with_areas, margin)
 
-func createQuery(_pos : Vector2, _rot : float, _motion : Vector2, _shape, _collision_layer, _exclude : Array = [], _collide_with_bodies : bool = true, _collide_with_areas : bool = false, _margin : float = 0.0) -> Physics2DShapeQueryParameters:
-	var query := Physics2DShapeQueryParameters.new()
+func createQuery(_pos : Vector2, _rot : float, _motion : Vector2, _shape, _collision_layer, _exclude : Array = [], _collide_with_bodies : bool = true, _collide_with_areas : bool = false, _margin : float = 0.0) -> PhysicsShapeQueryParameters2D:
+	var query := PhysicsShapeQueryParameters2D.new()
 	query.set_shape(_shape)
 	query.motion = _motion
 	query.collision_layer = _collision_layer
@@ -115,7 +115,7 @@ func createQuery(_pos : Vector2, _rot : float, _motion : Vector2, _shape, _colli
 	return query
 
 
-func getSpaceState() ->  Physics2DDirectSpaceState:
+func getSpaceState() ->  PhysicsDirectSpaceState2D:
 	return get_world_2d().direct_space_state
 
 
@@ -167,15 +167,15 @@ static func filterResultsAdv(result : Array) -> Dictionary:
 	return filtered
 
 
-func castMotion(query : Physics2DShapeQueryParameters) -> Array:
+func castMotion(query : PhysicsShapeQueryParameters2D) -> Array:
 	return getSpaceState().cast_motion(query)
 
 
-func getCollisionPoints(query : Physics2DShapeQueryParameters, max_results : int = 32) -> Array:
+func getCollisionPoints(query : PhysicsShapeQueryParameters2D, max_results : int = 32) -> Array:
 	return getSpaceState().collide_shape(query, max_results)
 
 
-func castNearest(query : Physics2DShapeQueryParameters) -> Dictionary:
+func castNearest(query : PhysicsShapeQueryParameters2D) -> Dictionary:
 	# -!!!- This method does not take into account the motion property of the object.
 	#collider_id: The colliding object's ID.
 	#linear_velocity: The colliding object's velocity Vector2. If the object is an Area2D, the result is (0, 0).
@@ -187,17 +187,17 @@ func castNearest(query : Physics2DShapeQueryParameters) -> Dictionary:
 	return getSpaceState().get_rest_info(query)
 
 
-func intersectPoint(_point : Vector2, _collision_layer : int, _max_results : int = 32, _exclude : Array = [], _collide_with_bodies : bool = true, _collide_with_areas : bool = false) -> Array:
+func intersectPoint(_point : PhysicsPointQueryParameters2D, _collision_layer : int, _max_results : int = 32, _exclude : Array = [], _collide_with_bodies : bool = true, _collide_with_areas : bool = false) -> Array:
 	#collider: The colliding object.
 	#collider_id: The colliding object's ID.
 	#metadata: The intersecting shape's metadata. This metadata is different from Object.get_meta(), and is set with Physics2DServer.shape_set_data().
 	#rid: The intersecting object's RID.
 	#shape: The shape index of the colliding shape.
 	# -!!!- ConcavePolygonShape2Ds and CollisionPolygon2Ds in Segments build mode are not solid shapes. Therefore, they will not be detected.
-	return getSpaceState().intersect_point(_point, _max_results, _exclude, _collision_layer, _collide_with_bodies, _collide_with_areas)
+	return getSpaceState().intersect_point(_point, _max_results)
 
 
-func intersectShape(query : Physics2DShapeQueryParameters, max_results: int = 32) -> Array:
+func intersectShape(query : PhysicsShapeQueryParameters2D, max_results: int = 32) -> Array:
 	# -!!!- This method does not take into account the motion property of the object.
 	#collider: The colliding object.
 	#collider_id: The colliding object's ID.

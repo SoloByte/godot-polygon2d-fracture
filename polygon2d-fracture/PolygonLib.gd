@@ -58,7 +58,7 @@ const SUPERSHAPE_2D_EXAMPLES : Dictionary = {
 #cut polygon = cut shape used to cut source polygon
 #get_intersect determines if the the intersected area (area shared by both polygons, the area that is cut out of the source polygon) is returned as well
 #returns dictionary with final : Array and intersected : Array -> all holes are filtered out already
-static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D) -> Dictionary:
+static func cutShape(source_polygon : PackedVector2Array, cut_polygon : PackedVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D) -> Dictionary:
 	var cut_pos : Vector2 = toLocal(source_trans_global, cut_trans_global.get_origin())
 	
 	cut_polygon = rotatePolygon(cut_polygon, cut_trans_global.get_rotation() - source_trans_global.get_rotation())
@@ -73,10 +73,10 @@ static func cutShape(source_polygon : PoolVector2Array, cut_polygon : PoolVector
 	return {"final" : final_polygons, "intersected" : intersected_polygons}
 
 
-static func restorePolygon(cur_poly : PoolVector2Array, target_poly : PoolVector2Array, amount : float) -> PoolVector2Array:
+static func restorePolygon(cur_poly : PackedVector2Array, target_poly : PackedVector2Array, amount : float) -> PackedVector2Array:
 	var offset_polies : Array = offsetPolygon(cur_poly, amount, true)
 	
-	var offset_poly : PoolVector2Array
+	var offset_poly : PackedVector2Array
 	if offset_polies.size() <= 0:
 #		print("MorpPolygon - offset polies size < 0 - target poly returned")
 		return target_poly
@@ -126,12 +126,12 @@ static func restorePolygon(cur_poly : PoolVector2Array, target_poly : PoolVector
 #TRIANGULATION
 #-------------------------------------------------------------------------------
 #returns a triangulation dictionary (is used in other funcs parameters)
-static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArray, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
+static func makeTriangles(poly : PackedVector2Array, triangle_points : PackedInt32Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var triangles : Array = []
 	var total_area : float = 0.0
 	for i in range(triangle_points.size() / 3):
 		var index : int = i * 3
-		var points : PoolVector2Array = [poly[triangle_points[index]], poly[triangle_points[index + 1]], poly[triangle_points[index + 2]]]
+		var points : PackedVector2Array = [poly[triangle_points[index]], poly[triangle_points[index + 1]], poly[triangle_points[index + 2]]]
 		
 		var area : float = 0.0
 		if with_area:
@@ -147,19 +147,19 @@ static func makeTriangles(poly : PoolVector2Array, triangle_points : PoolIntArra
 	return {"triangles" : triangles, "area" : total_area}
 
 #returns a dictionary for triangles
-static func makeTriangle(points : PoolVector2Array, area : float, centroid : Vector2) -> Dictionary:
+static func makeTriangle(points : PackedVector2Array, area : float, centroid : Vector2) -> Dictionary:
 	return {"points" : points, "area" : area, "centroid" : centroid}
 
 #triangulates a polygon and additionally calculates the centroid and area of each triangle alongside the total area of the polygon
-static func triangulatePolygon(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
+static func triangulatePolygon(poly : PackedVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var total_area : float = 0.0
-	var triangle_points : PoolIntArray = Geometry.triangulate_polygon(poly)
+	var triangle_points : PackedInt32Array = Geometry2D.triangulate_polygon(poly)
 	return makeTriangles(poly, triangle_points, with_area, with_centroid)
 
 #triangulates a polygon with the delaunay method and additionally calculates the centroid and area of each triangle alongside the total area of the polygon
-static func triangulatePolygonDelaunay(poly : PoolVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
+static func triangulatePolygonDelaunay(poly : PackedVector2Array, with_area : bool = true, with_centroid : bool = true) -> Dictionary:
 	var total_area : float = 0.0
-	var triangle_points = Geometry.triangulate_delaunay_2d(poly)
+	var triangle_points = Geometry2D.triangulate_delaunay(poly)
 	return makeTriangles(poly, triangle_points, with_area, with_centroid)
 #-------------------------------------------------------------------------------
 
@@ -169,9 +169,9 @@ static func triangulatePolygonDelaunay(poly : PoolVector2Array, with_area : bool
 #UTILITY
 #-------------------------------------------------------------------------------
 #triangulates a polygon and sums the areas of the triangles
-static func getPolygonArea(poly : PoolVector2Array) -> float:
+static func getPolygonArea(poly : PackedVector2Array) -> float:
 	var total_area : float = 0.0
-	var triangle_points = Geometry.triangulate_polygon(poly)
+	var triangle_points = Geometry2D.triangulate_polygon(poly)
 	for i in range(triangle_points.size() / 3):
 		var index : int = i * 3
 		var points : Array = [poly[triangle_points[index]], poly[triangle_points[index + 1]], poly[triangle_points[index + 2]]]
@@ -188,12 +188,12 @@ static func getPolygonCentroid(triangles : Array, total_area : float) -> Vector2
 #the same as getPolygonCentroid but only takes the source polygon (if you have no triangulation use this)
 #if you need triangulation it is better to triangulate the polygon, store the triangulation info and use getPolygonCentroid
 #with the generated triangles
-static func calculatePolygonCentroid(poly : PoolVector2Array) -> Vector2:
+static func calculatePolygonCentroid(poly : PackedVector2Array) -> Vector2:
 	var triangulation : Dictionary = triangulatePolygon(poly, true, true)
 	return getPolygonCentroid(triangulation.triangles, triangulation.area)
 
 #deprecated and not in use anymore (but maybe it is helpful to someone)
-static func getPolygonVisualCenterPoint(poly : PoolVector2Array) -> Vector2:
+static func getPolygonVisualCenterPoint(poly : PackedVector2Array) -> Vector2:
 	var center_points : Array = []
 	
 	for i in range(poly.size() - 1):
@@ -209,15 +209,15 @@ static func getPolygonVisualCenterPoint(poly : PoolVector2Array) -> Vector2:
 	return total
 
 #moves all points of the polygon by offset
-static func translatePolygon(poly : PoolVector2Array, offset : Vector2) -> PoolVector2Array:
-	var new_poly : PoolVector2Array = []
+static func translatePolygon(poly : PackedVector2Array, offset : Vector2) -> PackedVector2Array:
+	var new_poly : PackedVector2Array = []
 	for p in poly:
 		new_poly.append(p + offset)
 	return new_poly
 
 #rotates all points of the polygon by rot (in radians)
-static func rotatePolygon(poly : PoolVector2Array, rot : float) -> PoolVector2Array:
-	var rotated_polygon : PoolVector2Array = []
+static func rotatePolygon(poly : PackedVector2Array, rot : float) -> PackedVector2Array:
+	var rotated_polygon : PackedVector2Array = []
 	
 	for p in poly:
 		rotated_polygon.append(p.rotated(rot))
@@ -225,8 +225,8 @@ static func rotatePolygon(poly : PoolVector2Array, rot : float) -> PoolVector2Ar
 	return rotated_polygon
 
 #scales all points of a polygon
-static func scalePolygon(poly : PoolVector2Array, scale : Vector2) -> PoolVector2Array:
-	var scaled_polygon : PoolVector2Array = []
+static func scalePolygon(poly : PackedVector2Array, scale : Vector2) -> PackedVector2Array:
+	var scaled_polygon : PackedVector2Array = []
 	
 	for p in poly:
 		scaled_polygon.append(p * scale)
@@ -234,8 +234,8 @@ static func scalePolygon(poly : PoolVector2Array, scale : Vector2) -> PoolVector
 	return scaled_polygon 
 
 #calculates the centroid of the polygon and uses it to translate the polygon to Vector2.ZERO
-static func centerPolygon(poly : PoolVector2Array) -> PoolVector2Array:
-	var centered_polygon : PoolVector2Array = []
+static func centerPolygon(poly : PackedVector2Array) -> PackedVector2Array:
+	var centered_polygon : PackedVector2Array = []
 	
 	var triangulation : Dictionary = triangulatePolygon(poly, true, true)
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
@@ -245,7 +245,7 @@ static func centerPolygon(poly : PoolVector2Array) -> PoolVector2Array:
 	return centered_polygon
 
 
-static func getTriangleArea(points : PoolVector2Array) -> float:
+static func getTriangleArea(points : PackedVector2Array) -> float:
 	var a : float = (points[1] - points[2]).length()
 	var b : float = (points[2] - points[0]).length()
 	var c : float = (points[0] - points[1]).length()
@@ -258,7 +258,7 @@ static func getTriangleArea(points : PoolVector2Array) -> float:
 	return area
 
 #centroid is the center point of a triangle
-static func getTriangleCentroid(points : PoolVector2Array) -> Vector2:
+static func getTriangleCentroid(points : PackedVector2Array) -> Vector2:
 	var ab : Vector2 = points[1] - points[0]
 	var ac : Vector2 = points[2] - points[0]
 	var centroid : Vector2 = points[0] + (ab + ac) / 3.0
@@ -268,7 +268,7 @@ static func getTriangleCentroid(points : PoolVector2Array) -> Vector2:
 static func getClockwisePolygons(polygons : Array) -> Array:
 	var cw_polygons : Array = []
 	for poly in polygons:
-		if Geometry.is_polygon_clockwise(poly):
+		if Geometry2D.is_polygon_clockwise(poly):
 			cw_polygons.append(poly)
 	return cw_polygons
 
@@ -276,17 +276,17 @@ static func getClockwisePolygons(polygons : Array) -> Array:
 static func getCounterClockwisePolygons(polygons : Array) -> Array:
 	var ccw_polygons : Array = []
 	for poly in polygons:
-		if not Geometry.is_polygon_clockwise(poly):
+		if not Geometry2D.is_polygon_clockwise(poly):
 			ccw_polygons.append(poly)
 	return ccw_polygons
 
 #does the same as Node.toGlobal()
 static func toGlobal(global_transform : Transform2D, local_pos : Vector2) -> Vector2:
-	return global_transform.xform(local_pos)
+	return global_transform * (local_pos)
 
 #does the same as Node.toLocal()
 static func toLocal(global_transform : Transform2D, global_pos : Vector2) -> Vector2:
-	return global_transform.affine_inverse().xform(global_pos)
+	return global_transform.affine_inverse() * (global_pos)
 
 #used to set the texture offset in an texture_info dictionary
 static func setTextureOffset(texture_info : Dictionary, centroid : Vector2) -> Dictionary:
@@ -300,7 +300,7 @@ static func setTextureOffset(texture_info : Dictionary, centroid : Vector2) -> D
 #BOUNDING RECT
 #-------------------------------------------------------------------------------
 #calculates the bounding rect of a polygon and returns it in form of a Rect2
-static func getBoundingRect(poly : PoolVector2Array) -> Rect2:
+static func getBoundingRect(poly : PackedVector2Array) -> Rect2:
 	var start := Vector2.ZERO
 	var end := Vector2.ZERO
 	
@@ -346,8 +346,8 @@ static func getBoundingRectCorners(bounding_rect : Rect2) -> Dictionary:
 
 #SHAPE CREATION
 #-------------------------------------------------------------------------------
-static func createRectanglePolygon(size : Vector2, local_center := Vector2.ZERO) -> PoolVector2Array:
-	var rectangle : PoolVector2Array = []
+static func createRectanglePolygon(size : Vector2, local_center := Vector2.ZERO) -> PackedVector2Array:
+	var rectangle : PackedVector2Array = []
 	var extend : Vector2 = size * 0.5
 	rectangle.append(local_center - extend)#A
 	rectangle.append(local_center + Vector2(extend.x, -extend.y))#B
@@ -356,8 +356,8 @@ static func createRectanglePolygon(size : Vector2, local_center := Vector2.ZERO)
 	return rectangle
 
 #smooting affects point count -> 0 = 8 Points, 1 = 16, 2 = 32, 3 = 64, 4 = 128, 5 = 256
-static func createCirclePolygon(radius : float, smoothing : int = 0, local_center := Vector2.ZERO) -> PoolVector2Array:
-	var circle : PoolVector2Array = []
+static func createCirclePolygon(radius : float, smoothing : int = 0, local_center := Vector2.ZERO) -> PackedVector2Array:
+	var circle : PackedVector2Array = []
 	
 	smoothing = clamp(smoothing, 0, 5)
 	var point_number : int = pow(2, 3 + smoothing)
@@ -371,8 +371,8 @@ static func createCirclePolygon(radius : float, smoothing : int = 0, local_cente
 	return circle
 
 #creates a beam with a seperate start and end width
-static func createBeamPolygon(dir : Vector2, distance : float, start_width : float, end_width : float, start_point_local := Vector2.ZERO) -> PoolVector2Array:
-	var beam : PoolVector2Array = []
+static func createBeamPolygon(dir : Vector2, distance : float, start_width : float, end_width : float, start_point_local := Vector2.ZERO) -> PackedVector2Array:
+	var beam : PackedVector2Array = []
 	if distance == 0: 
 		return beam
 	
@@ -406,12 +406,12 @@ static func createBeamPolygon(dir : Vector2, distance : float, start_width : flo
 #implemented thanks to Daniel Shiffman´s (@shiffman) coding challenges
 #https://thecodingtrain.com/CodingChallenges/019-superellipse.html
 #https://en.wikipedia.org/wiki/Superellipse
-static func createSuperEllipsePolygon(p_number : int, a : float, b : float, n : float, start_angle_deg : float = 0.0, max_angle_deg : float = 360.0, offset := Vector2.ZERO) -> PoolVector2Array:
-	var poly : PoolVector2Array = []
+static func createSuperEllipsePolygon(p_number : int, a : float, b : float, n : float, start_angle_deg : float = 0.0, max_angle_deg : float = 360.0, offset := Vector2.ZERO) -> PackedVector2Array:
+	var poly : PackedVector2Array = []
 	
 	var angle_step_rad : float = (2 * PI) / p_number as float
-	var start_angle_rad : float = deg2rad(start_angle_deg)
-	var max_angle_rad : float = deg2rad(max_angle_deg)
+	var start_angle_rad : float = deg_to_rad(start_angle_deg)
+	var max_angle_rad : float = deg_to_rad(max_angle_deg)
 	var current_angle_rad : float = start_angle_rad
 	var na : float = 2.0 / n
 	
@@ -427,12 +427,12 @@ static func createSuperEllipsePolygon(p_number : int, a : float, b : float, n : 
 #implemented thanks to Daniel Shiffman´s (@shiffman) coding challenges
 #https://thecodingtrain.com/CodingChallenges/023-supershape2d.html
 #http://paulbourke.net/geometry/supershape/
-static func createSupershape2DPolygon(p_number : int, a : float, b : float, m : float, n1 : float, n2 : float, n3 : float, start_angle_deg : float = 0.0, max_angle_deg : float = 360.0, offset := Vector2.ZERO) -> PoolVector2Array:
-	var poly : PoolVector2Array = []
+static func createSupershape2DPolygon(p_number : int, a : float, b : float, m : float, n1 : float, n2 : float, n3 : float, start_angle_deg : float = 0.0, max_angle_deg : float = 360.0, offset := Vector2.ZERO) -> PackedVector2Array:
+	var poly : PackedVector2Array = []
 	
 	var angle_step_rad : float = (2 * PI) / p_number as float
-	var start_angle_rad : float = deg2rad(start_angle_deg)
-	var max_angle_rad : float = deg2rad(max_angle_deg)
+	var start_angle_rad : float = deg_to_rad(start_angle_deg)
+	var max_angle_rad : float = deg_to_rad(max_angle_deg)
 	var current_angle_rad : float = start_angle_rad
 	
 	while current_angle_rad < start_angle_rad + max_angle_rad:
@@ -471,20 +471,20 @@ static func calculateSupershape2DRadius(angle_rad : float, a : float, b : float,
 #SHAPE INFO
 #-------------------------------------------------------------------------------
 #just makes a dictionary that can be used in different funcs
-static func makeShapeInfo(shape : PoolVector2Array, centered_shape : PoolVector2Array, centroid : Vector2, spawn_pos : Vector2, area : float, source_global_trans : Transform2D) -> Dictionary:
+static func makeShapeInfo(shape : PackedVector2Array, centered_shape : PackedVector2Array, centroid : Vector2, spawn_pos : Vector2, area : float, source_global_trans : Transform2D) -> Dictionary:
 	return {"shape" : shape, "centered_shape" : centered_shape, "centroid" : centroid, "spawn_pos" : spawn_pos, "spawn_rot" : source_global_trans.get_rotation(), "area" : area, "source_global_trans" : source_global_trans}
 
 #makes a shape info with the given parameters
-static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PoolVector2Array) -> Dictionary:
+static func getShapeInfo(source_global_trans : Transform2D, source_polygon : PackedVector2Array) -> Dictionary:
 	var triangulation : Dictionary = triangulatePolygon(source_polygon, true, true)
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
-	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
+	var centered_shape : PackedVector2Array = translatePolygon(source_polygon, -centroid)
 	return makeShapeInfo(source_polygon, centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
 #makes a shape info with the given parameters and has different parameters than getShapeInfo
-static func getShapeInfoSimple(source_global_trans : Transform2D, source_polygon : PoolVector2Array, triangulation : Dictionary) -> Dictionary:
+static func getShapeInfoSimple(source_global_trans : Transform2D, source_polygon : PackedVector2Array, triangulation : Dictionary) -> Dictionary:
 	var centroid : Vector2 = getPolygonCentroid(triangulation.triangles, triangulation.area)
-	var centered_shape : PoolVector2Array = translatePolygon(source_polygon, -centroid)
+	var centered_shape : PackedVector2Array = translatePolygon(source_polygon, -centroid)
 	return makeShapeInfo(source_polygon, centered_shape, centroid, getShapeSpawnPos(source_global_trans, centroid), triangulation.area, source_global_trans)
 
 #calculates the global world position for a given centroid
@@ -499,48 +499,48 @@ static func getShapeSpawnPos(source_global_trans : Transform2D, centroid : Vecto
 
 #POLYGON OPERATIONS
 #-------------------------------------------------------------------------------
-static func clipPolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
-	var new_polygons : Array = Geometry.clip_polygons_2d(poly_a, poly_b)
+static func clipPolygons(poly_a : PackedVector2Array, poly_b : PackedVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry2D.clip_polygons(poly_a, poly_b)
 	if exclude_holes:
 		return getCounterClockwisePolygons(new_polygons)
 	else:
 		return new_polygons
 
 
-static func excludePolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
-	var new_polygons : Array = Geometry.exclude_polygons_2d(poly_a, poly_b)
+static func excludePolygons(poly_a : PackedVector2Array, poly_b : PackedVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry2D.exclude_polygons(poly_a, poly_b)
 	if exclude_holes:
 		return getCounterClockwisePolygons(new_polygons)
 	else:
 		return new_polygons
 
 
-static func intersectPolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
-	var new_polygons : Array = Geometry.intersect_polygons_2d(poly_a, poly_b)
+static func intersectPolygons(poly_a : PackedVector2Array, poly_b : PackedVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry2D.intersect_polygons(poly_a, poly_b)
 	if exclude_holes:
 		return getCounterClockwisePolygons(new_polygons)
 	else:
 		return new_polygons
 
 
-static func mergePolygons(poly_a : PoolVector2Array, poly_b : PoolVector2Array, exclude_holes : bool = true) -> Array:
-	var new_polygons : Array = Geometry.merge_polygons_2d(poly_a, poly_b)
+static func mergePolygons(poly_a : PackedVector2Array, poly_b : PackedVector2Array, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry2D.merge_polygons(poly_a, poly_b)
 	if exclude_holes:
 		return getCounterClockwisePolygons(new_polygons)
 	else:
 		return new_polygons
 
 
-static func offsetPolyline(line : PoolVector2Array, delta : float, exclude_holes : bool = true) -> Array:
-	var new_polygons : Array = Geometry.offset_polyline_2d(line, delta)
+static func offsetPolyline(line : PackedVector2Array, delta : float, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry2D.offset_polyline(line, delta)
 	if exclude_holes:
 		return getCounterClockwisePolygons(new_polygons)
 	else:
 		return new_polygons
 
 
-static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes : bool = true) -> Array:
-	var new_polygons : Array = Geometry.offset_polygon_2d(poly, delta)
+static func offsetPolygon(poly : PackedVector2Array, delta : float, exclude_holes : bool = true) -> Array:
+	var new_polygons : Array = Geometry2D.offset_polygon(poly, delta)
 	if exclude_holes:
 		return getCounterClockwisePolygons(new_polygons)
 	else:
@@ -553,8 +553,8 @@ static func offsetPolygon(poly : PoolVector2Array, delta : float, exclude_holes 
 #SIMPLIFY LINE
 #-------------------------------------------------------------------------------
 #my own simplify line code ^^
-static func simplifyLine(line : PoolVector2Array, segment_min_length : float = 100.0) -> PoolVector2Array:
-	var final_line : PoolVector2Array = [line[0]]
+static func simplifyLine(line : PackedVector2Array, segment_min_length : float = 100.0) -> PackedVector2Array:
+	var final_line : PackedVector2Array = [line[0]]
 
 	var i : int = 0
 	while i < line.size() - 1:
@@ -573,7 +573,7 @@ static func simplifyLine(line : PoolVector2Array, segment_min_length : float = 1
 	
 	return final_line
 
-static func simplifyLineRDP(line : PoolVector2Array, epsilon : float = 10.0) -> PoolVector2Array:
+static func simplifyLineRDP(line : PackedVector2Array, epsilon : float = 10.0) -> PackedVector2Array:
 	var total : int = line.size()
 	var start : Vector2 = line[0]
 	var end : Vector2 = line[total - 1]
@@ -582,7 +582,7 @@ static func simplifyLineRDP(line : PoolVector2Array, epsilon : float = 10.0) -> 
 	RDP.calculate(0, total - 1, Array(line), rdp_points, epsilon)
 	rdp_points.append(end)
 	
-	return PoolVector2Array(rdp_points)
+	return PackedVector2Array(rdp_points)
 
 #used to simplify a line (less points)
 #Ramer-Douglas-Peucker Algorithm (iterative end-point fit algorithm)

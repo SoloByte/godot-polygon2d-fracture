@@ -45,40 +45,40 @@ signal Died(ref, pos)
 signal Damaged(blob, pos, shape, color, fade_speed)
 signal Fractured(blob, fracture_shard, new_mass, color, fracture_force, p)
 
-export(bool) var advanced_regeneration : bool = false
-export(float) var invincible_time = 0.5
-export(Color) var color_default
-export(float) var radius : float = 24.0
-export(int, 0, 4) var smoothing : int = 1
-export(float) var knockback_resistance_base : float = 1.0 #1.0 = no change #2.0 means twice as fast over #0.5 means takes longer twice as much
+@export var advanced_regeneration: bool = false
+@export var invincible_time: float = 0.5
+@export var color_default: Color
+@export var radius: float = 24.0
+@export var smoothing : int = 1 # (int, 0, 4)
+@export var knockback_resistance_base: float = 1.0 #1.0 = no change #2.0 means twice as fast over #0.5 means takes longer twice as much
 
-export(float, 0.0, 1.0) var shape_area_percent : float = 0.25#shape_area < start_area * shape_area_percent -> shape will be fractured
+@export var shape_area_percent : float = 0.25#shape_area < start_area * shape_area_percent -> shape will be fractured # (float, 0.0, 1.0)
 
-export(int) var fractures = 2
-export(float) var fracture_force : float = 200.0
-export(float, 0.0, 1.0) var heal_treshold : float = 0.8 #if health percent is above that threshold the start poly is used instead of morphing polygons
+@export var fractures: int = 2
+@export var fracture_force: float = 200.0
+@export var heal_treshold : float = 0.8 #if health percent is above that threshold the start poly is used instead of morphing polygons # (float, 0.0, 1.0)
 
-export(Vector2) var collision_damage := Vector2(5, 10)
-export(float) var collision_knockback_force : float = 10000
-export(float) var collision_knockback_time : float = 0.15
+@export var collision_damage := Vector2(5, 10)
+@export var collision_knockback_force: float = 10000
+@export var collision_knockback_time: float = 0.15
 
-export(float) var find_new_target_pos_tolerance : float = 50.0
-export(float) var target_reached_tolerance : float = 10.0
-export(Vector2) var target_pos_interval_range := Vector2(0.5, 1.5)
-export(Vector2) var keep_distance_range := Vector2.ZERO
+@export var find_new_target_pos_tolerance: float = 50.0
+@export var target_reached_tolerance: float = 10.0
+@export var target_pos_interval_range := Vector2(0.5, 1.5)
+@export var keep_distance_range := Vector2.ZERO
 
 #export(int) var score_points : int = 25
 
-export(bool) var rotate_towards_velocity : bool = false
-export(float) var max_speed : float = 250.0
-export(float) var accel : float = 1000.0
-export(float) var decel : float = 1500.0
+@export var rotate_towards_velocity: bool = false
+@export var max_speed: float = 250.0
+@export var accel: float = 1000.0
+@export var decel: float = 1500.0
 
 
-export(Vector2) var regeneration_interval_range = Vector2.ZERO
-export(float, 0.0, 1.0) var regeneration_start_threshold : float = 0.5
-export(float) var regeneration_amount : float = 10.0
-export(Color) var regeneration_color : Color = Color.white
+@export var regeneration_interval_range: Vector2 = Vector2.ZERO
+@export var regeneration_start_threshold : float = 0.5 # (float, 0.0, 1.0)
+@export var regeneration_amount: float = 10.0
+@export var regeneration_color: Color = Color.WHITE
 
 
 var cur_area : float = 0.0
@@ -90,7 +90,7 @@ var prev_target_pos := Vector2.ZERO
 var knockback_resistance : float = 1.0
 var knockback_timer : float = 0.0
 
-var start_poly : PoolVector2Array
+var start_poly : PackedVector2Array
 
 var total_frame_heal_amount : float = 0.0
 
@@ -100,22 +100,22 @@ var regeneration_started : bool = false
 var polygon_restorer : PolygonRestorer = null
 
 
-onready var find_new_target_pos_tolerance_sq : float = find_new_target_pos_tolerance * find_new_target_pos_tolerance
-onready var target_reached_tolerance_sq : float = target_reached_tolerance * target_reached_tolerance
-onready var max_speed_sq : float = max_speed * max_speed
+@onready var find_new_target_pos_tolerance_sq : float = find_new_target_pos_tolerance * find_new_target_pos_tolerance
+@onready var target_reached_tolerance_sq : float = target_reached_tolerance * target_reached_tolerance
+@onready var max_speed_sq : float = max_speed * max_speed
 
-onready var _col_polygon := $CollisionPolygon2D
-onready var _polygon := $Shape/Polygon2D
-onready var _line := $Shape/Line2D
-onready var _drop_poly := $DropPoly
-onready var _origin_poly := $OriginPoly
+@onready var _col_polygon := $CollisionPolygon2D
+@onready var _polygon := $Shape3D/Polygon2D
+@onready var _line := $Shape3D/Line2D
+@onready var _drop_poly := $DropPoly
+@onready var _origin_poly := $OriginPoly
 
-onready var _rng := RandomNumberGenerator.new()
-onready var _target_pos_timer := $TargetPosTimer
-onready var _poly_fracture := PolygonFracture.new()
-onready var _hit_flash_poly := $FlashPolygon
-onready var _hit_flash_anim_player := $AnimationPlayer
-onready var _invincible_timer := $InvincibleTimer
+@onready var _rng := RandomNumberGenerator.new()
+@onready var _target_pos_timer := $TargetPosTimer
+@onready var _poly_fracture := PolygonFracture.new()
+@onready var _hit_flash_poly := $FlashPolygon
+@onready var _hit_flash_anim_player := $AnimationPlayer
+@onready var _invincible_timer := $InvincibleTimer
 
 
 
@@ -183,7 +183,7 @@ func _ready() -> void:
 	_rng.randomize()
 	
 	if radius > 0.0:
-		var new_polygon : PoolVector2Array = PolygonLib.createCirclePolygon(radius, smoothing)
+		var new_polygon : PackedVector2Array = PolygonLib.createCirclePolygon(radius, smoothing)
 		start_poly = new_polygon
 		setPolygon(start_poly)
 		mass = radius
@@ -216,7 +216,7 @@ func _ready() -> void:
 		add_child(timer)
 		timer.one_shot = true
 		timer.autostart = false
-		timer.connect("timeout", self, "On_Regeneration_Timer_Timeout")
+		timer.connect("timeout", Callable(self, "On_Regeneration_Timer_Timeout"))
 		regeneration_timer = timer
 	
 	setTarget(null)
@@ -224,7 +224,7 @@ func _ready() -> void:
 
 
 
-func _integrate_forces(state: Physics2DDirectBodyState) -> void:
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	if isKnockbackActive(): return
 
 
@@ -317,7 +317,7 @@ func damage(damage : Vector2, point : Vector2, knockback_force : Vector2, knockb
 	setTarget(damage_dealer)
 	
 	var percent_cut : float = 0.0
-	var cut_shape : PoolVector2Array = _poly_fracture.generateRandomPolygon(damage, Vector2(12,72), Vector2.ZERO)
+	var cut_shape : PackedVector2Array = _poly_fracture.generateRandomPolygon(damage, Vector2(12,72), Vector2.ZERO)
 	var cut_shape_area : float = PolygonLib.getPolygonArea(cut_shape)
 	emit_signal("Damaged", self, point, cut_shape, damage_color, 5.0)
 #	spawnShapeVisualizer(point, 0.0, cut_shape, damage_color, 1.0)
@@ -431,7 +431,7 @@ func heal(heal_amount : float) -> void:
 
 func restore() -> void:
 	if total_frame_heal_amount > 0.0:
-		var poly : PoolVector2Array
+		var poly : PackedVector2Array
 		var area : float = 0.0
 		if polygon_restorer:
 			var shape_entry : Dictionary = polygon_restorer.popLast()
@@ -463,7 +463,7 @@ func restore() -> void:
 	total_frame_heal_amount = 0.0
 
 
-func setPolygon(new_polygon : PoolVector2Array, exclude_main_poly : bool = false) -> void:
+func setPolygon(new_polygon : PackedVector2Array, exclude_main_poly : bool = false) -> void:
 	_col_polygon.call_deferred("set_polygon", new_polygon)
 	
 	if not exclude_main_poly:
