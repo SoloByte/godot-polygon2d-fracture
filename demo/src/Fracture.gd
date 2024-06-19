@@ -181,5 +181,5 @@ func _on_FracturesSlider_value_changed(value: float) -> void:
 
 
 func _on_MinAreaSlider_value_changed(value):
-	_min_area_label.text = "Min Area3D: %d" % value
+	_min_area_label.text = "Min Area: %d" % value
 	min_area = _min_area_slider.value
