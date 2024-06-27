@@ -69,7 +69,7 @@ func changeTest() -> void:
 	#the camera in the scene is already setup with current = true and zoom = Vector2(2,2)
 	#but it does not work without setting it here again
 	instance.get_node("Camera2D").make_current()
-	instance.get_node("Camera2D").zoom = Vector2(0.25,0.25)
+	instance.get_node("Camera2D").zoom = Vector2(0.5,0.5)
 	
 	
 	_cur_test_scene = instance

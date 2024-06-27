@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://pdw1oj7ma01k"]
 
-[ext_resource type="PackedScene" path="res://demo/test-scenes/blob-scenes/BlobSceneBasic.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://cphwtf8sbqbit" path="res://demo/test-scenes/blob-scenes/BlobSceneBasic.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://demo/src/blob/Blob.tscn" id="2"]
 
 [node name="BlobRestoreAdvScene" instance=ExtResource("1")]
@@ -184,36 +184,5 @@ decel = 200.0
 regeneration_interval_range = Vector2(2, 3)
 regeneration_amount = 25.0
 
-[node name="Camera2D" parent="." index="1"]
-zoom = Vector2(0.26, 0.26)
-
-[node name="CanvasLayer" parent="." index="3"]
-scale = Vector2(0.65, 0.65)
-transform = Transform2D(0.65, 0, 0, 0.65, 0, 0)
-
-[node name="Title" parent="CanvasLayer" index="0"]
-anchors_preset = -1
-anchor_left = 0.767
-anchor_right = 0.767
-offset_left = -589.563
-offset_top = 4.61538
-offset_right = 40.4369
-offset_bottom = 35.6154
-grow_horizontal = 2
-text = "POLYGON RESTORING ADVANCED"
-
-[node name="InfoLabel" parent="CanvasLayer" index="1"]
-anchors_preset = -1
-anchor_left = 0.823
-anchor_top = 1.494
-anchor_right = 0.823
-anchor_bottom = 1.494
-offset_left = -225.615
-offset_top = -187.763
-offset_right = -51.6146
-offset_bottom = -93.7627
-grow_horizontal = 2
-grow_vertical = 0
-text = "CHANGE TEST [W]
-FULLSCREEN [F]
-QUIT [ESC]"
+[node name="Title" parent="CanvasLayer/ColorRect" index="0"]
+text = "DELAUNY FRACTURE"

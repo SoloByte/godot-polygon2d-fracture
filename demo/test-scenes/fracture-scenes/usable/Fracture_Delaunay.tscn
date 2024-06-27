@@ -36,42 +36,8 @@ end_cap_mode = 2
 antialiased = true
 
 [node name="FracturesSlider" parent="FractureParent/CanvasLayer" index="0"]
-offset_left = -16.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 2
 
 [node name="MinAreaSlider" parent="FractureParent/CanvasLayer" index="1"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 16.0
-offset_bottom = 0.0
 grow_vertical = 2
-
-[node name="Camera2D" parent="." index="1"]
-zoom = Vector2(0.22, 0.22)
-
-[node name="CanvasLayer" parent="." index="3"]
-scale = Vector2(0.495, 0.495)
-transform = Transform2D(0.495, 0, 0, 0.495, 0, 0)
-
-[node name="Title" parent="CanvasLayer" index="0"]
-offset_left = -315.0
-offset_right = 315.0
-grow_horizontal = 2
-text = "FRACTURE DELAUNAY"
-
-[node name="InfoLabel" parent="CanvasLayer" index="1"]
-anchors_preset = -1
-anchor_left = 1.0
-anchor_top = 1.984
-anchor_right = 1.0
-anchor_bottom = 1.984
-offset_left = -144.242
-offset_top = -245.75
-offset_right = 29.7576
-offset_bottom = -114.75
-grow_horizontal = 2
-grow_vertical = 0

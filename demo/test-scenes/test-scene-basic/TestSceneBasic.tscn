@@ -1,20 +1,57 @@
-[gd_scene load_steps=4 format=3 uid="uid://c5k3aj7yblg0f"]
+[gd_scene load_steps=6 format=3 uid="uid://c5k3aj7yblg0f"]
 
 [ext_resource type="PackedScene" path="res://demo/ui/Title.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://demo/ui/InfoLabel.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://demo/ui/BackgroundLayer.tscn" id="4"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_8sgia"]
+font_size = 26
+
+[sub_resource type="LabelSettings" id="LabelSettings_jqqx1"]
+font_size = 20
+
 [node name="TestSceneBasic" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2, 2)
+zoom = Vector2(0.5, 0.5)
 
 [node name="BackgroundLayer" parent="." instance=ExtResource("4")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Title" parent="CanvasLayer" instance=ExtResource("1")]
-anchors_preset = 5
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
 
-[node name="InfoLabel" parent="CanvasLayer" instance=ExtResource("2")]
+[node name="Title" parent="CanvasLayer/ColorRect" instance=ExtResource("1")]
+texture_filter = 6
+layout_mode = 1
+anchors_preset = 5
+offset_left = -425.0
+offset_top = -5.0
+offset_right = 425.0
+offset_bottom = 45.0
+grow_horizontal = 2
+scale = Vector2(1, 1)
+label_settings = SubResource("LabelSettings_8sgia")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InfoLabel" parent="CanvasLayer/ColorRect" instance=ExtResource("2")]
+texture_filter = 6
+layout_mode = 1
 anchors_preset = 7
+offset_left = -150.0
+offset_top = -175.0
+offset_right = 150.0
+offset_bottom = 0.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(1, 1)
+label_settings = SubResource("LabelSettings_jqqx1")
+horizontal_alignment = 1

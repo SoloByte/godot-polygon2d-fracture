@@ -52,42 +52,8 @@ end_cap_mode = 2
 antialiased = true
 
 [node name="FracturesSlider" parent="FractureParent/CanvasLayer" index="0"]
-offset_left = -16.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 2
 
 [node name="MinAreaSlider" parent="FractureParent/CanvasLayer" index="1"]
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 16.0
-offset_bottom = 0.0
 grow_vertical = 2
-
-[node name="Camera2D" parent="." index="1"]
-zoom = Vector2(0.205, 0.205)
-
-[node name="CanvasLayer" parent="." index="3"]
-scale = Vector2(0.55, 0.55)
-transform = Transform2D(0.55, 0, 0, 0.55, 0, 0)
-
-[node name="Title" parent="CanvasLayer" index="0"]
-offset_left = -315.0
-offset_right = 315.0
-grow_horizontal = 2
-text = "FRACTURE (fractures limited to 32)"
-
-[node name="InfoLabel" parent="CanvasLayer" index="1"]
-anchors_preset = -1
-anchor_left = 0.845
-anchor_top = 1.79
-anchor_right = 0.845
-anchor_bottom = 1.79
-offset_left = -91.491
-offset_top = -285.927
-offset_right = 82.509
-offset_bottom = -154.927
-grow_horizontal = 2
-grow_vertical = 0

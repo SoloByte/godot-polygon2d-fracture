@@ -60,11 +60,16 @@ func _ready() -> void:
 		linear_velocity = Vector2.RIGHT.rotated(PI * 2.0 * _rng.randf()) * _rng.randf_range(rand_linear_velocity_range.x, rand_linear_velocity_range.y)
 		
 		_polygon2d.texture = poly_texture
-		if randomize_texture_properties:
-			var rand_scale : float = _rng.randf_range(0.5, 2.0)
+		
+		
+		if randomize_texture_properties and is_instance_valid(poly_texture):
+			var rand_scale : float = _rng.randf_range(0.25, 0.75)
+			var t_size = poly_texture.get_size() / rand_scale
+			var offset_range = t_size.x * 0.25
+			_polygon2d.texture_offset = (t_size / 2) + Vector2(_rng.randf_range(-offset_range, offset_range), _rng.randf_range(-offset_range, offset_range))
 			_polygon2d.texture_scale = Vector2(rand_scale, rand_scale)
 			_polygon2d.texture_rotation = _rng.randf_range(0.0, PI * 2.0)
-			_polygon2d.texture_offset = Vector2(_rng.randf_range(-500, 500), _rng.randf_range(-500, 500))
+			#_polygon2d.texture_offset = Vector2(_rng.randf_range(-500, 500), _rng.randf_range(-500, 500))
 
 
 

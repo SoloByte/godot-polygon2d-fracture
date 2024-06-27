@@ -49,28 +49,13 @@ begin_cap_mode = 2
 end_cap_mode = 2
 antialiased = true
 
-[node name="Camera2D" parent="." index="1"]
-zoom = Vector2(0.195, 0.195)
+[node name="ColorRect" parent="CanvasLayer" index="0"]
+offset_left = 0.0
+offset_right = 0.0
 
-[node name="CanvasLayer" parent="." index="3"]
-scale = Vector2(0.63, 0.63)
-transform = Transform2D(0.63, 0, 0, 0.63, 0, 0)
-
-[node name="Title" parent="CanvasLayer" index="0"]
-offset_left = -315.0
-offset_right = 315.0
-grow_horizontal = 2
-text = "FRACTURE DELAUNAY RECTANGLE"
-
-[node name="InfoLabel" parent="CanvasLayer" index="1"]
-anchors_preset = -1
-anchor_left = 0.859
-anchor_top = 1.558
-anchor_right = 0.859
-anchor_bottom = 1.558
-offset_left = -201.661
-offset_top = -266.767
-offset_right = -27.661
-offset_bottom = -135.767
-grow_horizontal = 2
-grow_vertical = 0
+[node name="Title" parent="CanvasLayer/ColorRect" index="0"]
+offset_left = -425.0
+offset_top = -5.0
+offset_right = 425.0
+offset_bottom = 45.0
+grow_vertical = 1

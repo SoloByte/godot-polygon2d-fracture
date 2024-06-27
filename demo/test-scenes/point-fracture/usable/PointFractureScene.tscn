@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bls1gwiki0ia4"]
 
-[ext_resource type="PackedScene" path="res://demo/test-scenes/point-fracture/PointFractureSceneBasic.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://clve0s0mtn7bx" path="res://demo/test-scenes/point-fracture/PointFractureSceneBasic.tscn" id="1"]
 [ext_resource type="Texture2D" uid="uid://bsrwyn1s0ui61" path="res://demo/smiley-face.png" id="2"]
 [ext_resource type="Script" path="res://demo/src/RigidBody2D.gd" id="3"]
 [ext_resource type="PackedScene" path="res://demo/src/RigidBody2D.tscn" id="4"]
@@ -148,30 +148,5 @@ joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
 
-[node name="Camera2D" parent="." index="1"]
-zoom = Vector2(0.255, 0.255)
-
-[node name="CanvasLayer" parent="." index="3"]
-scale = Vector2(0.575, 0.575)
-transform = Transform2D(0.575, 0, 0, 0.575, 0, 0)
-
-[node name="Title" parent="CanvasLayer" index="0"]
-anchors_preset = -1
-anchor_left = 0.938
-anchor_right = 0.938
-offset_left = -627.047
-offset_right = 2.953
-grow_horizontal = 2
-
-[node name="InfoLabel" parent="CanvasLayer" index="1"]
-anchors_preset = -1
-anchor_left = 0.909
-anchor_top = 1.636
-anchor_right = 0.909
-anchor_bottom = 1.636
-offset_left = -190.497
-offset_top = -154.706
-offset_right = -16.4974
-offset_bottom = -49.7061
-grow_horizontal = 2
-grow_vertical = 0
+[node name="Title" parent="CanvasLayer/ColorRect" index="0"]
+text = "DELAUNY FRACTURE"

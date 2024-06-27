@@ -152,28 +152,8 @@ instance_template = ExtResource("3")
 max_amount = 250
 keep_instances_in_tree = true
 
-[node name="Camera2D" parent="." index="1"]
-position = Vector2(-26, 4)
+[node name="Title" parent="CanvasLayer/ColorRect" index="0"]
+texture_filter = 0
 
-[node name="Title" parent="CanvasLayer" index="0"]
-anchors_preset = -1
-anchor_left = 0.616
-anchor_top = 0.069
-anchor_right = 0.616
-anchor_bottom = 0.069
-offset_left = -314.387
-offset_top = -47.8533
-offset_right = 315.613
-offset_bottom = -11.8533
-grow_horizontal = 2
-
-[node name="InfoLabel" parent="CanvasLayer" index="1"]
-anchors_preset = -1
-anchor_left = 0.594
-anchor_top = 1.815
-anchor_right = 0.594
-anchor_bottom = 1.815
-offset_left = 161.338
-offset_top = -278.382
-offset_right = 387.338
-offset_bottom = -147.382
+[node name="InfoLabel" parent="CanvasLayer/ColorRect" index="1"]
+texture_filter = 0

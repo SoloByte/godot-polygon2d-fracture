@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://c5k3aj7yblg0f" path="res://demo/test-scenes/test-scene-basic/TestSceneBasic.tscn" id="1"]
 [ext_resource type="PackedScene" path="res://demo/src/FractureBody.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://demo/ui/FracturesSlider.tscn" id="3"]
-[ext_resource type="PackedScene" path="res://demo/ui/MinAreaSlider.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://nhnl6rlnpoqk" path="res://demo/ui/FracturesSlider.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://dkj004hbc30ml" path="res://demo/ui/MinAreaSlider.tscn" id="4"]
 [ext_resource type="Script" path="res://demo/src/Fracture.gd" id="5"]
 [ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="6"]
 
@@ -64,26 +64,8 @@ instantiate_new_on_empty = true
 [node name="CanvasLayer" type="CanvasLayer" parent="FractureParent" index="7"]
 
 [node name="FracturesSlider" parent="FractureParent/CanvasLayer" index="0" instance=ExtResource("3")]
-anchors_preset = 11
 
 [node name="MinAreaSlider" parent="FractureParent/CanvasLayer" index="1" instance=ExtResource("4")]
-anchors_preset = 9
-
-[node name="Camera2D" parent="." index="1"]
-zoom = Vector2(0.25, 0.25)
-
-[node name="Title" parent="CanvasLayer" index="0"]
-offset_left = -315.0
-offset_right = 315.0
-grow_horizontal = 2
-
-[node name="InfoLabel" parent="CanvasLayer" index="1"]
-offset_left = -87.0
-offset_top = -94.0
-offset_right = 87.0
-offset_bottom = 0.0
-grow_horizontal = 2
-grow_vertical = 0
 
 [connection signal="timeout" from="FractureParent/Timer" to="FractureParent" method="_on_Timer_timeout"]
 [connection signal="timeout" from="FractureParent/VisibleTimer" to="FractureParent" method="_on_VisibleTimer_timeout"]
