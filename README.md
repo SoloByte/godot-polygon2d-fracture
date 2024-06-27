@@ -1,4 +1,4 @@
-# godot-polygon2d-fracture
+![GitHubBanner 1920x384)](https://github.com/SoloByte/godot-polygon2d-fracture/assets/34277803/6837886f-83b8-4f79-80f6-0929e13a6455)
 
 
 
@@ -19,8 +19,9 @@ Fracture Hell is available on [Steam](https://store.steampowered.com/app/1713770
 
 ## Info
 
-Works with GodotEngine 4.2+
-Tested with Godot Versions: 4.2.2
+> Works with GodotEngine 4.2+. Tested with Godot Versions: 4.2.2
+
+> Godot Polygon Fracture 2D v1.4 and before works only with Godot 3! Additionally, the 1.4x branch is for Godot 3 development.
 
 Two simple scripts for fracturing and cutting polygons. PolygonFracture.gd is the actual script that fractures/cuts polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, makeCirclePolygon, etc.
 
