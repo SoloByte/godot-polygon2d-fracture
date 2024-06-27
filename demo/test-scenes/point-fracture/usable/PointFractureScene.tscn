@@ -1,44 +1,44 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=7 format=3 uid="uid://bls1gwiki0ia4"]
 
-[ext_resource path="res://demo/test-scenes/point-fracture/PointFractureSceneBasic.tscn" type="PackedScene" id=1]
-[ext_resource path="res://demo/smiley-face.png" type="Texture" id=2]
-[ext_resource path="res://demo/src/RigidBody2D.gd" type="Script" id=3]
-[ext_resource path="res://demo/src/RigidBody2D.tscn" type="PackedScene" id=4]
+[ext_resource type="PackedScene" uid="uid://clve0s0mtn7bx" path="res://demo/test-scenes/point-fracture/PointFractureSceneBasic.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://bsrwyn1s0ui61" path="res://demo/smiley-face.png" id="2"]
+[ext_resource type="Script" path="res://demo/src/RigidBody2D.gd" id="3"]
+[ext_resource type="PackedScene" path="res://demo/src/RigidBody2D.tscn" id="4"]
 
-[sub_resource type="PhysicsMaterial" id=1]
+[sub_resource type="PhysicsMaterial" id="1"]
 friction = 0.0
 bounce = 1.0
 
-[sub_resource type="PhysicsMaterial" id=2]
+[sub_resource type="PhysicsMaterial" id="2"]
 friction = 0.0
 bounce = 1.0
 
-[node name="PointFractureScene" instance=ExtResource( 1 )]
+[node name="PointFractureScene" instance=ExtResource("1")]
 
 [node name="RigidBody2D" type="RigidBody2D" parent="PointFracture/SourceParent" index="0"]
-position = Vector2( -1344, -576 )
+position = Vector2(-1344, -576)
 collision_layer = 4
 collision_mask = 5
 mass = 500.0
-physics_material_override = SubResource( 1 )
+physics_material_override = SubResource("1")
 gravity_scale = 0.0
 can_sleep = false
-script = ExtResource( 3 )
-rand_linear_velocity_range = Vector2( 25, 50 )
+script = ExtResource("3")
+rand_linear_velocity_range = Vector2(25, 50)
 radius = 256.0
 placed_in_level = true
 randomize_texture_properties = false
-poly_texture = ExtResource( 2 )
+poly_texture = ExtResource("2")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PointFracture/SourceParent/RigidBody2D" index="0"]
 
 [node name="Polygon2D" type="Polygon2D" parent="PointFracture/SourceParent/RigidBody2D" index="1"]
 show_behind_parent = true
-color = Color( 0.545098, 0.545098, 0.545098, 1 )
-texture_offset = Vector2( 256, 256 )
+color = Color(0.545098, 0.545098, 0.545098, 1)
+texture_offset = Vector2(256, 256)
 
 [node name="Line2D" type="Line2D" parent="PointFracture/SourceParent/RigidBody2D/Polygon2D" index="0"]
-default_color = Color( 1.25, 1.25, 1.25, 1 )
+default_color = Color(1.25, 1.25, 1.25, 1)
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
@@ -46,33 +46,33 @@ antialiased = true
 
 [node name="Center" type="Polygon2D" parent="PointFracture/SourceParent/RigidBody2D" index="2"]
 visible = false
-color = Color( 0, 0, 0, 1 )
-polygon = PoolVector2Array( -10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272 )
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272)
 
 [node name="RigidBody2D3" type="RigidBody2D" parent="PointFracture/SourceParent" index="1"]
-position = Vector2( 1376, -480 )
+position = Vector2(1376, -480)
 collision_layer = 4
 collision_mask = 5
 mass = 500.0
-physics_material_override = SubResource( 1 )
+physics_material_override = SubResource("1")
 gravity_scale = 0.0
 can_sleep = false
-script = ExtResource( 3 )
-rand_linear_velocity_range = Vector2( 100, 200 )
+script = ExtResource("3")
+rand_linear_velocity_range = Vector2(100, 200)
 radius = 256.0
 placed_in_level = true
 randomize_texture_properties = false
-poly_texture = ExtResource( 2 )
+poly_texture = ExtResource("2")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PointFracture/SourceParent/RigidBody2D3" index="0"]
 
 [node name="Polygon2D" type="Polygon2D" parent="PointFracture/SourceParent/RigidBody2D3" index="1"]
 show_behind_parent = true
-color = Color( 0.545098, 0.545098, 0.545098, 1 )
-texture_offset = Vector2( 256, 256 )
+color = Color(0.545098, 0.545098, 0.545098, 1)
+texture_offset = Vector2(256, 256)
 
 [node name="Line2D" type="Line2D" parent="PointFracture/SourceParent/RigidBody2D3/Polygon2D" index="0"]
-default_color = Color( 1.25, 1.25, 1.25, 1 )
+default_color = Color(1.25, 1.25, 1.25, 1)
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
@@ -80,100 +80,73 @@ antialiased = true
 
 [node name="Center" type="Polygon2D" parent="PointFracture/SourceParent/RigidBody2D3" index="2"]
 visible = false
-color = Color( 0, 0, 0, 1 )
-polygon = PoolVector2Array( -10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272 )
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(-10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272)
 
-[node name="RigidBody2D2" parent="PointFracture/SourceParent" index="2" instance=ExtResource( 4 )]
-position = Vector2( 0, 96 )
+[node name="RigidBody2D2" parent="PointFracture/SourceParent" index="2" instance=ExtResource("4")]
+position = Vector2(0, 96)
 mass = 1000.0
-rand_linear_velocity_range = Vector2( 0, 0 )
+rand_linear_velocity_range = Vector2(0, 0)
 radius = 500.0
 placed_in_level = true
 randomize_texture_properties = false
 
 [node name="Obstacle" type="StaticBody2D" parent="PointFracture" index="2"]
-modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
-position = Vector2( -1280, 512 )
-physics_material_override = SubResource( 2 )
-__meta__ = {
-"_editor_description_": ""
-}
+modulate = Color(0.537255, 0.266667, 0.266667, 1)
+position = Vector2(-1280, 512)
+physics_material_override = SubResource("2")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PointFracture/Obstacle" index="0"]
-polygon = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192 )
+polygon = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192)
 
 [node name="Polygon2D" type="Polygon2D" parent="PointFracture/Obstacle" index="1"]
-color = Color( 0.596078, 0.596078, 0.596078, 1 )
-polygon = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192 )
-__meta__ = {
-"_editor_description_": ""
-}
+color = Color(0.596078, 0.596078, 0.596078, 1)
+polygon = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192)
 
 [node name="Line2D" type="Line2D" parent="PointFracture/Obstacle" index="2"]
-points = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192, -192, 0 )
+points = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192, -192, 0)
 width = 20.0
-default_color = Color( 1, 1, 1, 1 )
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
-__meta__ = {
-"_editor_description_": ""
-}
 
 [node name="Obstacle3" type="StaticBody2D" parent="PointFracture" index="3"]
-modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
-position = Vector2( 0, -640 )
-physics_material_override = SubResource( 2 )
-__meta__ = {
-"_editor_description_": ""
-}
+modulate = Color(0.537255, 0.266667, 0.266667, 1)
+position = Vector2(0, -640)
+physics_material_override = SubResource("2")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PointFracture/Obstacle3" index="0"]
-polygon = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192 )
+polygon = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192)
 
 [node name="Polygon2D" type="Polygon2D" parent="PointFracture/Obstacle3" index="1"]
-color = Color( 0.596078, 0.596078, 0.596078, 1 )
-polygon = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192 )
-__meta__ = {
-"_editor_description_": ""
-}
+color = Color(0.596078, 0.596078, 0.596078, 1)
+polygon = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192)
 
 [node name="Line2D" type="Line2D" parent="PointFracture/Obstacle3" index="2"]
-points = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192, -192, 0 )
+points = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192, -192, 0)
 width = 20.0
-default_color = Color( 1, 1, 1, 1 )
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
-__meta__ = {
-"_editor_description_": ""
-}
 
 [node name="Obstacle2" type="StaticBody2D" parent="PointFracture" index="4"]
-modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
-position = Vector2( 1280, 512 )
-physics_material_override = SubResource( 2 )
-__meta__ = {
-"_editor_description_": ""
-}
+modulate = Color(0.537255, 0.266667, 0.266667, 1)
+position = Vector2(1280, 512)
+physics_material_override = SubResource("2")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PointFracture/Obstacle2" index="0"]
-polygon = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192 )
+polygon = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192)
 
 [node name="Polygon2D" type="Polygon2D" parent="PointFracture/Obstacle2" index="1"]
-color = Color( 0.596078, 0.596078, 0.596078, 1 )
-polygon = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192 )
-__meta__ = {
-"_editor_description_": ""
-}
+color = Color(0.596078, 0.596078, 0.596078, 1)
+polygon = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192)
 
 [node name="Line2D" type="Line2D" parent="PointFracture/Obstacle2" index="2"]
-points = PoolVector2Array( -192, 0, 0, -192, 192, 0, 0, 192, -192, 0 )
+points = PackedVector2Array(-192, 0, 0, -192, 192, 0, 0, 192, -192, 0)
 width = 20.0
-default_color = Color( 1, 1, 1, 1 )
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
-__meta__ = {
-"_editor_description_": ""
-}
+
+[node name="Title" parent="CanvasLayer/ColorRect" index="0"]
+text = "DELAUNY FRACTURE"

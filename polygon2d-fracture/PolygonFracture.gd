@@ -52,7 +52,7 @@ func _init(new_seed : int = -1) -> void:
 
 #fracture simple generates random cut lines around the bounding box of the polygon -> cut_number is the amount of lines generated
 #cut_number is capped at 32 because cut_number is not equal to the amount of shards generated -> 32 cuts can produce a lot of fracture shards
-func fractureSimple(source_polygon : PoolVector2Array, source_global_trans : Transform2D, cut_number : int, min_discard_area : float) -> Array:
+func fractureSimple(source_polygon : PackedVector2Array, source_global_trans : Transform2D, cut_number : int, min_discard_area : float) -> Array:
 	cut_number = clamp(cut_number, 0, 32)
 #	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = PolygonLib.getBoundingRect(source_polygon)
@@ -83,7 +83,7 @@ func fractureSimple(source_polygon : PoolVector2Array, source_global_trans : Tra
 #fracture generates random points (cut_number * 2) and then connects 2 random points to form a cut line (each point is only used once) 
 #lines are extended to make sure the whole polygon is cut
 #cut_number is capped at 32 because cut_number is not equal to the amount of shards generated -> 32 cuts can produce a lot of fracture shards
-func fracture(source_polygon : PoolVector2Array, source_global_trans : Transform2D, cut_number : int, min_discard_area : float) -> Array:
+func fracture(source_polygon : PackedVector2Array, source_global_trans : Transform2D, cut_number : int, min_discard_area : float) -> Array:
 	cut_number = clamp(cut_number, 0, 32)
 #	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
 	var bounding_rect : Rect2 = PolygonLib.getBoundingRect(source_polygon)
@@ -116,7 +116,7 @@ func fracture(source_polygon : PoolVector2Array, source_global_trans : Transform
 #to produce more triangles 
 #is this func all produced triangles are clipped with the source polygon, to make sure there are no triangles outside 
 #if you only use convex polygons use fractureDelaunyConvex
-func fractureDelaunay(source_polygon : PoolVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
+func fractureDelaunay(source_polygon : PackedVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
 #	source_polygon = PolygonLib.rotatePolygon(source_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(source_polygon, fracture_number)
 	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + source_polygon, true, true)
@@ -147,7 +147,7 @@ func fractureDelaunay(source_polygon : PoolVector2Array, source_global_trans : T
 
 #fractureDelaunayConvex works the same as the default fractureDelaunay but it asumes the source polygon is convex 
 #makes the fracturing simpler and faster because the final triangles dont have to be clipped with the source polygon
-func fractureDelaunayConvex(concave_polygon : PoolVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
+func fractureDelaunayConvex(concave_polygon : PackedVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
 #	concave_polygon = PolygonLib.rotatePolygon(concave_polygon, world_rot_rad)
 	var points = getRandomPointsInPolygon(concave_polygon, fracture_number)
 	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + concave_polygon, true, true)
@@ -167,7 +167,7 @@ func fractureDelaunayConvex(concave_polygon : PoolVector2Array, source_global_tr
 
 #fractureDelaunayRectangle is the same as fractureDelaunayConvex but it asumes the source polygon is a rectangle
 #the rectangle makes the random point generation easier on top of the simplification of fractureDelaunayConvex
-func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
+func fractureDelaunayRectangle(rectangle_polygon : PackedVector2Array, source_global_trans : Transform2D, fracture_number : int, min_discard_area : float) -> Array:
 #	rectangle_polygon = PolygonLib.rotatePolygon(rectangle_polygon, world_rot_rad)
 	var points = getRandomPointsInRectangle(PolygonLib.getBoundingRect(rectangle_polygon), fracture_number)
 	var triangulation : Dictionary = PolygonLib.triangulatePolygonDelaunay(points + rectangle_polygon, true, true)
@@ -193,7 +193,7 @@ func fractureDelaunayRectangle(rectangle_polygon : PoolVector2Array, source_glob
 #-> fractures is an array containing all fracture infos generated -> the intersected shapes (the overlapping areas of the source polygon and cut polygon) and the shapes smaller than cut_min_area are fractured
 #-> intersected shapes smaller than fracture_min_area are discarded
 #-> fracture pieces smaller than shard_min_area are discarded
-func cutFracture(source_polygon : PoolVector2Array, cut_polygon : PoolVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D, cut_min_area : float, fracture_min_area : float, shard_min_area : float, fractures : int = 3) -> Dictionary:
+func cutFracture(source_polygon : PackedVector2Array, cut_polygon : PackedVector2Array, source_trans_global : Transform2D, cut_trans_global : Transform2D, cut_min_area : float, fracture_min_area : float, shard_min_area : float, fractures : int = 3) -> Dictionary:
 	var cut_info : Dictionary = PolygonLib.cutShape(source_polygon, cut_polygon, source_trans_global, cut_trans_global)
 		
 	var fracture_infos : Array = []
@@ -237,7 +237,7 @@ func getCutLinesFromPoints(points : Array, cuts : int, max_size : float) -> Arra
 		start -= dir * max_size
 		end += dir * max_size
 		
-		var line : PoolVector2Array = [start, end]
+		var line : PackedVector2Array = [start, end]
 		cut_lines.append(line)
 	return cut_lines
 
@@ -255,12 +255,12 @@ func getCutLines(bounding_rect : Rect2, number : int) -> Array:
 		if _rng.randf() < 0.5:#horizontal
 			var start : Vector2 = lerp(horizontal_pair.left[0], horizontal_pair.left[1], _rng.randf())
 			var end : Vector2 = lerp(horizontal_pair.right[0], horizontal_pair.right[1], _rng.randf())
-			var line : PoolVector2Array = [start, end]
+			var line : PackedVector2Array = [start, end]
 			lines.append(line)
 		else:#vertical
 			var start : Vector2 = lerp(vertical_pair.top[0], vertical_pair.top[1], _rng.randf())
 			var end : Vector2 = lerp(vertical_pair.bottom[0], vertical_pair.bottom[1], _rng.randf())
-			var line : PoolVector2Array = [start, end]
+			var line : PackedVector2Array = [start, end]
 			lines.append(line)
 	
 	return lines
@@ -274,8 +274,8 @@ func getCutLines(bounding_rect : Rect2, number : int) -> Array:
 # finally the scaled vector is rotated by the current angle
 # !!!the angle_step_range is in degrees, x < y and x >= 0 and y > 0!!!
 # !!!radius_range  x < y and x >= 0 and y > 0!!!
-func generateRandomPolygon(radius_range : Vector2, angle_step_range_deg : Vector2, offset := Vector2.ZERO) -> PoolVector2Array:
-	var random_polygon : PoolVector2Array = []
+func generateRandomPolygon(radius_range : Vector2, angle_step_range_deg : Vector2, offset := Vector2.ZERO) -> PackedVector2Array:
+	var random_polygon : PackedVector2Array = []
 	
 	var total_angle_deg : float = 0.0
 	
@@ -286,13 +286,13 @@ func generateRandomPolygon(radius_range : Vector2, angle_step_range_deg : Vector
 			break
 		
 		var point := Vector2.RIGHT * _rng.randf_range(radius_range.x, radius_range.y)
-		random_polygon.append(point.rotated(deg2rad(total_angle_deg)) + offset)
+		random_polygon.append(point.rotated(deg_to_rad(total_angle_deg)) + offset)
 	
 	return random_polygon
 
 
-func getRandomPointsInRectangle(rectangle : Rect2, number : int) -> PoolVector2Array:
-	var points : PoolVector2Array = []
+func getRandomPointsInRectangle(rectangle : Rect2, number : int) -> PackedVector2Array:
+	var points : PackedVector2Array = []
 	
 	for i in range(number):
 		var x : float = _rng.randf_range(rectangle.position.x, rectangle.end.x)
@@ -303,10 +303,10 @@ func getRandomPointsInRectangle(rectangle : Rect2, number : int) -> PoolVector2A
 
 #gets a random triangle from a triangulation using the getRandomTriangle func and then gets a random point
 #inside the chosen triangle
-func getRandomPointsInPolygon(poly : PoolVector2Array, number : int) -> PoolVector2Array:
+func getRandomPointsInPolygon(poly : PackedVector2Array, number : int) -> PackedVector2Array:
 	var triangulation : Dictionary = PolygonLib.triangulatePolygon(poly, true, false)
 	
-	var points : PoolVector2Array = []
+	var points : PackedVector2Array = []
 	
 	for i in range(number):
 		var triangle : Array = getRandomTriangle(triangulation)
@@ -318,7 +318,7 @@ func getRandomPointsInPolygon(poly : PoolVector2Array, number : int) -> PoolVect
 
 #if a polygon is triangulated, that function can be used to get a random triangle from the triangultion
 #each triangle is weighted based on its area
-func getRandomTriangle(triangulation : Dictionary) -> PoolVector2Array:
+func getRandomTriangle(triangulation : Dictionary) -> PackedVector2Array:
 	var chosen_weight : float = _rng.randf() * triangulation.area
 	var current_weight : float = 0.0
 	for triangle in triangulation.triangles:
@@ -326,11 +326,11 @@ func getRandomTriangle(triangulation : Dictionary) -> PoolVector2Array:
 		if current_weight > chosen_weight:
 			return triangle.points
 	
-	var empty : PoolVector2Array = []
+	var empty : PackedVector2Array = []
 	return empty
 
 
-func getRandomPointInTriangle(points : PoolVector2Array) -> Vector2:
+func getRandomPointInTriangle(points : PackedVector2Array) -> Vector2:
 	var rand_1 : float = _rng.randf()
 	var rand_2 : float = _rng.randf()
 	var sqrt_1 : float = sqrt(rand_1)

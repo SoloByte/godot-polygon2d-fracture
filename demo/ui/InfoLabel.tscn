@@ -16,12 +16,12 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -154.0
-margin_top = -208.0
-margin_right = 20.0
-margin_bottom = -114.0
-rect_scale = Vector2( 2, 2 )
-custom_styles/normal = SubResource( 1 )
+offset_left = -154.0
+offset_top = -208.0
+offset_right = 20.0
+offset_bottom = -114.0
+scale = Vector2( 2, 2 )
+theme_override_styles/normal = SubResource( 1 )
 text = "CHANGE TEST [W]
 FRACTURE [S/ SPACE]
 AUTO FRACTURE [Q]

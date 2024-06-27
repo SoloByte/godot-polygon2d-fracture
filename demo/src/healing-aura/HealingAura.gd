@@ -37,25 +37,25 @@ enum HEAL_METHOD {DISABLED = 0, INTERVAL = 1, TRIGGER = 2}
 
 
 
-export(bool) var mode_static : bool = false
-export(float, 1.0, 1000.0) var radius : float = 1.0
-export(int, 0, 4) var smoothing : int = 0
-export(int, LAYERS_2D_PHYSICS) var collision_layer
+@export var mode_static: bool = false
+@export var radius : float = 1.0 # (float, 1.0, 1000.0)
+@export var smoothing : int = 0 # (int, 0, 4)
+@export var collision_layer: int # (int, LAYERS_2D_PHYSICS)
 
 
-export(HEAL_METHOD) var heal_method : int = HEAL_METHOD.DISABLED
-export(float) var heal_amount : float = 0.1
-export(float) var heal_interval : float = 1.0
-export(bool) var autostart : bool = false
-export(bool) var enabled : bool = true
+@export var heal_method: HEAL_METHOD = HEAL_METHOD.DISABLED
+@export var heal_amount: float = 0.1
+@export var heal_interval: float = 1.0
+@export var autostart: bool = false
+@export var enabled: bool = true
 
 var _heal_timer : Timer = null
 var _heal_enabled : bool = false
 
 
-onready var _polygon2d := $Polygon2D
-onready var _circle_cast := $CircleCast
-onready var _anim_player := $AnimationPlayer
+@onready var _polygon2d := $Polygon2D
+@onready var _circle_cast := $CircleCast
+@onready var _anim_player := $AnimationPlayer
 
 
 func isEnabled() -> bool:
@@ -66,7 +66,7 @@ func isEnabled() -> bool:
 func _ready() -> void:
 	_heal_enabled = enabled
 
-	var poly : PoolVector2Array = PolygonLib.createCirclePolygon(radius, smoothing, Vector2.ZERO)
+	var poly : PackedVector2Array = PolygonLib.createCirclePolygon(radius, smoothing, Vector2.ZERO)
 	setPolygon(poly)
 	
 	_circle_cast.radius = radius
@@ -78,7 +78,7 @@ func _ready() -> void:
 		timer.wait_time = heal_interval
 		timer.one_shot = false
 		timer.autostart = false
-		timer.connect("timeout", self, "On_Heal_Timer_Timeout")
+		timer.connect("timeout", Callable(self, "On_Heal_Timer_Timeout"))
 		_heal_timer = timer
 	
 	
@@ -104,7 +104,7 @@ func disable() -> void:
 
 
 
-func setPolygon(polygon : PoolVector2Array) -> void:
+func setPolygon(polygon : PackedVector2Array) -> void:
 	_polygon2d.set_polygon(polygon)
 
 

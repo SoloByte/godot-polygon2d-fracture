@@ -31,4 +31,4 @@ antialiased = true
 [node name="Center" type="Polygon2D" parent="."]
 visible = false
 color = Color( 0, 0, 0, 1 )
-polygon = PoolVector2Array( -10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272 )
+polygon = PackedVector2Array( -10.3909, 0.536697, -0.314636, -12.5448, 10.6455, 0.183144, 0.0389175, 12.0272 )

@@ -25,7 +25,7 @@ default_color = Color( 1, 1, 1, 1 )
 
 [node name="Center" type="Polygon2D" parent="."]
 visible = false
-polygon = PoolVector2Array( -12.2946, -12.6935, 2.80278, -19.7125, 20.0853, -1.50295, -1.5675, 11.6741, -16.5324, 2.47004 )
+polygon = PackedVector2Array( -12.2946, -12.6935, 2.80278, -19.7125, 20.0853, -1.50295, -1.5675, 11.6741, -16.5324, 2.47004 )
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 5.0

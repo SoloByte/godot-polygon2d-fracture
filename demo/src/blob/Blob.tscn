@@ -17,8 +17,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.35 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
 }
@@ -29,32 +29,32 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.15, 0.35 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PackedFloat32Array( 0, 0.15, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1.25, 1, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Shape:scale")
+tracks/2/path = NodePath("Shape3D:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.15, 0.23, 0.3, 0.35 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PackedFloat32Array( 0, 0.15, 0.23, 0.3, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1, 1 ), Vector2( 2, 2 ), Vector2( 0.9, 0.9 ), Vector2( 1, 1 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("Shape:modulate")
+tracks/3/path = NodePath("Shape3D:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = false
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.35 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
 }
@@ -70,8 +70,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.35 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
 }
@@ -82,32 +82,32 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.15, 0.35 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PackedFloat32Array( 0, 0.15, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1, 1 ),
 "update": 0,
 "values": [ Color( 1.25, 1.25, 1.25, 1 ), Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Shape:scale")
+tracks/2/path = NodePath("Shape3D:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.15, 0.23, 0.3, 0.35 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PackedFloat32Array( 0, 0.15, 0.23, 0.3, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1, 1 ), Vector2( 2, 2 ), Vector2( 0.9, 0.9 ), Vector2( 1, 1 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("Shape:modulate")
+tracks/3/path = NodePath("Shape3D:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = false
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.35 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
 }
@@ -123,8 +123,8 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.35 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 1,
 "values": [ true, false ]
 }
@@ -135,32 +135,32 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.15, 0.35 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
+"times": PackedFloat32Array( 0, 0.15, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 0.635294, 0.635294, 1 ), Color( 0.862745, 0.454902, 0.454902, 1 ), Color( 1, 1, 1, 0 ) ]
 }
 tracks/2/type = "value"
-tracks/2/path = NodePath("Shape:scale")
+tracks/2/path = NodePath("Shape3D:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 0.15, 0.23, 0.3, 0.35 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PackedFloat32Array( 0, 0.15, 0.23, 0.3, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1, 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1, 1 ), Vector2( 0.5, 0.5 ), Vector2( 1.1, 1.1 ), Vector2( 1, 1 ) ]
 }
 tracks/3/type = "value"
-tracks/3/path = NodePath("Shape:modulate")
+tracks/3/path = NodePath("Shape3D:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/imported = false
 tracks/3/enabled = false
 tracks/3/keys = {
-"times": PoolRealArray( 0, 0.35 ),
-"transitions": PoolRealArray( 1, 1 ),
+"times": PackedFloat32Array( 0, 0.35 ),
+"transitions": PackedFloat32Array( 1, 1 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 1 ) ]
 }
@@ -172,7 +172,7 @@ mode = 2
 mass = 10.0
 physics_material_override = SubResource( 1 )
 gravity_scale = 0.0
-contacts_reported = 12
+max_contacts_reported = 12
 contact_monitor = true
 can_sleep = false
 linear_damp = 2.0
@@ -190,12 +190,12 @@ color = Color( 1, 1, 1, 0.392157 )
 scale = Vector2( 1.05, 1.05 )
 color = Color( 0.394531, 0.394531, 0.394531, 0.588235 )
 
-[node name="Shape" type="Node2D" parent="."]
+[node name="Shape3D" type="Node2D" parent="."]
 
-[node name="Polygon2D" type="Polygon2D" parent="Shape"]
+[node name="Polygon2D" type="Polygon2D" parent="Shape3D"]
 color = Color( 0.772549, 0.772549, 0.772549, 1 )
 
-[node name="Line2D" type="Line2D" parent="Shape"]
+[node name="Line2D" type="Line2D" parent="Shape3D"]
 width = 4.0
 default_color = Color( 1, 1, 1, 1 )
 joint_mode = 2

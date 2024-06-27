@@ -1,23 +1,23 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=8 format=3 uid="uid://bfk6v7unlow4m"]
 
-[ext_resource path="res://demo/test-scenes/test-scene-basic/TestSceneBasic.tscn" type="PackedScene" id=1]
-[ext_resource path="res://demo/src/FractureBody.tscn" type="PackedScene" id=2]
-[ext_resource path="res://demo/ui/FracturesSlider.tscn" type="PackedScene" id=3]
-[ext_resource path="res://demo/ui/MinAreaSlider.tscn" type="PackedScene" id=4]
-[ext_resource path="res://demo/src/Fracture.gd" type="Script" id=5]
-[ext_resource path="res://pool-manager/Pool2DBasic.tscn" type="PackedScene" id=6]
+[ext_resource type="PackedScene" uid="uid://c5k3aj7yblg0f" path="res://demo/test-scenes/test-scene-basic/TestSceneBasic.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://demo/src/FractureBody.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://nhnl6rlnpoqk" path="res://demo/ui/FracturesSlider.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://dkj004hbc30ml" path="res://demo/ui/MinAreaSlider.tscn" id="4"]
+[ext_resource type="Script" path="res://demo/src/Fracture.gd" id="5"]
+[ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="6"]
 
-[sub_resource type="PhysicsMaterial" id=1]
+[sub_resource type="PhysicsMaterial" id="1"]
 friction = 0.25
 bounce = 1.0
 absorbent = true
 
-[node name="FractureSceneBasic" instance=ExtResource( 1 )]
+[node name="FractureSceneBasic" instance=ExtResource("1")]
 
 [node name="FractureParent" type="Node2D" parent="." index="0"]
-script = ExtResource( 5 )
-fracture_body_color = Color( 0.137255, 0.576471, 0.886275, 1 )
-fracture_body_template = ExtResource( 2 )
+script = ExtResource("5")
+fracture_body_color = Color(0.137255, 0.576471, 0.886275, 1)
+fracture_body_template = ExtResource("2")
 delauny_fracture = true
 delauny_type = 1
 
@@ -36,37 +36,37 @@ one_shot = true
 one_shot = true
 
 [node name="Floor" type="StaticBody2D" parent="FractureParent" index="5"]
-modulate = Color( 0.537255, 0.266667, 0.266667, 1 )
-position = Vector2( 0, 933.82 )
-physics_material_override = SubResource( 1 )
+modulate = Color(0.537255, 0.266667, 0.266667, 1)
+position = Vector2(0, 933.82)
+physics_material_override = SubResource("1")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="FractureParent/Floor" index="0"]
-polygon = PoolVector2Array( -1829.84, 455.127, -15.1694, -546.559, 1313.25, 105.895, 2018.73, -48.1862, 2014.24, 270.593 )
+polygon = PackedVector2Array(-1829.84, 455.127, -15.1694, -546.559, 1313.25, 105.895, 2018.73, -48.1862, 2014.24, 270.593)
 
 [node name="Polygon2D" type="Polygon2D" parent="FractureParent/Floor" index="1"]
-color = Color( 0.603922, 0.603922, 0.603922, 1 )
-polygon = PoolVector2Array( -1819.15, 451.564, -10.6794, -542.069, 1309.69, 109.458, 2023.22, -48.1862, 2023.22, 270.593 )
+color = Color(0.603922, 0.603922, 0.603922, 1)
+polygon = PackedVector2Array(-1819.15, 451.564, -10.6794, -542.069, 1309.69, 109.458, 2023.22, -48.1862, 2023.22, 270.593)
 
 [node name="Line2D" type="Line2D" parent="FractureParent/Floor/Polygon2D" index="0"]
-points = PoolVector2Array( -1815.59, 451.564, -10.6794, -546.559, 1316.81, 105.895, 2014.24, -43.6963, 2014.24, 252.634, -1815.59, 451.564 )
+points = PackedVector2Array(-1815.59, 451.564, -10.6794, -546.559, 1316.81, 105.895, 2014.24, -43.6963, 2014.24, 252.634, -1815.59, 451.564)
 width = 15.0
-default_color = Color( 1, 1, 1, 1 )
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
 antialiased = true
 
-[node name="Pool_FractureBodies" parent="FractureParent" index="6" instance=ExtResource( 6 )]
+[node name="Pool_FractureBodies" parent="FractureParent" index="6" instance=ExtResource("6")]
 placed_in_level = true
-instance_template = ExtResource( 2 )
+instance_template = ExtResource("2")
 max_amount = 300
 instantiate_new_on_empty = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="FractureParent" index="7"]
 
-[node name="FracturesSlider" parent="FractureParent/CanvasLayer" index="0" instance=ExtResource( 3 )]
+[node name="FracturesSlider" parent="FractureParent/CanvasLayer" index="0" instance=ExtResource("3")]
 
-[node name="MinAreaSlider" parent="FractureParent/CanvasLayer" index="1" instance=ExtResource( 4 )]
+[node name="MinAreaSlider" parent="FractureParent/CanvasLayer" index="1" instance=ExtResource("4")]
+
 [connection signal="timeout" from="FractureParent/Timer" to="FractureParent" method="_on_Timer_timeout"]
 [connection signal="timeout" from="FractureParent/VisibleTimer" to="FractureParent" method="_on_VisibleTimer_timeout"]
 [connection signal="timeout" from="FractureParent/SlowdownTimer" to="FractureParent" method="_on_SlowdownTimer_timeout"]

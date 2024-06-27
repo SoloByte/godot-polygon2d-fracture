@@ -42,19 +42,19 @@ signal Despawn(ref)
 
 
 
-export(float, 0.0, 256.0, 0.05) var lin_drag : float = 0.0
-export(float, 0.0, 256.0, 0.05) var ang_drag : float = 0.0
-export(Vector2) var gravity_direction = Vector2(0, 1)
-export(float) var gravity_scale : float = 10.0
+@export var lin_drag : float = 0.0 # (float, 0.0, 256.0, 0.05)
+@export var ang_drag : float = 0.0 # (float, 0.0, 256.0, 0.05)
+@export var gravity_direction: Vector2 = Vector2(0, 1)
+@export var gravity_scale: float = 10.0
 
-export(Curve) var lifetime_scale_curve
-
-
+@export var lifetime_scale_curve: Curve
 
 
-onready var _line := $Line2D
-onready var _timer := $Timer
-onready var _line_lerp_start_color : Color = _line.modulate
+
+
+@onready var _line := $Line2D
+@onready var _timer := $Timer
+@onready var _line_lerp_start_color : Color = _line.modulate
 
 
 
@@ -87,7 +87,7 @@ func _process(delta: float) -> void:
 	if not _timer.is_stopped() and _lifetime > 0.0:
 		var p : float = clamp(1.0 - (_timer.time_left / _lifetime), 0.0, 1.0)
 		if lifetime_scale_curve:
-			p = lifetime_scale_curve.interpolate_baked(p)
+			p = lifetime_scale_curve.sample_baked(p)
 		global_scale = lerp(_scale_lerp_start, Vector2.ZERO, p)
 
 
@@ -155,7 +155,7 @@ func addTorque(torque : float) -> void:
 
 
 
-func setPolygon(poly : PoolVector2Array, c : Color, texture_info : Dictionary) -> void:
+func setPolygon(poly : PackedVector2Array, c : Color, texture_info : Dictionary) -> void:
 	set_polygon(poly)
 	poly.append(poly[0])
 	_line.points = poly

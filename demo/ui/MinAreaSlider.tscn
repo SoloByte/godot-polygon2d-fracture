@@ -1,58 +1,56 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=8 format=3 uid="uid://dkj004hbc30ml"]
 
-[sub_resource type="ImageTexture" id=1]
+[sub_resource type="ImageTexture" id="4"]
 
-[sub_resource type="ImageTexture" id=2]
+[sub_resource type="ImageTexture" id="3"]
 
-[sub_resource type="ImageTexture" id=3]
+[sub_resource type="ImageTexture" id="2"]
 
-[sub_resource type="ImageTexture" id=4]
+[sub_resource type="ImageTexture" id="1"]
 
-[sub_resource type="StyleBoxFlat" id=5]
+[sub_resource type="StyleBoxFlat" id="5"]
 draw_center = false
 border_width_left = 12
 border_width_right = 12
-border_color = Color( 0.384314, 0.384314, 0.384314, 1 )
+border_color = Color(0.384314, 0.384314, 0.384314, 1)
 
-[sub_resource type="StyleBoxFlat" id=6]
-bg_color = Color( 0.803922, 0.972549, 1, 1 )
+[sub_resource type="StyleBoxFlat" id="7"]
 draw_center = false
 border_width_left = 12
 border_width_right = 12
+border_color = Color(0.815686, 1, 0.768627, 1)
 
-[sub_resource type="StyleBoxFlat" id=7]
+[sub_resource type="StyleBoxFlat" id="6"]
+bg_color = Color(0.803922, 0.972549, 1, 1)
 draw_center = false
 border_width_left = 12
 border_width_right = 12
-border_color = Color( 0.815686, 1, 0.768627, 1 )
 
 [node name="MinAreaSlider" type="VSlider"]
+anchors_preset = 9
 anchor_bottom = 1.0
-margin_left = 19.0
-margin_top = 51.0
-margin_right = 43.0
-margin_bottom = -38.0
-custom_icons/tick = SubResource( 1 )
-custom_icons/grabber_disabled = SubResource( 2 )
-custom_icons/grabber_highlight = SubResource( 3 )
-custom_icons/grabber = SubResource( 4 )
-custom_styles/slider = SubResource( 5 )
-custom_styles/grabber_area_highlight = SubResource( 6 )
-custom_styles/grabber_area = SubResource( 7 )
+offset_left = 19.0
+offset_top = 51.0
+offset_right = 43.0
+offset_bottom = -38.0
+theme_override_icons/grabber = SubResource("4")
+theme_override_icons/grabber_highlight = SubResource("3")
+theme_override_icons/grabber_disabled = SubResource("2")
+theme_override_icons/tick = SubResource("1")
+theme_override_styles/slider = SubResource("5")
+theme_override_styles/grabber_area = SubResource("7")
+theme_override_styles/grabber_area_highlight = SubResource("6")
 min_value = 100.0
 max_value = 10000.0
 step = 100.0
 value = 800.0
 scrollable = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Label" type="Label" parent="."]
-margin_left = 33.7948
-margin_top = 2.0
-margin_right = 184.795
-margin_bottom = 37.0
-rect_scale = Vector2( 2, 2 )
-text = "Min Area: 100"
-valign = 1
+layout_mode = 0
+offset_left = 33.7948
+offset_top = 2.0
+offset_right = 184.795
+offset_bottom = 37.0
+scale = Vector2(2, 2)
+text = "Min Area3D: 100"

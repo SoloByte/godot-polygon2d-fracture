@@ -37,33 +37,33 @@ enum DELAUNY_TYPES {DEFAULT = 0, CONVEX = 1, RECTANGLE = 2}
 
 
 
-export(Color) var fracture_body_color
-export(PackedScene) var fracture_body_template
+@export var fracture_body_color: Color
+@export var fracture_body_template: PackedScene
 
 
 
 
-export(bool) var delauny_fracture = false
-export(DELAUNY_TYPES) var delauny_type = DELAUNY_TYPES.DEFAULT
+@export var delauny_fracture: bool = false
+@export var delauny_type: DELAUNY_TYPES = DELAUNY_TYPES.DEFAULT
 
-export(bool) var simple_fracture = true
+@export var simple_fracture: bool = true
 
 
 
-onready var polyFracture := PolygonFracture.new()
-onready var _source_polygon_parent := $SourcePolygons
-onready var _parent := $Parent
-onready var _visible_timer := $VisibleTimer
-onready var _slowdown_timer := $SlowdownTimer
-onready var _timer := $Timer
+@onready var polyFracture := PolygonFracture.new()
+@onready var _source_polygon_parent := $SourcePolygons
+@onready var _parent := $Parent
+@onready var _visible_timer := $VisibleTimer
+@onready var _slowdown_timer := $SlowdownTimer
+@onready var _timer := $Timer
 
-onready var _rng := RandomNumberGenerator.new()
+@onready var _rng := RandomNumberGenerator.new()
 
-onready var _fracture_slider := $CanvasLayer/FracturesSlider
-onready var _fractures_label := $CanvasLayer/FracturesSlider/Label
-onready var _min_area_slider := $CanvasLayer/MinAreaSlider
-onready var _min_area_label := $CanvasLayer/MinAreaSlider/Label
-onready var _pool_fracture_bodies := $Pool_FractureBodies
+@onready var _fracture_slider := $CanvasLayer/FracturesSlider
+@onready var _fractures_label := $CanvasLayer/FracturesSlider/Label
+@onready var _min_area_slider := $CanvasLayer/MinAreaSlider
+@onready var _min_area_label := $CanvasLayer/MinAreaSlider/Label
+@onready var _pool_fracture_bodies := $Pool_FractureBodies
 
 
 
@@ -77,7 +77,7 @@ var min_area : int = 25
 func _ready() -> void:
 	_rng.randomize()
 	
-	var color := Color.white
+	var color := Color.WHITE
 	color.s = fracture_body_color.s
 	color.v = fracture_body_color.v
 	color.h = _rng.randf()
@@ -161,7 +161,7 @@ func _on_Timer_timeout() -> void:
 
 
 func _on_VisibleTimer_timeout() -> void:
-	var color := Color.white
+	var color := Color.WHITE
 	color.s = fracture_body_color.s
 	color.v = fracture_body_color.v
 	color.h = _rng.randf()
