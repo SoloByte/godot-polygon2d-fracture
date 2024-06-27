@@ -10,10 +10,13 @@ config_version=5
 
 [application]
 
-config/name="Polygon2d_Fracture"
+config/name="Polygon Fracture 2D"
+config/version="2.0.0"
 run/main_scene="res://demo/src/Main.tscn"
 config/features=PackedStringArray("4.2")
-config/icon="res://demo/icon.png"
+boot_splash/image="res://BootSplash.png"
+config/icon="res://application-icons/4.png"
+boot_splash/minimum_display_time=2500
 
 [display]
 
