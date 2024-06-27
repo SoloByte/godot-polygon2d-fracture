@@ -9,19 +9,18 @@ Fracture Hell is available on [Steam](https://store.steampowered.com/app/1713770
 
 
 ## UPDATES
-- UPDATE v2.0.0 ported to Godot 4.0
-- UPDATE v1.4.0 adds polygon restoring - simple and advanced
-- UPDATE v1.3.0 texture system + point fracture system + big cleanup
-- UPDATE v1.2.0 overhaul of mouse cut system + important bug fixes + pool manager script (bonus) + "juice".
-- UPDATE v1.1.0 adds cutting of polygons.
-
+- UPDATE v2.0.0 ported to Godot 4.0 (Godot 4.2+)
+- UPDATE v1.4.0 adds polygon restoring - simple and advanced (Godot 3.2+)
+- UPDATE v1.3.0 texture system + point fracture system + big cleanup (Godot 3.2+)
+- UPDATE v1.2.0 overhaul of mouse cut system + important bug fixes + pool manager script (bonus) + "juice". (Godot 3.2+)
+- UPDATE v1.1.0 adds cutting of polygons. (Godot 3.2+)
 
 
 ## Info
 
 > Works with GodotEngine 4.2+. Tested with Godot Versions: 4.2.2
 
-> Godot Polygon Fracture 2D v1.4 and before works only with Godot 3! Additionally, the 1.4x branch is for Godot 3 development.
+> Godot Polygon Fracture 2D v1.4 and before only works with Godot 3! Additionally, the 1.4x branch is for Godot 3 development.
 
 Two simple scripts for fracturing and cutting polygons. PolygonFracture.gd is the actual script that fractures/cuts polygons. PolygonLib.gd adds nice helper functions for polygons like calculateArea, triangulate, getRandomPointsInPolygon, getBoundingRect, makeCirclePolygon, etc.
 
